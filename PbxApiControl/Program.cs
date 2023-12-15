@@ -1,8 +1,7 @@
 using System;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
-using Microsoft.Extensions.DependencyInjection;
+
 
 namespace PbxApiControl
 {
@@ -10,7 +9,17 @@ namespace PbxApiControl
     {
         public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+
+            try
+            {
+                CreateHostBuilder(args).Build().Run();
+
+            }
+            catch (Exception e)
+            {
+                Console.WriteLine(e);
+                throw new Exception("Проблемы запуска проекта");
+            }
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>
@@ -18,11 +27,8 @@ namespace PbxApiControl
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
                     webBuilder.UseStartup<Startup>();
-
+                    PBXAPIConfig.InitConfig();
+                    PbxEventListener.Start();
                 });
-        // .ConfigureServices((hostContext, services) =>
-        // {
-        //     services.AddHostedService<>();
-        // });
     }
 }

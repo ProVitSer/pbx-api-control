@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using System;
 
 namespace PbxApiControl
 {
@@ -27,8 +26,6 @@ namespace PbxApiControl
             {
                 app.UseDeveloperExceptionPage();
             }
-
-            Console.WriteLine(PBXAPIConfig.MAX_LOG_RECORDS);
 
             app.UseHttpsRedirection();
 

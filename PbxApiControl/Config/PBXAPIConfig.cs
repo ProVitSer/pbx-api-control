@@ -33,9 +33,7 @@ public static class PBXAPIConfig
             Console.WriteLine(PBXAPIConfig.instanceBinPath);
 
             AppDomain.CurrentDomain.AssemblyResolve += PBXAPIConfig.CurrentDomain_AssemblyResolve;
-
-
-
+            
             ConnectToTCX(Content);
         }
         catch (Exception e)
@@ -73,9 +71,8 @@ public static class PBXAPIConfig
                 Content["ConfService"]["confPass"]);
             ps.WaitForConnect(TimeSpan.FromSeconds(30));
         }
-        catch (Exception e)
+        catch 
         {
-            Console.WriteLine(e);
             throw new Exception("Stopped program because of exception");
 
         }
@@ -106,21 +103,16 @@ public static class PBXAPIConfig
         }
     }
 
-    private static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+    static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
     {
-
-        string name = new AssemblyName(args.Name).Name;
-
+        var name = new AssemblyName(args.Name).Name;
         try
         {
-
-            return Assembly.LoadFrom(Path.Combine(PBXAPIConfig.instanceBinPath, name + ".dll"));
+            return Assembly.LoadFrom(Path.Combine(instanceBinPath, name + ".dll"));
         }
-        catch (Exception e)
+        catch
         {
-            Console.WriteLine(e);
-
-            return (Assembly)null;
+            return null;
         }
     }
 }

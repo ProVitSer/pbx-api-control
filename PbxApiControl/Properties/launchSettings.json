@@ -1,28 +1,29 @@
 ﻿{
-  "$schema": "http://json.schemastore.org/launchsettings.json",
+  "$schema": "https://json.schemastore.org/launchsettings.json",
   "iisSettings": {
     "windowsAuthentication": false,
     "anonymousAuthentication": true,
     "iisExpress": {
-      "applicationUrl": "http://localhost:43295",
-      "sslPort": 44349
+      "applicationUrl": "http://localhost:17132",
+      "sslPort": 44381
     }
   },
   "profiles": {
-    "IIS Express": {
-      "commandName": "IISExpress",
+    "PbxApiControl": {
+      "commandName": "Project",
+      "dotnetRunMessages": true,
       "launchBrowser": true,
-      "launchUrl": "swagger",
+      "launchUrl": "home",
+      "applicationUrl": "http://localhost:5231",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }
     },
-    "PbxApiControl": {
-      "commandName": "Project",
-      "dotnetRunMessages": "true",
+    "IIS Express": {
+      "commandName": "IISExpress",
       "launchBrowser": true,
-      "launchUrl": "swagger",
-      "applicationUrl": "http://localhost:8501",
+      "launchUrl": "home",
+      "applicationUrl": "http://localhost:5231",
       "environmentVariables": {
         "ASPNETCORE_ENVIRONMENT": "Development"
       }

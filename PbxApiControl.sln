@@ -1,6 +1,6 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PbxApiControl", "PbxApiControl\PbxApiControl.csproj", "{B2210286-0B19-4AFE-9501-0FD0495B8F16}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "PbxApiControl", "PbxApiControl\PbxApiControl.csproj", "{C4AFE5AF-08D8-448A-8820-D29AB21FD25A}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -8,9 +8,9 @@ Global
 		Release|Any CPU = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{B2210286-0B19-4AFE-9501-0FD0495B8F16}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{B2210286-0B19-4AFE-9501-0FD0495B8F16}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{B2210286-0B19-4AFE-9501-0FD0495B8F16}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{B2210286-0B19-4AFE-9501-0FD0495B8F16}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C4AFE5AF-08D8-448A-8820-D29AB21FD25A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C4AFE5AF-08D8-448A-8820-D29AB21FD25A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C4AFE5AF-08D8-448A-8820-D29AB21FD25A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C4AFE5AF-08D8-448A-8820-D29AB21FD25A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

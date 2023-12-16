@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using PbxApiControl.Extensions;
 
 namespace PbxApiControl
 {
@@ -18,6 +19,8 @@ namespace PbxApiControl
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddApplicationServices();
+
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

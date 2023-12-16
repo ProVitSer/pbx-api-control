@@ -2,6 +2,8 @@ using System;
 using System.IO;
 using System.Text;
 
+namespace PbxApiControl.Logger;
+
 public static class CustomLogger
 {
     private static StreamWriter _logWriter = null;
@@ -34,7 +36,7 @@ public static class CustomLogger
     private static void BackupLargeFile(long fileSizeLimit = -1)
     {
         if (fileSizeLimit < 0)
-            fileSizeLimit = 1024 * 1024; // Default to 1 MB
+            fileSizeLimit = 1024 * 1024;
 
         try
         {

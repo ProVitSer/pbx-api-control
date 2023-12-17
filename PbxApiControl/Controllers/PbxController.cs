@@ -1,9 +1,6 @@
 using System;
-using System.Text.Json;
 using Microsoft.AspNetCore.Mvc;
-using PbxApiControl.Services;
-using PbxApiControl.DTOs.Pbx;
-
+using PbxApiControl.Interface;
 
 namespace PbxApiControl.Controllers;
 
@@ -15,9 +12,16 @@ public class PbxController : ControllerBase
 {
 
     private readonly IPbxService _pbxService;
-    public PbxController(IPbxService pbxService)
+    private readonly IGetActiveConnectionService _getActiveConnectionService;
+
+    public PbxController(
+        IPbxService pbxService,
+        IGetActiveConnectionService getActiveConnectionService
+        )
     {
         _pbxService = pbxService;
+        _getActiveConnectionService = getActiveConnectionService;
+
     }
 
     [HttpGet("count-calls")]
@@ -43,9 +47,7 @@ public class PbxController : ControllerBase
         try
         {
 
-            var result = _pbxService.PbxActiveCalls();
-
-            return Ok();
+            return Ok((object)new GetActiveConnectionsService());
         }
         catch (Exception ex)
         {

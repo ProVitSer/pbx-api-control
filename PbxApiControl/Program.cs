@@ -29,6 +29,6 @@ public class Program
             {
                 webBuilder.UseStartup<Startup>();
                 PBXAPIConfig.InitConfig();
-                //PbxEventListener.Start();
+                PbxEventListener.Start();
             });
 }

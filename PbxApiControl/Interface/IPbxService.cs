@@ -1,4 +1,4 @@
-using PbxApiControl.DTOs;
+using PbxApiControl.DTOs.Pbx;
 
 
 namespace PbxApiControl.Interface;

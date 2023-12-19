@@ -1,4 +1,4 @@
-using PbxApiControl.DTOs;
+using PbxApiControl.DTOs.Pbx;
 using PbxApiControl.Interface;
 using TCX.Configuration;
 

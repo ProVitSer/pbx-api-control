@@ -29,13 +29,11 @@ namespace PbxApiControl
 
 
                 PBXAPIConfig.ReadConfiguration(iniContent, "Api.ini");
-                Console.WriteLine(iniContent);
                 InitLoggerConf(iniContent);
 
 
                 PBXAPIConfig.ReadConfiguration(Content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
                 PBXAPIConfig.instanceBinPath = Path.Combine(Content["General"]["AppPath"], "Bin");
-                Console.WriteLine(PBXAPIConfig.instanceBinPath);
 
                 AppDomain.CurrentDomain.AssemblyResolve += PBXAPIConfig.CurrentDomain_AssemblyResolve;
 

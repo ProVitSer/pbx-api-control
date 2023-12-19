@@ -1,4 +1,4 @@
-namespace PbxApiControl.DTOs
+namespace PbxApiControl.DTOs.Pbx
 {
     public class PbxCountCallsDto
     {

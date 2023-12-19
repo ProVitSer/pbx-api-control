@@ -14,7 +14,7 @@ public static class PbxEventListener
 
     private static List<CallState> Calls { get; } = new List<CallState>();
 
-    private static string url = "https://webhook.site/69ce8e35-f84f-4a46-aae8-3afa3b3a784f";
+    private static readonly string url = "https://webhook.site/69ce8e35-f84f-4a46-aae8-3afa3b3a784f";
 
 
     public static void Start()

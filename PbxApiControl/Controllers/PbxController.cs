@@ -46,7 +46,6 @@ public class PbxController : ControllerBase
     {
         try
         {
-
             return Ok((object)new GetActiveConnectionsService());
         }
         catch (Exception ex)

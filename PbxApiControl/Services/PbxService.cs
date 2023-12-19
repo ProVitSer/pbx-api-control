@@ -7,10 +7,10 @@ namespace PbxApiControl.Services;
 #nullable enable
 public class PbxService : IPbxService
 {
-    public CallsDto PbxCountCalls()
+    public PbxCountCallsDto PbxCountCalls()
     {
         var countCalls = PhoneSystem.Root.GetActiveConnectionsByCallID().Count;
-        return new CallsDto()
+        return new PbxCountCallsDto()
         {
             currentCountCalls = countCalls
         };

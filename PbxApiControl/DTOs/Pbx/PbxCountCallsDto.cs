@@ -1,6 +1,6 @@
 namespace PbxApiControl.DTOs
 {
-    public class CallsDto
+    public class PbxCountCallsDto
     {
         public int currentCountCalls { get; set; } = 0;
 

@@ -11,6 +11,8 @@ public static class ApplicationServiceExtensions
 
         services.AddScoped<IPbxService, PbxService>();
         services.AddScoped<IGetActiveConnectionService, GetActiveConnectionsService>();
+        services.AddScoped<ICallService, CallService>();
+
 
     }
 

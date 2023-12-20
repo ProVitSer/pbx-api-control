@@ -139,7 +139,6 @@ public class CallService : ICallService
     {
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
-            Console.WriteLine(dnByNumber.IsRegistered);
             return dnByNumber.IsRegistered;
         };
     }

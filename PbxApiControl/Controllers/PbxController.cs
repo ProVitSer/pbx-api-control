@@ -49,8 +49,7 @@ public class PbxController : ControllerBase
         }
         catch (Exception ex)
         {
-            Console.WriteLine(ex);
-            return BadRequest();
+            return BadRequest(ex);
 
         }
     }

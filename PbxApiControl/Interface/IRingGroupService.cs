@@ -1,6 +1,5 @@
 
 using System.Collections.Generic;
-using PbxApiControl.Models;
 using PbxApiControl.DTOs.RingGroup;
 
 namespace PbxApiControl.Interface;

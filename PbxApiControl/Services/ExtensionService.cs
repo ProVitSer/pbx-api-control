@@ -172,9 +172,6 @@ public class ExtensionService : IExtensionService
     {
 
 
-        Console.WriteLine(dto.FirstName);
-        Console.WriteLine(dto.LastName);
-
         SetIfNotNull(() => extension.FirstName = dto.FirstName);
         SetIfNotNull(() => extension.LastName = dto.LastName);
         SetIfNotNull(() => extension.EmailAddress = dto.Email);

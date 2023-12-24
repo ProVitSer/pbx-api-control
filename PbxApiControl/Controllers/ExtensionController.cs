@@ -195,4 +195,22 @@ public class ExtensionController : ControllerBase
 
         }
     }
+
+    [HttpGet("{extension}/device")]
+    public ActionResult GetDeviceInfo(string extension)
+    {
+        try
+        {
+
+            var extDevInfo = _extensionService.GetExtensionDeviceInfo(extension);
+            if (extDevInfo == null) return BadRequest(new { ErrorMessage = string.Format("Добавочный {0} отсутствует на  АТС", extension) });
+
+            return Ok(extDevInfo);
+        }
+        catch (Exception ex)
+        {
+            return BadRequest(ex);
+
+        }
+    }
 }

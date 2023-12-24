@@ -7,8 +7,6 @@ using PbxApiControl.DTOs.Extension;
 using PbxApiControl.Enums;
 using System;
 
-
-
 namespace PbxApiControl.Services;
 
 #nullable enable
@@ -236,7 +234,7 @@ public class ExtensionService : IExtensionService
     }
 
 
-    private IEnumerable<string> GetRegisteredExtensions<T>() where T : class, DN
+    private static IEnumerable<string> GetRegisteredExtensions<T>() where T : class, DN
     {
 
         using (IArrayDisposer<T> disposer = PhoneSystem.Root.GetAll<T>().GetDisposer())
@@ -294,7 +292,43 @@ public class ExtensionService : IExtensionService
             }
             return false;
         };
+    }
 
+    public ExtensionDeviceInfo? GetExtensionDeviceInfo(string ext)
+    {
+        if (!CheckExtension(ext))
+        {
+            return null;
+        };
+
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                using (IArrayDisposer<RegistrarRecord> disposer = dnByNumber.GetRegistrarContactsEx().GetDisposer<RegistrarRecord>())
+                {
+                    List<DevInfo> devices = new List<DevInfo>();
+                    for (int i = 0; i < disposer.Length; ++i)
+                    {
+                        devices.Add(new DevInfo
+                        {
+                            Contact = disposer[i].Contact,
+                            UserAgent = disposer[i].UserAgent
+                        });
+                    }
+
+                    return new ExtensionDeviceInfo()
+                    {
+                        Extension = ext,
+                        Devices = devices
+                    };
+
+                };
+
+            }
+        };
+
+        return null;
 
     }
 }

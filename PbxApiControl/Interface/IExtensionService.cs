@@ -20,4 +20,7 @@ public interface IExtensionService
 
     bool? SetExtensionQueuesStatus(SetQueuestatusDto dto);
     bool? SetExtensionQueueStatus(SetQueuetatusDto dto);
+
+    ExtensionDeviceInfo? GetExtensionDeviceInfo(string ext);
+
 }

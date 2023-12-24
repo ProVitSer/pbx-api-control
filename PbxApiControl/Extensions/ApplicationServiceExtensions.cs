@@ -13,6 +13,7 @@ public static class ApplicationServiceExtensions
         services.AddScoped<ICallService, CallService>();
         services.AddScoped<IExtensionService, ExtensionService>();
         services.AddScoped<IRingGroupService, RingGroupService>();
+        services.AddScoped<IContactService, ContactService>();
 
     }
 

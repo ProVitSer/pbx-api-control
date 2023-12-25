@@ -14,7 +14,9 @@ public static class ApplicationServiceExtensions
         services.AddScoped<IExtensionService, ExtensionService>();
         services.AddScoped<IRingGroupService, RingGroupService>();
         services.AddScoped<IContactService, ContactService>();
+        services.AddScoped<IQueueService, QueueService>();
 
     }
 
 }
+

@@ -49,11 +49,11 @@ public class RingGroupController : ControllerBase
     }
 
     [HttpPost("add/members")]
-    public ActionResult AddRingGroupMembers(AddRingGroupMembersDto members)
+    public ActionResult AddRingGroupMembers(AddRingGroupMembersDto dto)
     {
         try
         {
-            var ringGroupMembers = _ringGroupService.AddRingGroupMembers(members);
+            var ringGroupMembers = _ringGroupService.AddRingGroupMembers(dto);
 
             return Ok(ringGroupMembers);
         }
@@ -64,11 +64,11 @@ public class RingGroupController : ControllerBase
     }
 
     [HttpPost("delete/members")]
-    public ActionResult DeleteRingGroupMembers(DeleteRingGroupMembersDto members)
+    public ActionResult DeleteRingGroupMembers(DeleteRingGroupMembersDto dto)
     {
         try
         {
-            var ringGroupMembers = _ringGroupService.DeleteRingGroupMembers(members);
+            var ringGroupMembers = _ringGroupService.DeleteRingGroupMembers(dto);
 
             return Ok(ringGroupMembers);
         }
@@ -77,6 +77,4 @@ public class RingGroupController : ControllerBase
             return BadRequest(ex);
         }
     }
-
-
 }

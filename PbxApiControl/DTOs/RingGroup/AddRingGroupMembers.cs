@@ -9,4 +9,10 @@ public class AddRingGroupMembersDto
 
     [Required]
     public string[] Members { get; init; }
-}
+    
+    public AddRingGroupMembersDto(string ringGroupNumber, string[] members)
+    {
+        RingGroupNumber = ringGroupNumber;
+        Members = members;
+    }
+}   

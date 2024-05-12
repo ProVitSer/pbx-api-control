@@ -1,6 +1,6 @@
 namespace PbxApiControl.Enums;
 
-internal enum QueuesStatusType
+public enum QueuesStatusType
 {
     LoggedIn,
     LoggedOut,

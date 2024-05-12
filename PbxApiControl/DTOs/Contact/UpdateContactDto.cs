@@ -20,4 +20,27 @@ public class UpdateContactDto
     public string HomeFax { get; init; }
     public string Pager { get; init; }
 
+    public UpdateContactDto(
+        string firstName, string lastName, string mobile, string companyName,
+        string crmContactData, string tag, string mobileTwo, string home,
+        string homeTwo, string business, string businessTwo, string emailAddress,
+        string other, string businessFax, string homeFax, string pager)
+    {
+        FirstName = firstName;
+        LastName = lastName;
+        Mobile = mobile;
+        CompanyName = companyName;
+        CrmContactData = crmContactData;
+        Tag = tag;
+        MobileTwo = mobileTwo;
+        Home = home;
+        HomeTwo = homeTwo;
+        Business = business;
+        BusinessTwo = businessTwo;
+        EmailAddress = emailAddress;
+        Other = other;
+        BusinessFax = businessFax;
+        HomeFax = homeFax;
+        Pager = pager;
+    }
 }

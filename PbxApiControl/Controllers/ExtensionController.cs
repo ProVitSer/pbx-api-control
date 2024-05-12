@@ -161,29 +161,11 @@ public class ExtensionController : ControllerBase
     }
 
     [HttpPost("queues-status")]
-    public ActionResult SetQueuesStatus(SetQueuestatusDto dto)
+    public ActionResult SetQueuesStatus(SetQueueStatusDto dto)
     {
         try
         {
             var setQueuesStatus = _extensionService.SetExtensionQueuesStatus(dto);
-            if (setQueuesStatus == null) return BadRequest(new { ErrorMessage = string.Format("Добавочный {0} отсутствует на  АТС", dto.ExtensionNumber) });
-
-            return Ok(new { result = setQueuesStatus });
-
-        }
-        catch (Exception ex)
-        {
-            return BadRequest(ex);
-
-        }
-    }
-
-    [HttpPost("queue-status")]
-    public ActionResult SetQueueStatus(SetQueuetatusDto dto)
-    {
-        try
-        {
-            var setQueuesStatus = _extensionService.SetExtensionQueueStatus(dto);
             if (setQueuesStatus == null) return BadRequest(new { ErrorMessage = string.Format("Добавочный {0} отсутствует на  АТС", dto.ExtensionNumber) });
 
             return Ok(new { result = setQueuesStatus });

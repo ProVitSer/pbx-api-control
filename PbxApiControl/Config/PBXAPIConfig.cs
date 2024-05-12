@@ -7,18 +7,14 @@ using TCX.Configuration;
 
 namespace PbxApiControl
 {
-
     public static class PBXAPIConfig
     {
-        public static string LOG_PATH;
-        public static string LOG_NAME;
-        public static string BACKUP_LOG_NAME;
+        public static string? LOG_PATH;
+        public static string? LOG_NAME;
+        public static string? BACKUP_LOG_NAME;
         public static long MAX_LOG_FILE_SIZE;
         public static uint MAX_LOG_RECORDS;
-        public static string MS_HOST = "localhost:5233";
-        public static string instanceBinPath;
-
-
+        public static string? instanceBinPath;
 
         public static void InitConfig()
         {
@@ -27,43 +23,38 @@ namespace PbxApiControl
                 Dictionary<string, Dictionary<string, string>> iniContent = new Dictionary<string, Dictionary<string, string>>((IEqualityComparer<string>)StringComparer.InvariantCultureIgnoreCase);
                 Dictionary<string, Dictionary<string, string>> Content = new Dictionary<string, Dictionary<string, string>>((IEqualityComparer<string>)StringComparer.InvariantCultureIgnoreCase);
 
-
-                PBXAPIConfig.ReadConfiguration(iniContent, "Api.ini");
+                ReadConfiguration(iniContent, "Api.ini");
                 InitLoggerConf(iniContent);
 
+                ReadConfiguration(Content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
 
-                PBXAPIConfig.ReadConfiguration(Content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
-                PBXAPIConfig.instanceBinPath = Path.Combine(Content["General"]["AppPath"], "Bin");
+                instanceBinPath = Path.Combine(Content["General"]["AppPath"], "Bin");
 
-                AppDomain.CurrentDomain.AssemblyResolve += PBXAPIConfig.CurrentDomain_AssemblyResolve;
+                AppDomain.CurrentDomain.AssemblyResolve += CurrentDomain_AssemblyResolve;
+                Console.WriteLine(Path.Combine(Content["General"]["AppPath"], "Bin"));
 
                 ConnectToTCX(Content);
-
-
             }
-            catch
+            catch (Exception ex)
             {
+                Console.WriteLine(ex);
                 throw new Exception("Проблемы с инициализацией");
             }
-
         }
-
-
 
         private static void InitLoggerConf(Dictionary<string, Dictionary<string, string>> IniContent)
         {
-            PBXAPIConfig.LOG_PATH = IniContent["General"][nameof(LOG_PATH)];
-            PBXAPIConfig.LOG_NAME = IniContent["General"][nameof(LOG_NAME)];
-            PBXAPIConfig.BACKUP_LOG_NAME = IniContent["General"][nameof(BACKUP_LOG_NAME)];
-            PBXAPIConfig.MAX_LOG_FILE_SIZE = long.Parse(IniContent["General"][nameof(MAX_LOG_FILE_SIZE)]);
-            PBXAPIConfig.MAX_LOG_RECORDS = uint.Parse(IniContent["General"][nameof(MAX_LOG_RECORDS)]);
+            LOG_PATH = IniContent["General"][nameof(LOG_PATH)];
+            LOG_NAME = IniContent["General"][nameof(LOG_NAME)];
+            BACKUP_LOG_NAME = IniContent["General"][nameof(BACKUP_LOG_NAME)];
+            MAX_LOG_FILE_SIZE = long.Parse(IniContent["General"][nameof(MAX_LOG_FILE_SIZE)]);
+            MAX_LOG_RECORDS = uint.Parse(IniContent["General"][nameof(MAX_LOG_RECORDS)]);
         }
 
         private static void ConnectToTCX(Dictionary<string, Dictionary<string, string>> Content)
         {
             try
             {
-
                 PhoneSystem.CfgServerHost = "127.0.0.1";
                 PhoneSystem.CfgServerPort = int.Parse(Content["ConfService"]["ConfPort"]);
                 PhoneSystem.CfgServerUser = Content["ConfService"]["confUser"];
@@ -80,19 +71,18 @@ namespace PbxApiControl
             catch
             {
                 throw new Exception("Проблемы с подключение к АТС");
-
             }
-
         }
 
         private static void ReadConfiguration(
-        Dictionary<string, Dictionary<string, string>> Content,
-        string filePath)
+            Dictionary<string, Dictionary<string, string>> Content,
+            string filePath)
         {
             if (!File.Exists(filePath))
                 throw new Exception("Не удается найти " + Path.GetFullPath(filePath));
             string[] strArray = File.ReadAllLines(filePath);
-            Dictionary<string, string> dictionary = (Dictionary<string, string>)null;
+
+            Dictionary<string, string>? dictionary = null;
             for (int index = 1; index < strArray.Length + 1; ++index)
             {
                 string str1 = strArray[index - 1].Trim();
@@ -109,12 +99,12 @@ namespace PbxApiControl
             }
         }
 
-        static Assembly CurrentDomain_AssemblyResolve(object sender, ResolveEventArgs args)
+        static Assembly? CurrentDomain_AssemblyResolve(object? sender, ResolveEventArgs args)
         {
             var name = new AssemblyName(args.Name).Name;
             try
             {
-                return Assembly.LoadFrom(Path.Combine(instanceBinPath, name + ".dll"));
+                return Assembly.LoadFrom(Path.Combine(instanceBinPath!, name + ".dll"));
             }
             catch
             {

@@ -6,4 +6,9 @@ public class DeleteExtensionDto
 {
     [Required]
     public string ExtensionNumber { get; init; }
+    
+    public DeleteExtensionDto(string extensionNumber)
+    {
+        ExtensionNumber = extensionNumber;
+    }
 }

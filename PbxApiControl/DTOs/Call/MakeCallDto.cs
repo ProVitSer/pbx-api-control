@@ -8,6 +8,12 @@ namespace PbxApiControl.DTOs.Calls
         public string To { get; init; }
         [Required]
         public string From { get; init; }
+        
+        public MakeCallDto(string to, string from)
+        {
+            To = to;
+            From = from;
+        }
 
     }
 }

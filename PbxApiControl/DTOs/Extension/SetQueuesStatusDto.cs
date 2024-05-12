@@ -3,13 +3,18 @@ using PbxApiControl.Enums;
 
 namespace PbxApiControl.DTOs.Extension;
 
-public class SetQueuestatusDto
+public class SetQueueStatusDto
 {
     [Required]
     public string ExtensionNumber { get; init; }
 
     [Required]
     [EnumDataType(typeof(QueuesStatusType))]
-
-    public string Status { get; init; }
+    public QueuesStatusType Status { get; init; }
+    
+    public SetQueueStatusDto(string extensionNumber, QueuesStatusType status)
+    {
+        ExtensionNumber = extensionNumber;
+        Status = status;
+    }
 }

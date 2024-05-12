@@ -9,4 +9,10 @@ public class DeleteRingGroupMembersDto
 
     [Required]
     public string[] Members { get; init; }
+    
+    public DeleteRingGroupMembersDto(string ringGroupNumber, string[] members)
+    {
+        RingGroupNumber = ringGroupNumber;
+        Members = members;
+    }
 }

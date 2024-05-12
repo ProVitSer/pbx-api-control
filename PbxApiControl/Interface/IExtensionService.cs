@@ -18,8 +18,7 @@ public interface IExtensionService
     ExtensionInfo? UpdateExtension(BaseExtensionDto dto);
     bool? SetExtensionForwardStatus(SetForwardStatusDto dto);
 
-    bool? SetExtensionQueuesStatus(SetQueuestatusDto dto);
-    bool? SetExtensionQueueStatus(SetQueuetatusDto dto);
+    bool? SetExtensionQueuesStatus(SetQueueStatusDto dto);
 
     ExtensionDeviceInfo? GetExtensionDeviceInfo(string ext);
 

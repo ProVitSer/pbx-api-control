@@ -1,4 +1,4 @@
-namespace PbxApiControl.Enums;
+﻿namespace PbxApiControl.Enums;
 
 internal enum RecordType
 {

@@ -1,10 +1,9 @@
-using System.Linq;
-using PbxApiControl.Enums;
+﻿using PbxApiControl.Enums;
 using TCX.Configuration;
 
 namespace PbxApiControl.Models;
 
-public class ExtensionStatus
+public class NewExtensionStatus
 {
     public string Extension { get; }
 
@@ -18,7 +17,7 @@ public class ExtensionStatus
 
     public string[] RingGroups { get; }
 
-    public ExtensionStatus(Extension ext)
+    public NewExtensionStatus(Extension ext)
     {
         this.Extension = ext.Number;
         this.Registered = ext.IsRegistered;
@@ -44,6 +43,4 @@ public class ExtensionStatus
                 return status;
         };
     }
-
-
 }

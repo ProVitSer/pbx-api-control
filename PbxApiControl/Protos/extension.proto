@@ -1,0 +1,20 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package extension;
+
+service ExtensionTest {
+    rpc TestGetExtensionStatus (ExtensionStatusRequest) returns (ExtensionStatusReply);
+}
+message ExtensionStatusRequest {
+    string ext = 1;
+}
+message ExtensionStatusReply {
+    string extension = 1;
+    bool registered = 2;
+    string forwarding_rules_status = 3;
+    string queues_status = 4;
+    repeated string groups = 5;
+    repeated string queues = 6;
+    repeated string ring_groups = 7;
+}
+

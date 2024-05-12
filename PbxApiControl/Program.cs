@@ -1,34 +1,30 @@
-using System;
+using PbxApiControl.Services;
+using PbxApiControl.Extensions;
 using Microsoft.AspNetCore.Hosting;
-using Microsoft.Extensions.Hosting;
 
-
-namespace PbxApiControl;
-#nullable enable
-
-public class Program
+namespace PbxApiControl
 {
-    public static void Main(string[] args)
+    public class Program
     {
-
-        try
+        public static void Main(string[] args)
         {
-            CreateHostBuilder(args).Build().Run();
+            var builder = WebApplication.CreateBuilder(args);
+            
+            builder.Services.AddGrpc().AddJsonTranscoding();
+            builder.Services.AddGrpcReflection();
+            builder.Services.AddApplicationServices();
 
+
+            var app = builder.Build();
+            app.Urls.Add("http://192.168.0.2:5000");
+            app.MapGrpcService<GreeterService>();
+            app.MapGrpcService<TestService>();
+
+            app.MapGrpcReflectionService();
+            PBXAPIConfig.InitConfig();
+
+            app.Run();
         }
-        catch (Exception e)
-        {
-            Console.WriteLine(e);
-            throw new Exception("Проблемы запуска проекта");
-        }
+        
     }
-
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .ConfigureWebHostDefaults(webBuilder =>
-            {
-                webBuilder.UseStartup<Startup>();
-                PBXAPIConfig.InitConfig();
-                //PbxEventListener.Start();
-            });
 }

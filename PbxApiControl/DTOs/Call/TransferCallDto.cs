@@ -9,6 +9,12 @@ namespace PbxApiControl.DTOs.Calls
 
         [Required]
         public string DestinationNumber { get; init; }
+        
+        public TransferCallDto(string extension, string destinationNumber)
+        {
+            Extension = extension;
+            DestinationNumber = destinationNumber;
+        }
 
     }
 }

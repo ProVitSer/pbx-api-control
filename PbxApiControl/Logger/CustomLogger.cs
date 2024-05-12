@@ -6,7 +6,7 @@ namespace PbxApiControl.Logger;
 
 public static class CustomLogger
 {
-    private static StreamWriter _logWriter = null;
+    private static StreamWriter? _logWriter = null;
     private static int _openCounter = 0;
     private static bool _dialerLogFlag = false;
     private static uint _writeCounter = 0;
@@ -162,11 +162,11 @@ public static class CustomLogger
         }
     }
 
-    public static void WriteException(string logText, Exception e = null)
+    public static void WriteException(string logText, Exception ex)
     {
         lock (_lockObj)
         {
-            PrivateWrite($"{logText}{Environment.NewLine}Exception Details: {e}");
+            PrivateWrite($"{logText}{Environment.NewLine}Exception Details: {ex}");
 
         }
     }

@@ -88,6 +88,7 @@ public class RingGroupService : IRingGroupService
         DN[] dn = memberNumbers
             .Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
             .Where(x => x != null)
+            .Select(x => x!)
             .Distinct()
             .ToArray();
 

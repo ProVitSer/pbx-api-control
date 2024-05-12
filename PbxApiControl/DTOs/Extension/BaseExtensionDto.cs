@@ -22,5 +22,38 @@ namespace PbxApiControl.DTOs.Extension
         public bool DeliverAudio { get; init; }
         public bool SupportReinvite { get; init; }
         public bool SupportReplaces { get; init; }
+        
+        public BaseExtensionDto(
+            string extensionNumber,
+            string firstName,
+            string lastName,
+            string email,
+            string authID,
+            string authPassword,
+            string mobileNumber,
+            string outboundCallerID,
+            string recordingType,
+            bool isExtensionEnabled,
+            bool allowedExternalCalls,
+            bool deliverAudio,
+            bool supportReinvite,
+            bool supportReplaces)
+        {
+            ExtensionNumber = extensionNumber;
+            FirstName = firstName;
+            LastName = lastName;
+            Email = email;
+            AuthID = authID;
+            AuthPassword = authPassword;
+            MobileNumber = mobileNumber;
+            OutboundCallerID = outboundCallerID;
+            RecordingType = recordingType;
+            IsExtenionEnabled = isExtensionEnabled;
+            AllowedExternalCalls = allowedExternalCalls;
+            DeliverAudio = deliverAudio;
+            SupportReinvite = supportReinvite;
+            SupportReplaces = supportReplaces;
+        }
     }
+    
 }

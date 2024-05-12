@@ -153,13 +153,8 @@ public class CallService : ICallService
 
     private static MakeCall MakeCallReult(MakeCallDto dto, bool reult, string message)
     {
-        return new MakeCall()
-        {
-            From = dto.From,
-            To = dto.To,
-            Result = reult,
-            Message = message
-        };
+        return new MakeCall(dto.To, dto.From, reult, message);
+
     }
 
 

@@ -9,5 +9,11 @@ public class FindContactDto
 
     [Required]
     public int MinLength { get; init; }
+    
+    public FindContactDto(string number, int minLength)
+    {
+        Number = number;
+        MinLength = minLength;
+    }
 
 }

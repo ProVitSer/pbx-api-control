@@ -30,7 +30,8 @@ public class QueueService : IQueueService
     {
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber))
         {
-            if (!(dnByNumber is Queue queue)) return Array.Empty<QueueAgents>();
+            if (!(dnByNumber is Queue queue))
+                return Array.Empty<QueueAgents>();
 
             QueueAgents[] queueAgents = queue.QueueAgents
                 .Select(agent =>
@@ -47,8 +48,7 @@ public class QueueService : IQueueService
                 .ToArray();
 
             return queueAgents;
-
-        };
+        }
     }
 
     public QueueAgents[] GetBusyQueueAgents(string queueNumber)

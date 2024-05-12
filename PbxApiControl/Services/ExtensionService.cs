@@ -116,11 +116,10 @@ public class ExtensionService : IExtensionService
     public bool? SetExtensionForwardStatus(SetForwardStatusDto dto)
     {
 
-        if (!CheckExtension(dto.ExtensionNumber))
+        if (dto.ExtensionNumber != null && !CheckExtension(dto.ExtensionNumber))
         {
             return null;
         }
-
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(dto.ExtensionNumber))
         {
@@ -128,7 +127,7 @@ public class ExtensionService : IExtensionService
             {
                 foreach (FwdProfile fwdProfile in extension.FwdProfiles)
                 {
-                    if (fwdProfile.Name == GetForwardingRulesStatus(dto.Status))
+                    if (fwdProfile.Name == GetForwardingRulesStatus(dto.Status.ToString()))
                     {
                         extension.CurrentProfile = fwdProfile;
                         extension.OverrideExpiresAt = DateTime.UtcNow;
@@ -245,7 +244,7 @@ public class ExtensionService : IExtensionService
         };
     }
 
-    public bool? SetExtensionQueuesStatus(SetQueuestatusDto dto)
+    public bool? SetExtensionQueuesStatus(SetQueueStatusDto dto)
     {
         if (!CheckExtension(dto.ExtensionNumber))
         {
@@ -256,41 +255,14 @@ public class ExtensionService : IExtensionService
         {
             if (dnByNumber is Extension extension)
             {
-                extension.QueueStatus = dto.Status == QueuesStatusType.LoggedIn.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
+                extension.QueueStatus = dto.Status == QueuesStatusType.LoggedIn ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
                 extension.Save();
             }
         };
 
         return true;
     }
-
-    public bool? SetExtensionQueueStatus(SetQueuetatusDto dto)
-    {
-        if (!CheckExtension(dto.ExtensionNumber))
-        {
-            return null;
-        };
-
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(dto.ExtensionNumber))
-        {
-            if (dnByNumber is Extension extension)
-            {
-                foreach (QueueAgent queueAgent in extension.QueueMembership)
-                {
-                    if (queueAgent.Queue.Number == dto.QueueNumber)
-                    {
-                        queueAgent.QueueStatus = dto.Status == QStatusType.On.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
-                        extension.Save();
-                        return true;
-                    }
-
-
-                }
-            }
-            return false;
-        };
-    }
-
+    
     public ExtensionDeviceInfo? GetExtensionDeviceInfo(string ext)
     {
         if (!CheckExtension(ext))

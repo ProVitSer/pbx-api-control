@@ -11,8 +11,8 @@ public class CallState
 
     public string CallStatus => this.Status.ToString();
 
-    public string LocalNumber { get; set; }
-    public string RemoteNumber { get; set; }
+    public string? LocalNumber { get; set; } 
+    public string? RemoteNumber { get; set; }
+
     internal CallState(uint callid) => this.CallID = callid;
 }
-

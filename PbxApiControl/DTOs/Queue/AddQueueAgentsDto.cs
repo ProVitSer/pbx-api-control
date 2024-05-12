@@ -9,4 +9,10 @@ public class AddQueueAgentsDto
 
     [Required]
     public string[] Agents { get; init; }
+    
+    public AddQueueAgentsDto(string queueNumber, string[] agents)
+    {
+        QueueNumber = queueNumber;
+        Agents = agents;
+    }
 }

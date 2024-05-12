@@ -6,6 +6,11 @@ namespace PbxApiControl.DTOs.Calls
     {
         [Required]
         public string Extension { get; init; }
+        
+        public HangupCallDto(string extension)
+        {
+            Extension = extension;
+        }
 
     }
 }

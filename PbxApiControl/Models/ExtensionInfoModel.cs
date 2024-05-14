@@ -3,7 +3,7 @@ using TCX.Configuration;
 
 namespace PbxApiControl.Models;
 
-public class NewExtensionStatus
+public class ExtensionInfo
 {
     public string Extension { get; }
 
@@ -17,7 +17,7 @@ public class NewExtensionStatus
 
     public string[] RingGroups { get; }
 
-    public NewExtensionStatus(Extension ext)
+    public ExtensionInfo(Extension ext)
     {
         this.Extension = ext.Number;
         this.Registered = ext.IsRegistered;

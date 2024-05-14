@@ -2,13 +2,13 @@
 option csharp_namespace = "PbxApiControl";
 package extension;
 
-service ExtensionTest {
-    rpc TestGetExtensionStatus (ExtensionStatusRequest) returns (ExtensionStatusReply);
+service ExtensionsInfoService {
+    rpc GetExtensionInfo (ExtensionInfoRequest) returns (ExtensionInfoReply);
 }
-message ExtensionStatusRequest {
+message ExtensionInfoRequest {
     string ext = 1;
 }
-message ExtensionStatusReply {
+message ExtensionInfoReply {
     string extension = 1;
     bool registered = 2;
     string forwarding_rules_status = 3;

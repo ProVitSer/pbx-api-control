@@ -3,6 +3,6 @@
 namespace PbxApiControl.Interface;
 public interface IExtensionService
 {
-     NewExtensionStatus GetExtensionStatus(string ext); 
-    
+    ExtensionInfo? GetExtensionInfo(string ext);
+
 }

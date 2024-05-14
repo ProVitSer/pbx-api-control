@@ -1,5 +1,4 @@
-﻿using PbxApiControl.Services;
-using Microsoft.Extensions.DependencyInjection;
+﻿using PbxApiControl.Services.Pbx;
 using PbxApiControl.Interface;
 
 namespace PbxApiControl.Extensions;

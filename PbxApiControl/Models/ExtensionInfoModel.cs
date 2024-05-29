@@ -1,46 +1,86 @@
-﻿using PbxApiControl.Enums;
-using TCX.Configuration;
+﻿using TCX.Configuration;
+using PbxApiControl.Enums;
 
 namespace PbxApiControl.Models;
 
 public class ExtensionInfo
 {
+    public string AuthID { get; set; }
+
+    public string AuthPassword { get; set; }
+
+    public string SipID { get; }
+
     public string Extension { get; }
 
-    public bool Registered { get; }
+    public string FirstName { get; }
 
-    public string ForwardingRulesStatus { get; }
-    public string QueuesStatus { get; }
+    public string LastName { get; }
 
-    public string[] Groups { get; }
-    public string[] Queues { get; }
+    public string Email { get; }
 
-    public string[] RingGroups { get; }
+    public string MobileNumber { get; }
+
+    public string OutboundCallerID { get; }
+
+    public string RecordingType { get; }
+
+    public bool IsExtenionEnabled { get; }
+
+    public bool AllowedExternalCalls { get; }
+
+    public bool DeliverAudio { get; }
+
+    public bool SupportReinvite { get; }
+
+    public bool SupportReplaces { get; }
+
+    public string EmailOptions { get; }
+
+    public bool VoiceMailEnable { get; }
+
+    public string VoiceMailPin { get; }
+
+    public bool VoiceMailPlayCallerID { get; }
+
+    public bool Internal { get; }
+
+    public int NoAnswerTimeout { get; }
+
 
     public ExtensionInfo(Extension ext)
     {
+        this.AuthID = ext.AuthID;
+        this.AuthPassword = ext.AuthPassword;
+        this.SipID = ext.SIPID;
         this.Extension = ext.Number;
-        this.Registered = ext.IsRegistered;
-        this.ForwardingRulesStatus = ext.IsOverrideActiveNow ? ext.CurrentProfileOverride.Name : GetForwardingRulesStatus(ext.CurrentProfile.Name);
-        this.QueuesStatus = (ext.QueueStatus is QueueStatusType.LoggedIn) ? QueuesStatusType.LoggedIn.ToString() : QueuesStatusType.LoggedOut.ToString();
-        this.Groups = ext.GroupMembership.Select(x => x.Group.Name).ToArray();
-        this.Queues = ext.QueueMembership.Select(x => x.Queue.Number).ToArray();
-        this.RingGroups = ext.GetRingGroups().Select(x => x.Number).ToArray();
-
+        this.FirstName = ext.FirstName;
+        this.LastName = ext.LastName;
+        this.Email = ext.EmailAddress;
+        this.MobileNumber = ext.GetPropertyValue("MOBILENUMBER");
+        this.OutboundCallerID = ext.OutboundCallerID;
+        this.RecordingType = GetRecordType(ext);
+        this.IsExtenionEnabled = ext.Enabled;
+        this.AllowedExternalCalls = !ext.Internal;
+        this.DeliverAudio = ext.DeliverAudio;
+        this.SupportReinvite = ext.SupportReinvite;
+        this.SupportReplaces = ext.SupportReplaces;
+        this.EmailOptions = ext.VMEmailOptions.ToString();
+        this.VoiceMailEnable = ext.VMEnabled;
+        this.VoiceMailPin = ext.VMPIN;
+        this.VoiceMailPlayCallerID = ext.VMPlayCallerID;
+        this.Internal = ext.Internal;
+        this.NoAnswerTimeout = ext.NoAnswerTimeout;
     }
 
-    private static string GetForwardingRulesStatus(string status)
+    private static string GetRecordType(Extension ext)
     {
-        switch (status)
+        if (!ext.RecordCalls)
         {
-            case "Out of office":
-                return ForwardingRules.DND.ToString();
-            case "Custom 1":
-                return ForwardingRules.Lunch.ToString();
-            case "Custom 2":
-                return ForwardingRules.BusinessTrip.ToString();
-            default:
-                return status;
-        };
+            return RecordType.RecordingOff.ToString();
+        }
+
+        var externalOnly = ext.GetPropertyValue("RECORD_EXTERNAL_CALLS_ONLY");
+        return (externalOnly == "1") ? RecordType.RecordingExternal.ToString() : RecordType.RecordingAll.ToString();
     }
 }

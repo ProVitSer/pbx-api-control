@@ -16,7 +16,22 @@ public class ExtensionService : IExtensionService
     }
 
 
-    public ExtensionInfo? GetExtensionInfo(string ext)
+    public ExtensionStatus? ExtensionStatus(string ext)
+    {
+
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                return new ExtensionStatus(extension);
+
+            }
+        };
+
+        return null;
+    }
+    
+    public ExtensionInfo? ExtensionInfo(string ext)
     {
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
@@ -24,7 +39,6 @@ public class ExtensionService : IExtensionService
             if (dnByNumber is Extension extension)
             {
                 return new ExtensionInfo(extension);
-
             }
         };
 

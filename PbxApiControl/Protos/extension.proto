@@ -2,13 +2,15 @@
 option csharp_namespace = "PbxApiControl";
 package extension;
 
-service ExtensionsInfoService {
-    rpc GetExtensionInfo (ExtensionInfoRequest) returns (ExtensionInfoReply);
+service ExtensionsPbxService {
+    rpc GetExtensionInfo (GetExtensionInfoRequest) returns (GetExtensionInfoReply);
+    rpc GetExtensionStatus (GetExtensionStatusRequest) returns (GetExtensionStatusReply);
 }
-message ExtensionInfoRequest {
+
+message GetExtensionStatusRequest {
     string ext = 1;
 }
-message ExtensionInfoReply {
+message GetExtensionStatusReply {
     string extension = 1;
     bool registered = 2;
     string forwarding_rules_status = 3;
@@ -17,4 +19,33 @@ message ExtensionInfoReply {
     repeated string queues = 6;
     repeated string ring_groups = 7;
 }
+
+
+message GetExtensionInfoRequest {
+    string ext = 1;
+}
+message GetExtensionInfoReply {
+    string auth_id = 1;
+    string auth_password = 2;
+    string sip_id = 3;
+    string extension = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string email = 7;
+    string mobile_number = 8;
+    string outbound_caller_id = 9;
+    string recording_type = 10;
+    bool is_extenion_enabled = 11;
+    bool allowed_external_calls = 12;
+    bool deliver_audio = 13;
+    bool support_reinvite = 14;
+    bool support_replaces = 15;
+    string email_options = 16;
+    bool voice_mail_enable = 17;
+    string voice_mail_pin = 18;
+    bool voice_mail_play_caller_id = 19;
+    bool internal = 20;
+    int32 no_answer_timeout = 21;
+}
+
 

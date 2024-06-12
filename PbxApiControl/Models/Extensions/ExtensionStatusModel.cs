@@ -1,7 +1,7 @@
 ﻿using PbxApiControl.Enums;
 using TCX.Configuration;
 
-namespace PbxApiControl.Models;
+namespace PbxApiControl.Models.Extensions;
 
 public class ExtensionStatus
 {

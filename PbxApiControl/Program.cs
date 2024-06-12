@@ -1,5 +1,6 @@
 using PbxApiControl.Services.Grpc;
 using PbxApiControl.Extensions;
+using PbxApiControl.Config;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;

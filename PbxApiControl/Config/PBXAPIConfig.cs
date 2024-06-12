@@ -1,9 +1,8 @@
 ﻿using System.Reflection;
 using TCX.Configuration;
-using Serilog;
 
 
-namespace PbxApiControl
+namespace PbxApiControl.Config
 {
 
     public static class PBXAPIConfig

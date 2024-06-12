@@ -1,12 +1,84 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package extension;
+import "google/protobuf/empty.proto";
 
 service ExtensionsPbxService {
     rpc GetExtensionInfo (GetExtensionInfoRequest) returns (GetExtensionInfoReply);
     rpc GetExtensionStatus (GetExtensionStatusRequest) returns (GetExtensionStatusReply);
+    rpc GetExtensions (google.protobuf.Empty) returns (GetExtensionsReply);
+    rpc GetRegisteredExtensions (google.protobuf.Empty) returns (GetRegisteredExtensionsReply);
+    rpc GetExtensionDeviceInfo (GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply);
+    rpc CreateExtension (CreateExtensionRequest) returns (CreateExtensionReply);
+
 }
 
+message CreateExtensionRequest {
+    string extension_number = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string auth_id = 5;
+    string auth_password = 6;
+    string mobile_number = 7;
+    string outbound_caller_id = 8;
+    string recording_type = 9;
+    bool is_extension_enabled = 10;
+    bool allowed_external_calls = 11;
+    bool deliver_audio = 12;
+    bool support_reinvite = 13;
+    bool support_replaces = 14;
+}
+
+message CreateExtensionReply {
+    string auth_id = 1;
+    string auth_password = 2;
+    string sip_id = 3;
+    string extension = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string email = 7;
+    string mobile_number = 8;
+    string outbound_caller_id = 9;
+    string recording_type = 10;
+    bool is_extenion_enabled = 11;
+    bool allowed_external_calls = 12;
+    bool deliver_audio = 13;
+    bool support_reinvite = 14;
+    bool support_replaces = 15;
+    string email_options = 16;
+    bool voice_mail_enable = 17;
+    string voice_mail_pin = 18;
+    bool voice_mail_play_caller_id = 19;
+    bool internal = 20;
+    int32 no_answer_timeout = 21;
+}
+        
+
+message GetExtensionDeviceInfoRequest {
+    string ext = 1;
+}
+
+message Device {
+    string userAgent = 1;
+    string contact = 2;
+}
+
+message GetExtensionDeviceInfoReply {
+    string extension = 1;
+    repeated Device devices = 2;
+}
+
+
+message GetExtensionsReply {
+    repeated string extensions = 1;
+}
+
+message GetRegisteredExtensionsReply {
+    repeated string extensions = 1;
+}
+
+        
 message GetExtensionStatusRequest {
     string ext = 1;
 }

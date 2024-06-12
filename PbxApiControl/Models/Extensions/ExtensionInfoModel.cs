@@ -1,7 +1,7 @@
 ﻿using TCX.Configuration;
 using PbxApiControl.Enums;
 
-namespace PbxApiControl.Models;
+namespace PbxApiControl.Models.Extensions;
 
 public class ExtensionInfo
 {
@@ -50,7 +50,7 @@ public class ExtensionInfo
 
     public ExtensionInfo(Extension ext)
     {
-        this.AuthID = ext.AuthID;
+        this.AuthID = ext.AuthID ;
         this.AuthPassword = ext.AuthPassword;
         this.SipID = ext.SIPID;
         this.Extension = ext.Number;

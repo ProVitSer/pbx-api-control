@@ -27,7 +27,7 @@ public class ExtensionInfo
 
     public bool IsExtenionEnabled { get; }
 
-    public bool AllowedExternalCalls { get; }
+    public bool DisableExternalCalls { get; }
 
     public bool DeliverAudio { get; }
 
@@ -61,7 +61,7 @@ public class ExtensionInfo
         this.OutboundCallerID = ext.OutboundCallerID;
         this.RecordingType = GetRecordType(ext);
         this.IsExtenionEnabled = ext.Enabled;
-        this.AllowedExternalCalls = !ext.Internal;
+        this.DisableExternalCalls = ext.Internal;
         this.DeliverAudio = ext.DeliverAudio;
         this.SupportReinvite = ext.SupportReinvite;
         this.SupportReplaces = ext.SupportReplaces;

@@ -24,6 +24,7 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Properties\" />
+        <PackageReference Include="System.Runtime" Version="8.0.0" />
         <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
@@ -35,6 +36,7 @@
             <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
         </PackageReference>
         <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+        <PackageReference Include="System.Runtime" Version="8.0.0" />
     </ItemGroup>
     <!--
             <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'"><OutputPath>bin\Debug\</OutputPath></PropertyGroup>-->

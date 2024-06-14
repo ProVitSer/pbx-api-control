@@ -12,7 +12,7 @@ namespace PbxApiControl.Models.Extensions
         
         public ExtensionQueuesStatusDataModel(SetExtensionGlobalQueuesStatusRequest request)
         {
-            ExtensionNumber = request.Extensions;
+            ExtensionNumber = request.Extension;
             Status = request.Status;
         }
     }

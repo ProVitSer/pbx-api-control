@@ -19,33 +19,38 @@ public class ExtensionService : IExtensionService
     }
 
 
-    public ExtensionStatus? ExtensionStatus(string ext)
+    public ExtensionStatus ExtensionStatus(string ext)
     {
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
-            if (dnByNumber is Extension extension)
+
+            if (!(dnByNumber is Extension))
             {
-                return new ExtensionStatus(extension);
-
+                throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
             }
-        };
+            
+            var extension = (Extension)dnByNumber;
 
-        return null;
+            return new ExtensionStatus(extension);
+        }
     }
     
-    public ExtensionInfo? ExtensionInfo(string ext)
+    public ExtensionInfo ExtensionInfo(string ext)
     {
-
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
-            if (dnByNumber is Extension extension)
+            
+            if (!(dnByNumber is Extension))
             {
-                return new ExtensionInfo(extension);
+                throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
             }
+            
+            var extension = (Extension)dnByNumber;
+
+            return new ExtensionInfo(extension);
         };
 
-        return null;
     }
     
     public IEnumerable<string> AllExtensions()
@@ -63,54 +68,42 @@ public class ExtensionService : IExtensionService
         return RegisteredExtensions<Extension>();
     }
     
-    public ExtensionDeviceInfo? ExtensionDeviceInfo(string ext)
+    public ExtensionDeviceInfo ExtensionDeviceInfo(string ext)
     {
-        if (!CheckExtension(ext))
-        {
-            return null;
-        };
-
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
-            if (dnByNumber is Extension extension)
+            if (!(dnByNumber is Extension))
             {
-                using (IArrayDisposer<RegistrarRecord> disposer = dnByNumber.GetRegistrarContactsEx().GetDisposer<RegistrarRecord>())
+                throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
+            }
+            
+            using (IArrayDisposer<RegistrarRecord> disposer = dnByNumber.GetRegistrarContactsEx().GetDisposer<RegistrarRecord>())
+            {
+                List<DevInfo> devices = new List<DevInfo>();
+                for (int i = 0; i < disposer.Length; ++i)
                 {
-                    List<DevInfo> devices = new List<DevInfo>();
-                    for (int i = 0; i < disposer.Length; ++i)
+                    devices.Add(new DevInfo
                     {
-                        devices.Add(new DevInfo
-                        {
-                            Contact = disposer[i].Contact,
-                            UserAgent = disposer[i].UserAgent
-                        });
-                    }
+                        Contact = disposer[i].Contact,
+                        UserAgent = disposer[i].UserAgent
+                    });
+                }
 
-                    return new ExtensionDeviceInfo()
-                    {
-                        Extension = ext,
-                        Devices = devices
-                    };
-
+                return new ExtensionDeviceInfo()
+                {
+                    Extension = ext,
+                    Devices = devices
                 };
 
-            }
+            };
         };
-
-        return null;
-
+        
     }
     
-    public ExtensionInfo? CreateExt(CreateExtensionDataModel data)
+    public ExtensionInfo CreateExt(CreateExtensionDataModel data)
     {
-        if (CheckExtension(data.ExtensionNumber))
-        {
-            return null;
-        }
-
         using (Extension extension = PhoneSystem.Root.GetTenant().CreateExtension(data.ExtensionNumber))
         {
-
             SetExtensionProperties(extension, data);
         };
 
@@ -120,11 +113,6 @@ public class ExtensionService : IExtensionService
     
     public bool DeleteExt(string ext)
     {
-        if (!CheckExtension(ext))
-        {
-            return false;
-        }
-
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
             if (dnByNumber is Extension extension)
@@ -138,15 +126,8 @@ public class ExtensionService : IExtensionService
 
     }
     
-    public ExtensionInfo? UpdateExt(UpdateExtensionDataModel data)
+    public ExtensionInfo UpdateExt(UpdateExtensionDataModel data)
     {
-        _logger.LogInformation("GetExtensionInfo: {@data}", data);
-
-        if (!CheckExtension(data.ExtensionNumber))
-        {
-            return null;
-        }
-
         var extensionInfo = ExtensionInfo(data.ExtensionNumber);
             
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
@@ -158,11 +139,11 @@ public class ExtensionService : IExtensionService
                 extension.EmailAddress = data.Email != null ? data.Email : extensionInfo.Email;
                 extension.AuthID = data.AuthID != null ? data.AuthID : extensionInfo.AuthID;
                 extension.AuthPassword = data.AuthPassword != null ? data.AuthPassword : extensionInfo.AuthPassword;
-                extension.SetProperty("MOBILENUMBER", data.MobileNumber != null ?  extensionInfo.MobileNumber : extensionInfo.MobileNumber);
-                SetRecordingTypeProperties(extension, data.RecordingType != null ?  extensionInfo.RecordingType : extensionInfo.RecordingType);
+                extension.SetProperty("MOBILENUMBER", data.MobileNumber != null ? extensionInfo.MobileNumber : extensionInfo.MobileNumber);
+                SetRecordingTypeProperties(extension, data.RecordingType != null ? extensionInfo.RecordingType : extensionInfo.RecordingType);
                 extension.OutboundCallerID = data.OutboundCallerID != null ? data.OutboundCallerID : extensionInfo.OutboundCallerID;
                 extension.Enabled = data.IsExtenionEnabled != null ? data.IsExtenionEnabled.Value: extensionInfo.IsExtenionEnabled;
-                extension.Internal = data.AllowedExternalCalls != null ? data.AllowedExternalCalls.Value : extensionInfo.AllowedExternalCalls;
+                extension.Internal = data.DisableExternalCalls != null ? data.DisableExternalCalls.Value : extensionInfo.DisableExternalCalls;
                 extension.DeliverAudio = data.DeliverAudio != null ? data.DeliverAudio.Value : extensionInfo.DeliverAudio;
                 extension.SupportReinvite = data.SupportReinvite != null ? data.SupportReinvite.Value : extensionInfo.SupportReinvite;
                 extension.SupportReplaces = data.SupportReplaces != null ? data.SupportReplaces.Value : extensionInfo.SupportReplaces;
@@ -180,10 +161,6 @@ public class ExtensionService : IExtensionService
 
     public bool SetExtForwardStatus(ExtensionForwardStatusDataMode data)
     {
-        if (!CheckExtension(data.ExtensionNumber))
-        {
-            return false;
-        }
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
         {
@@ -208,10 +185,6 @@ public class ExtensionService : IExtensionService
     
     public bool SetExtQueuesStatus(ExtensionQueuesStatusDataModel data)
     {
-        if (!CheckExtension(data.ExtensionNumber))
-        {
-            return false;
-        }
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
         {
@@ -228,10 +201,6 @@ public class ExtensionService : IExtensionService
     
     public bool SetExtQueueStatus(ExtensionQueueStatusDataModel data)
     {
-        if (!CheckExtension(data.ExtensionNumber))
-        {
-            return false;
-        }
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
         {
@@ -253,7 +222,7 @@ public class ExtensionService : IExtensionService
         };
 
     }
-    public bool CheckExtension(string ext)
+    public bool IsExtensionExists(string ext)
     {
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
@@ -278,22 +247,27 @@ public class ExtensionService : IExtensionService
     }
     private static void SetExtensionProperties(Extension extension, CreateExtensionDataModel data)
     {
-
         SetIfNotNull(() => extension.FirstName = data.FirstName);
         SetIfNotNull(() => extension.LastName = data.LastName);
         SetIfNotNull(() => extension.EmailAddress = data.Email);
         SetIfNotNull(() => extension.AuthID = data.AuthID);
-        SetIfNotNull(() => extension.AuthPassword = data.AuthPassword);
+        SetIfNotNull(() => extension.SIPID = data.AuthID);
+        //SetIfNotNull(() => extension.AuthPassword = data.AuthPassword);
         SetOptionalProperty("MOBILENUMBER", extension, data.MobileNumber);
         SetRecordingTypeProperties(extension, data.RecordingType);
         SetIfNotNull(() => extension.OutboundCallerID = data.OutboundCallerID);
-        SetIfNotNull(() => extension.Enabled = data.IsExtenionEnabled);
-        SetIfNotNull(() => extension.Internal = data.AllowedExternalCalls);
+        // SetIfNotNull(() => extension.Enabled = false);//data.IsExtenionEnabled);
+        SetIfNotNull(() => extension.Internal = data.DisableExternalCalls );
         SetIfNotNull(() => extension.DeliverAudio = data.DeliverAudio);
         SetIfNotNull(() => extension.SupportReinvite = data.SupportReinvite);
         SetIfNotNull(() => extension.SupportReplaces = data.SupportReplaces);
-
+        extension.UserStatus = UserStatusType.Available;
+        extension.NoAnswerTimeout = 20;
+        extension.Number = data.AuthID;
         extension.Save();
+
+        var b =extension.Clone();
+        PhoneSystem.Root.GetTenant().Save();
     }
     
     private static void SetIfNotNull(Action action)
@@ -344,9 +318,6 @@ public class ExtensionService : IExtensionService
             return RegNumber;
         };
     }
-    
-
-
 }
 
 

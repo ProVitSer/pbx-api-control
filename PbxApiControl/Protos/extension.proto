@@ -29,7 +29,7 @@ message SetExtensionStatusInQueueReply {
 }
 
 message SetExtensionGlobalQueuesStatusRequest {
-    string extensions = 1;
+    string extension = 1;
     string status = 2;
 }
 
@@ -58,7 +58,7 @@ message UpdateExtensionInfoRequest {
     google.protobuf.StringValue outbound_caller_id = 8;
     google.protobuf.StringValue recording_type = 9;
     google.protobuf.BoolValue is_extension_enabled = 10;
-    google.protobuf.BoolValue allowed_external_calls = 11;
+    google.protobuf.BoolValue disable_external_calls = 11;
     google.protobuf.BoolValue deliver_audio = 12;
     google.protobuf.BoolValue support_reinvite = 13;
     google.protobuf.BoolValue support_replaces = 14;
@@ -76,7 +76,7 @@ message UpdateExtensionInfoReply {
     string outbound_caller_id = 9;
     string recording_type = 10;
     bool is_extenion_enabled = 11;
-    bool allowed_external_calls = 12;
+    bool disable_external_calls = 12;
     bool deliver_audio = 13;
     bool support_reinvite = 14;
     bool support_replaces = 15;
@@ -107,7 +107,7 @@ message CreateExtensionRequest {
     string outbound_caller_id = 8;
     string recording_type = 9;
     bool is_extension_enabled = 10;
-    bool allowed_external_calls = 11;
+    bool disable_external_calls = 11;
     bool deliver_audio = 12;
     bool support_reinvite = 13;
     bool support_replaces = 14;
@@ -125,7 +125,7 @@ message CreateExtensionReply {
     string outbound_caller_id = 9;
     string recording_type = 10;
     bool is_extenion_enabled = 11;
-    bool allowed_external_calls = 12;
+    bool disable_external_calls = 12;
     bool deliver_audio = 13;
     bool support_reinvite = 14;
     bool support_replaces = 15;
@@ -189,7 +189,7 @@ message GetExtensionInfoReply {
     string outbound_caller_id = 9;
     string recording_type = 10;
     bool is_extenion_enabled = 11;
-    bool allowed_external_calls = 12;
+    bool disable_external_calls = 12;
     bool deliver_audio = 13;
     bool support_reinvite = 14;
     bool support_replaces = 15;

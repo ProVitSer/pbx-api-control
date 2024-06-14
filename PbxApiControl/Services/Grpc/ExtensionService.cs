@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using Google.Protobuf.WellKnownTypes;  
 using PbxApiControl.Models.Extensions;
+using PbxApiControl.Models.Reply;
 
 namespace PbxApiControl.Services.Grpc;
 public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
@@ -20,28 +21,22 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
     {
         try
         {
-            var extensionInfo = _extensionService.ExtensionStatus(request.Extension);
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
             
-            if (extensionInfo == null)
+            if (!extensionExists)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
             }
-        
-            var reply = new GetExtensionStatusReply
-            {
-                Extension = extensionInfo.Extension,
-                Registered = extensionInfo.Registered,
-                ForwardingRulesStatus = extensionInfo.ForwardingRulesStatus,
-                QueuesStatus = extensionInfo.QueuesStatus,
-                Groups = { extensionInfo.Groups },
-                Queues = { extensionInfo.Queues },
-                RingGroups = { extensionInfo.RingGroups }
-            };
-            return Task.FromResult(reply);
+            
+            var extensionStatus = _extensionService.ExtensionStatus(request.Extension);
+            
+            return Task.FromResult(ExtensionStatusReply.FormatExtensionStatus(extensionStatus));
         }
         catch (Exception e)
         {
+            _logger.LogError("GetExtensionInfo: {@e}", e.ToString());
+            
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
@@ -53,45 +48,22 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
     {
         try
         {
-            var extensionInfo = _extensionService.ExtensionInfo(request.Extension);
-        
-            _logger.LogInformation("GetExtensionInfo: {@extensionInfo}", extensionInfo);
-
-            if (extensionInfo == null)
+            
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+            if (!extensionExists)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
             }
-        
-            var reply = new GetExtensionInfoReply
-            {
-    
-                AuthId = extensionInfo.AuthID,
-                AuthPassword = extensionInfo.AuthPassword,
-                SipId = extensionInfo.SipID,
-                Extension = extensionInfo.Extension,
-                FirstName = extensionInfo.FirstName,
-                LastName = extensionInfo.LastName,
-                Email = extensionInfo.Email,
-                MobileNumber = extensionInfo.MobileNumber,
-                OutboundCallerId = extensionInfo.OutboundCallerID,
-                RecordingType = extensionInfo.RecordingType,
-                IsExtenionEnabled = extensionInfo.IsExtenionEnabled,
-                AllowedExternalCalls = extensionInfo.AllowedExternalCalls,
-                DeliverAudio = extensionInfo.DeliverAudio,
-                SupportReinvite = extensionInfo.SupportReinvite,
-                SupportReplaces = extensionInfo.SupportReplaces,
-                EmailOptions = extensionInfo.EmailOptions,
-                VoiceMailEnable = extensionInfo.VoiceMailEnable,
-                VoiceMailPin = extensionInfo.VoiceMailPin,
-                VoiceMailPlayCallerId = extensionInfo.VoiceMailPlayCallerID,
-                Internal = extensionInfo.Internal,
-                NoAnswerTimeout = extensionInfo.NoAnswerTimeout
-            };
-            return Task.FromResult(reply);
+            var extensionInfo = _extensionService.ExtensionInfo(request.Extension);
+            
+            return Task.FromResult(ExtensionInfoReply.FormatExtensionInfo(extensionInfo));
         }
         catch (Exception e)
         {
+            _logger.LogError("GetExtensionInfo: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
@@ -103,23 +75,17 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         try
         {
             var extensions = _extensionService.AllExtensions();
-        
-            _logger.LogInformation("GetExtensions: {@extensions}", extensions);
+            
+            return Task.FromResult(ExtensionsReply.FormatExtensions(extensions));
 
-            var reply = new GetExtensionsReply
-            {
-    
-                Extensions = { extensions }
-
-            };
-            return Task.FromResult(reply);
         }
         catch (Exception e)
         {
+            _logger.LogError("GetExtensions: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
-        
     }
      
      public override Task<GetRegisteredExtensionsReply> GetRegisteredExtensions(Empty request, ServerCallContext context)
@@ -128,18 +94,13 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
          {
              var regExtensions = _extensionService.RegisteredExtensions();
         
-             _logger.LogInformation("GetRegisteredExtensions: {@regExtensions}", regExtensions);
+             return Task.FromResult(RegisteredExtensionsReply.FormatRegisteredExtensions(regExtensions));
 
-             var reply = new GetRegisteredExtensionsReply
-             {
-    
-                 Extensions = { regExtensions }
-
-             };
-             return Task.FromResult(reply);
          }
          catch (Exception e)
          {
+             _logger.LogError("GetRegisteredExtensions: {@e}", e.ToString());
+
              throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
          }
@@ -150,33 +111,24 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
      {
          try
          {
-             var extensionDeviceInfo = _extensionService.ExtensionDeviceInfo(request.Extension);
-        
-             _logger.LogInformation("GetExtensionDeviceInfo: {@extensionDeviceInfo}", extensionDeviceInfo);
              
-             if (extensionDeviceInfo == null)
+             var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+             if (!extensionExists)
              {
                  throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
              }
 
-             var reply = new GetExtensionDeviceInfoReply
-             {
-    
-                 Extension = extensionDeviceInfo.Extension
+             var extensionDeviceInfo = _extensionService.ExtensionDeviceInfo(request.Extension);
+             
+             return Task.FromResult(ExtensionDeviceInfoReply.FormatExtensionDeviceInfo(extensionDeviceInfo));
 
-             };
-             
-             reply.Devices.AddRange(extensionDeviceInfo.Devices.Select(devInfo => new Device
-             {
-                 UserAgent = devInfo.UserAgent,
-                 Contact = devInfo.Contact
-             }));
-             
-             return Task.FromResult(reply);
          }
          catch (Exception e)
          {
+             _logger.LogError("GetExtensionDeviceInfo: {@e}", e.ToString());
+
              throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
          }
@@ -188,45 +140,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         try
         {
 
-            var extensionInfo = _extensionService.CreateExt(new CreateExtensionDataModel(request));
-        
-            _logger.LogInformation("CreateExtension: {@extensionInfo}", extensionInfo);
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
 
-            if (extensionInfo == null)
+            if (extensionExists)
             {
                 throw new RpcException(new Status(StatusCode.AlreadyExists, ServiceConstants.ExtensionExists));
 
             }
+            
+            var createExtension = _extensionService.CreateExt(new CreateExtensionDataModel(request));
         
-            var reply = new CreateExtensionReply
-            {
-    
-                AuthId = extensionInfo.AuthID,
-                AuthPassword = extensionInfo.AuthPassword,
-                SipId = extensionInfo.SipID,
-                Extension = extensionInfo.Extension,
-                FirstName = extensionInfo.FirstName,
-                LastName = extensionInfo.LastName,
-                Email = extensionInfo.Email,
-                MobileNumber = extensionInfo.MobileNumber,
-                OutboundCallerId = extensionInfo.OutboundCallerID,
-                RecordingType = extensionInfo.RecordingType,
-                IsExtenionEnabled = extensionInfo.IsExtenionEnabled,
-                AllowedExternalCalls = extensionInfo.AllowedExternalCalls,
-                DeliverAudio = extensionInfo.DeliverAudio,
-                SupportReinvite = extensionInfo.SupportReinvite,
-                SupportReplaces = extensionInfo.SupportReplaces,
-                EmailOptions = extensionInfo.EmailOptions,
-                VoiceMailEnable = extensionInfo.VoiceMailEnable,
-                VoiceMailPin = extensionInfo.VoiceMailPin,
-                VoiceMailPlayCallerId = extensionInfo.VoiceMailPlayCallerID,
-                Internal = extensionInfo.Internal,
-                NoAnswerTimeout = extensionInfo.NoAnswerTimeout
-            };
-            return Task.FromResult(reply);
+            return Task.FromResult(CreateExtensionInfoReply.FormatCreateExtensionInfo(createExtension));
+
         }
         catch (Exception e)
         {
+            _logger.LogError("CreateExtension: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
@@ -238,26 +168,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         try
         {
 
-            var result = _extensionService.DeleteExt(request.Extension);
-        
-            _logger.LogInformation("DeleteExtension: {@result}", result);
-
-            if (result == false)
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+            if (!extensionExists)
             {
                 throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
             }
-        
-            var reply = new DeleteExtensionReply
-            {
-    
-                Result = result,
-  
-            };
-            return Task.FromResult(reply);
+            
+            var result = _extensionService.DeleteExt(request.Extension);
+            
+            return Task.FromResult(DeleteExtensionResultReply.FormatDeleteExtensionResult(result));
+
         }
         catch (Exception e)
         {
+            _logger.LogError("DeleteExtension: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
@@ -268,48 +195,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
            try
            {
                
-               _logger.LogInformation("GetExtensionInfo: {@request}", request);
-
-               var extensionInfo = _extensionService.UpdateExt(new UpdateExtensionDataModel(request));
-        
-               _logger.LogInformation("UpdateExtensionInfo: {@extensionInfo}", extensionInfo);
-
-               if (extensionInfo == null)
+               var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+               if (!extensionExists)
                {
-                   throw new RpcException(new Status(StatusCode.AlreadyExists, ServiceConstants.ExtensionNotFound));
+                   throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
                }
+               
+               var extensionInfo = _extensionService.UpdateExt(new UpdateExtensionDataModel(request));
+        
+               return Task.FromResult(UpdateExtensionResultInfoReply.FormatUpdateExtensionResultInfo(extensionInfo));
 
-               var reply = new UpdateExtensionInfoReply
-               {
-    
-                   AuthId = extensionInfo.AuthID,
-                   AuthPassword = extensionInfo.AuthPassword,
-                   SipId = extensionInfo.SipID,
-                   Extension = extensionInfo.Extension,
-                   FirstName = extensionInfo.FirstName,
-                   LastName = extensionInfo.LastName,
-                   Email = extensionInfo.Email,
-                   MobileNumber = extensionInfo.MobileNumber,
-                   OutboundCallerId = extensionInfo.OutboundCallerID,
-                   RecordingType = extensionInfo.RecordingType,
-                   IsExtenionEnabled = extensionInfo.IsExtenionEnabled,
-                   AllowedExternalCalls = extensionInfo.AllowedExternalCalls,
-                   DeliverAudio = extensionInfo.DeliverAudio,
-                   SupportReinvite = extensionInfo.SupportReinvite,
-                   SupportReplaces = extensionInfo.SupportReplaces,
-                   EmailOptions = extensionInfo.EmailOptions,
-                   VoiceMailEnable = extensionInfo.VoiceMailEnable,
-                   VoiceMailPin = extensionInfo.VoiceMailPin,
-                   VoiceMailPlayCallerId = extensionInfo.VoiceMailPlayCallerID,
-                   Internal = extensionInfo.Internal,
-                   NoAnswerTimeout = extensionInfo.NoAnswerTimeout
-  
-               };
-               return Task.FromResult(reply);
            }
            catch (Exception e)
            {
+               _logger.LogError("UpdateExtensionInfo: {@e}", e.ToString());
+
                throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
            }
@@ -319,28 +221,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
     {
            try
            {
-
-               var result = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataMode(request));
-        
-               _logger.LogInformation("SetExtensionForwardStatus: {@result}", result);
-
-               if (result == false)
+               var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+               if (!extensionExists)
                {
-                   throw new RpcException(new Status(StatusCode.AlreadyExists, ServiceConstants.ExtensionNotFound));
+                   throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
                }
+               
+               var result = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataMode(request));
+        
+               return Task.FromResult(ExtensionForwardStatusReply.FormatExtensionForwardStatus(result));
 
-               var reply = new SetExtensionForwardStatusReply
-               {
-    
-                   Result = result,
-
-  
-               };
-               return Task.FromResult(reply);
            }
            catch (Exception e)
            {
+               _logger.LogError("SetExtensionForwardStatus: {@e}", e.ToString());
+
                throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
            }
@@ -350,28 +247,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
     {
         try
         {
-
-            var result = _extensionService.SetExtQueuesStatus(new ExtensionQueuesStatusDataModel(request));
-        
-            _logger.LogInformation("SetExtensionGlobalQueuesStatus: {@result}", result);
-
-            if (result == false)
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+            if (!extensionExists)
             {
-                throw new RpcException(new Status(StatusCode.AlreadyExists, ServiceConstants.ExtensionNotFound));
+                throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
             }
 
-            var reply = new SetExtensionGlobalQueuesStatusReply
-            {
-    
-                Result = result,
+            var result = _extensionService.SetExtQueuesStatus(new ExtensionQueuesStatusDataModel(request));
+        
+            return Task.FromResult(ExtensionGlobalQueuesStatusReply.FormatExtensionGlobalQueuesStatus(result));
 
-  
-            };
-            return Task.FromResult(reply);
         }
         catch (Exception e)
         {
+            _logger.LogError("SetExtensionGlobalQueuesStatus: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }
@@ -382,27 +274,23 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         try
         {
 
-            var result = _extensionService.SetExtQueueStatus(new ExtensionQueueStatusDataModel(request));
-        
-            _logger.LogInformation("SetExtensionStatusInQueue: {@result}", result);
-
-            if (result == false)
+            var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+            
+            if (!extensionExists)
             {
-                throw new RpcException(new Status(StatusCode.AlreadyExists, ServiceConstants.ExtensionNotFound));
+                throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
 
             }
+            
+            var result = _extensionService.SetExtQueueStatus(new ExtensionQueueStatusDataModel(request));
+            
+            return Task.FromResult(ExtensionStatusInQueueReply.FormatExtensionStatusInQueue(result));
 
-            var reply = new SetExtensionStatusInQueueReply
-            {
-    
-                Result = result,
-
-  
-            };
-            return Task.FromResult(reply);
         }
         catch (Exception e)
         {
+            _logger.LogError("SetExtensionStatusInQueue: {@e}", e.ToString());
+
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 
         }

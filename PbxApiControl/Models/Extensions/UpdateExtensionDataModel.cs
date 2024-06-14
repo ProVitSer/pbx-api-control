@@ -1,12 +1,11 @@
 ﻿using PbxApiControl.Enums;
 using System.ComponentModel.DataAnnotations;
-using Google.Protobuf.WellKnownTypes;  
 
 namespace PbxApiControl.Models.Extensions
 {
     public class UpdateExtensionDataModel
     {
-        public string? ExtensionNumber { get; }
+        public string ExtensionNumber { get; }
         public string? FirstName { get;  }
         public string? LastName { get; }
         public string? Email { get; }
@@ -17,7 +16,7 @@ namespace PbxApiControl.Models.Extensions
         [EnumDataType(typeof(RecordType))]
         public string? RecordingType { get;  }
         public bool? IsExtenionEnabled { get; }
-        public bool? AllowedExternalCalls { get; }
+        public bool? DisableExternalCalls { get; }
         public bool? DeliverAudio { get;  }
         public bool? SupportReinvite { get; }
         public bool? SupportReplaces { get; }
@@ -34,7 +33,7 @@ namespace PbxApiControl.Models.Extensions
             OutboundCallerID = request.OutboundCallerId;
             RecordingType = request.RecordingType;
             IsExtenionEnabled = request.IsExtensionEnabled;
-            AllowedExternalCalls = request.AllowedExternalCalls;
+            DisableExternalCalls = request.DisableExternalCalls;
             DeliverAudio = request.DeliverAudio;
             SupportReinvite = request.SupportReinvite;
             SupportReplaces = request.SupportReplaces;

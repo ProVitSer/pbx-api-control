@@ -4,6 +4,7 @@ using PbxApiControl.Config;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
+using PbxApiControl.Logging;
 
 namespace PbxApiControl
 {
@@ -13,7 +14,11 @@ namespace PbxApiControl
         {
             var builder = WebApplication.CreateBuilder(args);
 
-            builder.Services.AddGrpc().AddJsonTranscoding();
+            builder.Services.AddGrpc(options =>
+            {
+                options.Interceptors.Add<LoggingInterceptor>();
+                
+            }).AddJsonTranscoding();
 
             builder.Services.AddGrpcReflection();
 
@@ -32,7 +37,7 @@ namespace PbxApiControl
             app.Urls.Add("http://192.168.0.2:5000");
 
             app.MapGrpcService<ExtensionService>();
-
+            
             app.MapGrpcReflectionService();
 
             PBXAPIConfig.InitConfig();

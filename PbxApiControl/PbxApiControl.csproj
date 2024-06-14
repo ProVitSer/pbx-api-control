@@ -24,6 +24,7 @@
     </ItemGroup>
     <ItemGroup>
         <Folder Include="Properties\" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
         <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
         <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
         <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.49.0" />

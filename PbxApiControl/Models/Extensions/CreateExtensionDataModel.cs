@@ -25,11 +25,11 @@ namespace PbxApiControl.Models.Extensions
         
         public CreateExtensionDataModel(CreateExtensionRequest request)
         {
-            ExtensionNumber = request.ExtensionNumber;
+            ExtensionNumber = request.Extension;
             FirstName = request.FirstName;
             LastName = request.LastName;
             Email = request.Email;
-            AuthID = request.AuthId ?? request.ExtensionNumber;
+            AuthID = request.AuthId ?? request.Extension;
             AuthPassword = request.AuthPassword ?? UtilService.GeneratePassword(12);
             MobileNumber = request.MobileNumber;
             OutboundCallerID = request.OutboundCallerId;

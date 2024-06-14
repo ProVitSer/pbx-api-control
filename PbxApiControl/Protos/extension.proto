@@ -2,6 +2,7 @@
 option csharp_namespace = "PbxApiControl";
 package extension;
 import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
 
 service ExtensionsPbxService {
     rpc GetExtensionInfo (GetExtensionInfoRequest) returns (GetExtensionInfoReply);
@@ -10,11 +11,93 @@ service ExtensionsPbxService {
     rpc GetRegisteredExtensions (google.protobuf.Empty) returns (GetRegisteredExtensionsReply);
     rpc GetExtensionDeviceInfo (GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply);
     rpc CreateExtension (CreateExtensionRequest) returns (CreateExtensionReply);
+    rpc DeleteExtension (DeleteExtensionRequest) returns (DeleteExtensionReply);
+    rpc UpdateExtensionInfo (UpdateExtensionInfoRequest) returns (UpdateExtensionInfoReply);
+    rpc SetExtensionForwardStatus (SetExtensionForwardStatusRequest) returns (SetExtensionForwardStatusReply);
+    rpc SetExtensionGlobalQueuesStatus (SetExtensionGlobalQueuesStatusRequest) returns (SetExtensionGlobalQueuesStatusReply);
+    rpc SetExtensionStatusInQueue (SetExtensionStatusInQueueRequest) returns (SetExtensionStatusInQueueReply);
+}
 
+message SetExtensionStatusInQueueRequest {
+    string extension = 1;
+    string queue_number = 2;
+    string status = 3;
+}
+
+message SetExtensionStatusInQueueReply {
+    bool result = 1;
+}
+
+message SetExtensionGlobalQueuesStatusRequest {
+    string extensions = 1;
+    string status = 2;
+}
+
+message SetExtensionGlobalQueuesStatusReply {
+    bool result = 1;
+}
+
+message SetExtensionForwardStatusRequest {
+    string extension = 1;
+    string status = 2;
+}
+
+message SetExtensionForwardStatusReply {
+    bool result = 1;
+}
+
+
+message UpdateExtensionInfoRequest {
+    string extension = 1;
+    google.protobuf.StringValue first_name = 2;
+    google.protobuf.StringValue last_name = 3;
+    google.protobuf.StringValue email = 4;
+    google.protobuf.StringValue auth_id = 5;
+    google.protobuf.StringValue auth_password = 6;
+    google.protobuf.StringValue mobile_number = 7;
+    google.protobuf.StringValue outbound_caller_id = 8;
+    google.protobuf.StringValue recording_type = 9;
+    google.protobuf.BoolValue is_extension_enabled = 10;
+    google.protobuf.BoolValue allowed_external_calls = 11;
+    google.protobuf.BoolValue deliver_audio = 12;
+    google.protobuf.BoolValue support_reinvite = 13;
+    google.protobuf.BoolValue support_replaces = 14;
+}
+
+message UpdateExtensionInfoReply {
+    string auth_id = 1;
+    string auth_password = 2;
+    string sip_id = 3;
+    string extension = 4;
+    string first_name = 5;
+    string last_name = 6;
+    string email = 7;
+    string mobile_number = 8;
+    string outbound_caller_id = 9;
+    string recording_type = 10;
+    bool is_extenion_enabled = 11;
+    bool allowed_external_calls = 12;
+    bool deliver_audio = 13;
+    bool support_reinvite = 14;
+    bool support_replaces = 15;
+    string email_options = 16;
+    bool voice_mail_enable = 17;
+    string voice_mail_pin = 18;
+    bool voice_mail_play_caller_id = 19;
+    bool internal = 20;
+    int32 no_answer_timeout = 21;
+}
+
+message DeleteExtensionRequest {
+    string extension = 1;
+}
+
+message DeleteExtensionReply {
+    bool result = 1;
 }
 
 message CreateExtensionRequest {
-    string extension_number = 1;
+    string extension = 1;
     string first_name = 2;
     string last_name = 3;
     string email = 4;
@@ -56,7 +139,7 @@ message CreateExtensionReply {
         
 
 message GetExtensionDeviceInfoRequest {
-    string ext = 1;
+    string extension = 1;
 }
 
 message Device {
@@ -69,7 +152,6 @@ message GetExtensionDeviceInfoReply {
     repeated Device devices = 2;
 }
 
-
 message GetExtensionsReply {
     repeated string extensions = 1;
 }
@@ -78,9 +160,8 @@ message GetRegisteredExtensionsReply {
     repeated string extensions = 1;
 }
 
-        
 message GetExtensionStatusRequest {
-    string ext = 1;
+    string extension = 1;
 }
 message GetExtensionStatusReply {
     string extension = 1;
@@ -94,7 +175,7 @@ message GetExtensionStatusReply {
 
 
 message GetExtensionInfoRequest {
-    string ext = 1;
+    string extension = 1;
 }
 message GetExtensionInfoReply {
     string auth_id = 1;

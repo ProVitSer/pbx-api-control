@@ -103,8 +103,6 @@ public class ExtensionService : IExtensionService
     
     public ExtensionInfo? CreateExt(CreateExtensionDataModel data)
     {
-        var tt = CheckExtension(data.ExtensionNumber);
-        
         if (CheckExtension(data.ExtensionNumber))
         {
             return null;
@@ -119,7 +117,165 @@ public class ExtensionService : IExtensionService
         return ExtensionInfo(data.ExtensionNumber);
 
     }
+    
+    public bool DeleteExt(string ext)
+    {
+        if (!CheckExtension(ext))
+        {
+            return false;
+        }
 
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                extension.Delete();
+            }
+
+        };
+
+        return true;
+
+    }
+    
+    public ExtensionInfo? UpdateExt(UpdateExtensionDataModel data)
+    {
+        _logger.LogInformation("GetExtensionInfo: {@data}", data);
+
+        if (!CheckExtension(data.ExtensionNumber))
+        {
+            return null;
+        }
+
+        var extensionInfo = ExtensionInfo(data.ExtensionNumber);
+            
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                extension.FirstName =  data.FirstName != null ? data.FirstName : extensionInfo.FirstName;
+                extension.LastName = data.LastName != null ? data.LastName : extensionInfo.LastName;
+                extension.EmailAddress = data.Email != null ? data.Email : extensionInfo.Email;
+                extension.AuthID = data.AuthID != null ? data.AuthID : extensionInfo.AuthID;
+                extension.AuthPassword = data.AuthPassword != null ? data.AuthPassword : extensionInfo.AuthPassword;
+                extension.SetProperty("MOBILENUMBER", data.MobileNumber != null ?  extensionInfo.MobileNumber : extensionInfo.MobileNumber);
+                SetRecordingTypeProperties(extension, data.RecordingType != null ?  extensionInfo.RecordingType : extensionInfo.RecordingType);
+                extension.OutboundCallerID = data.OutboundCallerID != null ? data.OutboundCallerID : extensionInfo.OutboundCallerID;
+                extension.Enabled = data.IsExtenionEnabled != null ? data.IsExtenionEnabled.Value: extensionInfo.IsExtenionEnabled;
+                extension.Internal = data.AllowedExternalCalls != null ? data.AllowedExternalCalls.Value : extensionInfo.AllowedExternalCalls;
+                extension.DeliverAudio = data.DeliverAudio != null ? data.DeliverAudio.Value : extensionInfo.DeliverAudio;
+                extension.SupportReinvite = data.SupportReinvite != null ? data.SupportReinvite.Value : extensionInfo.SupportReinvite;
+                extension.SupportReplaces = data.SupportReplaces != null ? data.SupportReplaces.Value : extensionInfo.SupportReplaces;
+
+                extension.Save();
+
+
+            }
+
+        };
+
+        return ExtensionInfo(data.ExtensionNumber);
+
+    }
+
+    public bool SetExtForwardStatus(ExtensionForwardStatusDataMode data)
+    {
+        if (!CheckExtension(data.ExtensionNumber))
+        {
+            return false;
+        }
+
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                foreach (FwdProfile fwdProfile in extension.FwdProfiles)
+                {
+                    if (fwdProfile.Name == GetForwardingRulesStatus(data.Status))
+                    {
+                        extension.CurrentProfile = fwdProfile;
+                        extension.OverrideExpiresAt = DateTime.UtcNow;
+                        extension.Save();
+                        return true;
+                    }
+                }
+
+            }
+            return false;
+        };
+
+    }
+    
+    public bool SetExtQueuesStatus(ExtensionQueuesStatusDataModel data)
+    {
+        if (!CheckExtension(data.ExtensionNumber))
+        {
+            return false;
+        }
+
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                extension.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
+                extension.Save();
+            }
+        };
+
+        return true;
+
+    }
+    
+    public bool SetExtQueueStatus(ExtensionQueueStatusDataModel data)
+    {
+        if (!CheckExtension(data.ExtensionNumber))
+        {
+            return false;
+        }
+
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
+        {
+            if (dnByNumber is Extension extension)
+            {
+                foreach (QueueAgent queueAgent in extension.QueueMembership)
+                {
+                    if (queueAgent.Queue.Number == data.QueueNumber)
+                    {
+                        queueAgent.QueueStatus = data.Status == QStatusType.On.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
+                        extension.Save();
+                        return true;
+                    }
+
+
+                }
+            }
+            return false;
+        };
+
+    }
+    public bool CheckExtension(string ext)
+    {
+        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
+        {
+
+            return dnByNumber is Extension;
+        };
+    }
+    
+    private static string GetForwardingRulesStatus(string status)
+    {
+        switch (status)
+        {
+            case "DND":
+                return "Out of office";
+            case "Lunch":
+                return "Custom 1";
+            case "BusinessTrip":
+                return "Custom 2";
+            default:
+                return status;
+        };
+    }
     private static void SetExtensionProperties(Extension extension, CreateExtensionDataModel data)
     {
 
@@ -189,13 +345,7 @@ public class ExtensionService : IExtensionService
         };
     }
     
-    private static bool CheckExtension(string ext)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
-        {
-            return dnByNumber is Extension;
-        };
-    }
+
 
 }
 

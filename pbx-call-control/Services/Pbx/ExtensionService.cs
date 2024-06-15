@@ -264,6 +264,7 @@ public class ExtensionService : IExtensionService
         extension.UserStatus = UserStatusType.Available;
         extension.NoAnswerTimeout = 20;
         extension.Number = data.AuthID;
+        extension.ResetCurrentProfileOverride();
         extension.Save();
 
         var b =extension.Clone();

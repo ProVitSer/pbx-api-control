@@ -13,8 +13,8 @@ public interface IExtensionService
     ExtensionInfo CreateExt(CreateExtensionDataModel data);
     bool DeleteExt(string ext);
     ExtensionInfo UpdateExt(UpdateExtensionDataModel data);
-    bool SetExtForwardStatus(ExtensionForwardStatusDataMode data);
-    bool SetExtQueuesStatus(ExtensionQueuesStatusDataModel data);
-    bool SetExtQueueStatus(ExtensionQueueStatusDataModel data);
+    ExtensionStatus SetExtForwardStatus(ExtensionForwardStatusDataMode data);
+    ExtensionStatus SetExtQueuesStatus(ExtensionQueuesStatusDataModel data);
+    ExtensionStatus SetExtQueueStatus(ExtensionQueueStatusDataModel data);
 
 }

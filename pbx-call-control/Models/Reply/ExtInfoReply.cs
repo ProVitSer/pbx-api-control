@@ -2,21 +2,20 @@
 
 namespace PbxApiControl.Models.Reply
 {
-    public class ExtensionInfoReply
+    public class ExtInfoReply
     {
-    
-        public static GetExtensionInfoReply FormatExtensionInfo(ExtensionInfo extensionInfo)
+        public static ExtensionInfoReply GetExtensionInfoReply(ExtensionInfo extensionInfo)
         {
-            return new GetExtensionInfoReply
+            return new ExtensionInfoReply
             {
-                AuthId = extensionInfo.AuthID,
-                AuthPassword = extensionInfo.AuthPassword,
-                SipId = extensionInfo.SipID,
                 Extension = extensionInfo.Extension,
                 FirstName = extensionInfo.FirstName,
                 LastName = extensionInfo.LastName,
                 Email = extensionInfo.Email,
+                AuthId = extensionInfo.AuthID,
+                AuthPassword = extensionInfo.AuthPassword,
                 MobileNumber = extensionInfo.MobileNumber,
+                SipId = extensionInfo.SipID,
                 OutboundCallerId = extensionInfo.OutboundCallerID,
                 RecordingType = extensionInfo.RecordingType,
                 IsExtenionEnabled = extensionInfo.IsExtenionEnabled,

@@ -17,7 +17,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         _extensionService = extensionService;
     }
     
-    public override Task<GetExtensionStatusReply> GetExtensionStatus(GetExtensionStatusRequest request, ServerCallContext context)
+    public override Task<ExtensionStatusReply> GetExtensionStatus(GetExtensionStatusRequest request, ServerCallContext context)
     {
         try
         {
@@ -31,7 +31,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
             
             var extensionStatus = _extensionService.ExtensionStatus(request.Extension);
             
-            return Task.FromResult(ExtensionStatusReply.FormatExtensionStatus(extensionStatus));
+            return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
         }
         catch (Exception e)
         {
@@ -44,7 +44,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
     }
     
     
-    public override Task<GetExtensionInfoReply> GetExtensionInfo(GetExtensionInfoRequest request, ServerCallContext context)
+    public override Task<ExtensionInfoReply> GetExtensionInfo(GetExtensionInfoRequest request, ServerCallContext context)
     {
         try
         {
@@ -58,7 +58,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
             }
             var extensionInfo = _extensionService.ExtensionInfo(request.Extension);
             
-            return Task.FromResult(ExtensionInfoReply.FormatExtensionInfo(extensionInfo));
+            return Task.FromResult(ExtInfoReply.GetExtensionInfoReply(extensionInfo));
         }
         catch (Exception e)
         {
@@ -135,7 +135,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         
      }
      
-      public override Task<CreateExtensionReply> CreateExtension(CreateExtensionRequest request, ServerCallContext context)
+      public override Task<ExtensionInfoReply> CreateExtension(CreateExtensionRequest request, ServerCallContext context)
     {
         try
         {
@@ -150,7 +150,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
             
             var createExtension = _extensionService.CreateExt(new CreateExtensionDataModel(request));
         
-            return Task.FromResult(CreateExtensionInfoReply.FormatCreateExtensionInfo(createExtension));
+            return Task.FromResult(ExtInfoReply.GetExtensionInfoReply(createExtension));
 
         }
         catch (Exception e)
@@ -190,7 +190,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         }
     }
        
-    public override Task<UpdateExtensionInfoReply> UpdateExtensionInfo(UpdateExtensionInfoRequest request, ServerCallContext context)
+    public override Task<ExtensionInfoReply> UpdateExtensionInfo(UpdateExtensionInfoRequest request, ServerCallContext context)
     {
            try
            {
@@ -205,7 +205,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
                
                var extensionInfo = _extensionService.UpdateExt(new UpdateExtensionDataModel(request));
         
-               return Task.FromResult(UpdateExtensionResultInfoReply.FormatUpdateExtensionResultInfo(extensionInfo));
+               return Task.FromResult(ExtInfoReply.GetExtensionInfoReply(extensionInfo));
 
            }
            catch (Exception e)
@@ -217,7 +217,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
            }
     }
     
-    public override Task<SetExtensionForwardStatusReply> SetExtensionForwardStatus(SetExtensionForwardStatusRequest request, ServerCallContext context)
+    public override Task<ExtensionStatusReply> SetExtensionForwardStatus(SetExtensionForwardStatusRequest request, ServerCallContext context)
     {
            try
            {
@@ -229,9 +229,9 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
 
                }
                
-               var result = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataMode(request));
+               var extensionStatus = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataMode(request));
         
-               return Task.FromResult(ExtensionForwardStatusReply.FormatExtensionForwardStatus(result));
+               return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
 
            }
            catch (Exception e)
@@ -243,7 +243,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
            }
     }
     
-    public override Task<SetExtensionGlobalQueuesStatusReply> SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest request, ServerCallContext context)
+    public override Task<ExtensionStatusReply> SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest request, ServerCallContext context)
     {
         try
         {
@@ -255,9 +255,9 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
 
             }
 
-            var result = _extensionService.SetExtQueuesStatus(new ExtensionQueuesStatusDataModel(request));
+            var extensionStatus = _extensionService.SetExtQueuesStatus(new ExtensionQueuesStatusDataModel(request));
         
-            return Task.FromResult(ExtensionGlobalQueuesStatusReply.FormatExtensionGlobalQueuesStatus(result));
+            return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
 
         }
         catch (Exception e)
@@ -269,7 +269,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
         }
     }
     
-    public override Task<SetExtensionStatusInQueueReply> SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest request, ServerCallContext context)
+    public override Task<ExtensionStatusReply> SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest request, ServerCallContext context)
     {
         try
         {
@@ -282,9 +282,9 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
 
             }
             
-            var result = _extensionService.SetExtQueueStatus(new ExtensionQueueStatusDataModel(request));
+            var extensionStatus = _extensionService.SetExtQueueStatus(new ExtensionQueueStatusDataModel(request));
             
-            return Task.FromResult(ExtensionStatusInQueueReply.FormatExtensionStatusInQueue(result));
+            return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
 
         }
         catch (Exception e)

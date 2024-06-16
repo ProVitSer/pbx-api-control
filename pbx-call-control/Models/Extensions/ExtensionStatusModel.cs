@@ -13,7 +13,10 @@ public class ExtensionStatus
     public string QueuesStatus { get; }
 
     public string[] Groups { get; }
-    public string[] Queues { get; }
+    public string[] AllQueues { get; }
+    public string[] LoggedOutQueues { get; }
+    
+    public string[] LoggedInQueues { get; }
 
     public string[] RingGroups { get; }
 
@@ -24,11 +27,15 @@ public class ExtensionStatus
         this.ForwardingRulesStatus = ext.IsOverrideActiveNow ? ext.CurrentProfileOverride.Name : GetForwardingRulesStatus(ext.CurrentProfile.Name);
         this.QueuesStatus = (ext.QueueStatus is QueueStatusType.LoggedIn) ? QueuesStatusType.LoggedIn.ToString() : QueuesStatusType.LoggedOut.ToString();
         this.Groups = ext.GroupMembership.Select(x => x.Group.Name).ToArray();
-        this.Queues = ext.QueueMembership.Select(x => x.Queue.Number).ToArray();
         this.RingGroups = ext.GetRingGroups().Select(x => x.Number).ToArray();
+        this.AllQueues = ext.QueueMembership.Select(x => x.Queue.Number).ToArray();
+        this.LoggedOutQueues = GetQueuesByStatus(ext, QueueStatusType.LoggedOut);
+        this.LoggedInQueues = GetQueuesByStatus(ext, QueueStatusType.LoggedIn);
 
     }
 
+    
+    
     private static string GetForwardingRulesStatus(string status)
     {
         switch (status)
@@ -42,5 +49,22 @@ public class ExtensionStatus
             default:
                 return status;
         };
+    }
+
+    private static string[] GetQueuesByStatus(Extension ext, QueueStatusType queueStatusType){
+        
+        List<string> queues = new List<string>();
+
+        foreach (QueueAgent queueAgent in ext.QueueMembership)
+        {
+
+            if (queueAgent.QueueStatus == queueStatusType)
+            {
+                queues.Add(queueAgent.Queue.Number);
+            }
+            
+        }
+
+        return queues.ToArray();
     }
 }

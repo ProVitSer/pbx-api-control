@@ -31,6 +31,7 @@ public class ExtensionService : IExtensionService
             }
             
             var extension = (Extension)dnByNumber;
+            
             return new ExtensionStatus(extension);
         }
     }

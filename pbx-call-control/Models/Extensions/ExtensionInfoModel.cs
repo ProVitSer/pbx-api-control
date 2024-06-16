@@ -57,7 +57,7 @@ public class ExtensionInfo
         this.FirstName = ext.FirstName;
         this.LastName = ext.LastName;
         this.Email = ext.EmailAddress;
-        this.MobileNumber = "";
+        this.MobileNumber = ext.GetPropertyValue("MOBILENUMBER");
         this.OutboundCallerID = ext.OutboundCallerID;
         this.RecordingType = GetRecordType(ext);
         this.IsExtenionEnabled = ext.Enabled;

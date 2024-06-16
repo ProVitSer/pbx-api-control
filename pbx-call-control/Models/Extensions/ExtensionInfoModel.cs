@@ -57,7 +57,7 @@ public class ExtensionInfo
         this.FirstName = ext.FirstName;
         this.LastName = ext.LastName;
         this.Email = ext.EmailAddress;
-        this.MobileNumber = ext.GetPropertyValue("MOBILENUMBER");
+        this.MobileNumber = "";
         this.OutboundCallerID = ext.OutboundCallerID;
         this.RecordingType = GetRecordType(ext);
         this.IsExtenionEnabled = ext.Enabled;
@@ -81,6 +81,7 @@ public class ExtensionInfo
         }
 
         var externalOnly = ext.GetPropertyValue("RECORD_EXTERNAL_CALLS_ONLY");
+        
         return (externalOnly == "1") ? RecordType.RecordingExternal.ToString() : RecordType.RecordingAll.ToString();
     }
 }

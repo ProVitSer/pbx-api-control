@@ -102,13 +102,15 @@ public class ExtensionService : IExtensionService
     
     public ExtensionInfo CreateExt(CreateExtensionDataModel data)
     {
+
         using (Extension extension = PhoneSystem.Root.GetTenant().CreateExtension(data.ExtensionNumber))
         {
+            
             SetExtensionProperties(extension, data);
+            
         };
 
         return ExtensionInfo(data.ExtensionNumber);
-
     }
     
     public bool DeleteExt(string ext)
@@ -149,7 +151,6 @@ public class ExtensionService : IExtensionService
                 extension.SupportReplaces = data.SupportReplaces != null ? data.SupportReplaces.Value : extensionInfo.SupportReplaces;
 
                 extension.Save();
-
 
             }
 
@@ -247,28 +248,41 @@ public class ExtensionService : IExtensionService
     }
     private static void SetExtensionProperties(Extension extension, CreateExtensionDataModel data)
     {
-        SetIfNotNull(() => extension.FirstName = data.FirstName);
-        SetIfNotNull(() => extension.LastName = data.LastName);
-        SetIfNotNull(() => extension.EmailAddress = data.Email);
-        SetIfNotNull(() => extension.AuthID = data.AuthID);
-        SetIfNotNull(() => extension.SIPID = data.AuthID);
-        //SetIfNotNull(() => extension.AuthPassword = data.AuthPassword);
-        SetOptionalProperty("MOBILENUMBER", extension, data.MobileNumber);
+        Guid newGuid = Guid.NewGuid();
+        
+        extension.AuthID = data.AuthID;
+        extension.AuthPassword = data.AuthPassword;
+        extension.BusyDetection = BusyDetectionType.UsePBXStatus;
+        extension.DeliverAudio = data.DeliverAudio;
+        extension.EmailAddress = data.Email;
+        extension.Enabled = !data.IsExtenionEnabled;
+        extension.LastName = data.LastName;
+        extension.FirstName = data.FirstName;
+        extension.HidePresence = false;
+        extension.Internal = data.DisableExternalCalls;
+        extension.NoAnswerTimeout = 60;
+        extension.Number = data.ExtensionNumber;
+        extension.OutboundCallerID = data.OutboundCallerID;
+        extension.QueueStatus = QueueStatusType.LoggedOut;
         SetRecordingTypeProperties(extension, data.RecordingType);
-        SetIfNotNull(() => extension.OutboundCallerID = data.OutboundCallerID);
-        // SetIfNotNull(() => extension.Enabled = false);//data.IsExtenionEnabled);
-        SetIfNotNull(() => extension.Internal = data.DisableExternalCalls );
-        SetIfNotNull(() => extension.DeliverAudio = data.DeliverAudio);
-        SetIfNotNull(() => extension.SupportReinvite = data.SupportReinvite);
-        SetIfNotNull(() => extension.SupportReplaces = data.SupportReplaces);
+        extension.SIPID = data.ExtensionNumber;
+        extension.SupportReinvite = data.SupportReinvite;
+        extension.SupportReplaces = data.SupportReplaces;
         extension.UserStatus = UserStatusType.Available;
-        extension.NoAnswerTimeout = 20;
-        extension.Number = data.AuthID;
-        extension.ResetCurrentProfileOverride();
+        extension.VMEmailOptions = VMEmailOptionsType.None;
+        extension.VMEnabled = true;
+        extension.VMPIN = data.ExtensionNumber;
+        extension.VMPlayCallerID = true;
+        extension.VMPlayMsgDateTime = VMPlayMsgDateTimeType.Play24Hr;
+        SetOptionalProperty("MOBILENUMBER", extension, data.MobileNumber);
+        SetOptionalProperty("ALLOW_EXTERNAL_PROVIDER", extension, "0");
+        SetOptionalProperty("CALL_US_ENABLE_PHONE", extension, "0");
+        SetOptionalProperty("CALL_US_ENABLE_CHAT", extension, "0");
+        SetOptionalProperty("CALL_US_ENABLE_VIDEO", extension, "0");
+        SetOptionalProperty("ALLOW_EXTERNAL_PROVIDER", extension, "0");
+        SetOptionalProperty("EXTGUID", extension, newGuid.ToString());
+        SetOptionalProperty("PUSH_EXTENSION", extension, "1");
         extension.Save();
-
-        var b =extension.Clone();
-        PhoneSystem.Root.GetTenant().Save();
     }
     
     private static void SetIfNotNull(Action action)

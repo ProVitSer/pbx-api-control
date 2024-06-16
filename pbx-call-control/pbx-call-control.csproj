@@ -15,7 +15,6 @@
         <RootNamespace>PbxApiControl</RootNamespace>
         <AssemblyName>PbxApiControl</AssemblyName>
     </PropertyGroup>
-    <!--<PropertyGroup><TargetFramework>net7.0</TargetFramework><Nullable>enable</Nullable><ImplicitUsings>enable</ImplicitUsings></PropertyGroup>-->
     <ItemGroup>
         <Protobuf Include="Protos\extension.proto" GrpcServices="Server" />
     </ItemGroup>

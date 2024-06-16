@@ -224,7 +224,7 @@ public class ExtensionService : IExtensionService
             {
                 if (queueAgent.Queue.Number == data.QueueNumber)
                 {
-                    queueAgent.QueueStatus = data.Status == QStatusType.On.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
+                    queueAgent.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString() ? QueueStatusType.LoggedIn : QueueStatusType.LoggedOut;
                     extension.Save();
                 }
             }

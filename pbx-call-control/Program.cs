@@ -13,12 +13,8 @@ namespace PbxApiControl
 {
     public class Program
     {
+
         public static void Main(string[] args)
-        {
-            RunApplication(args);
-        }
-        
-        public static void RunApplication(string[] args)
         {
             CultureInfo cultureInfo = new CultureInfo("en-US");
             
@@ -74,6 +70,8 @@ namespace PbxApiControl
 
             // Map gRPC services
             app.MapGrpcService<ExtensionService>();
+            app.MapGrpcService<RingGroupService>();
+
             app.MapGrpcReflectionService();
 
             app.Run();

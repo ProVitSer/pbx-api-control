@@ -18,6 +18,7 @@
     </PropertyGroup>
     <ItemGroup>
         <Protobuf Include="Protos\extension.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\ring-group.proto" GrpcServices="Server" />
     </ItemGroup>
     <ItemGroup>
         <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />

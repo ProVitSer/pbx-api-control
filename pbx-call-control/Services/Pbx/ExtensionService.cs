@@ -10,12 +10,10 @@ namespace PbxApiControl.Services.Pbx;
 public class ExtensionService : IExtensionService
 {
     private readonly ILogger<ExtensionService> _logger;
-    public IEnumerable<string> Numbers { get; private set; }
 
     public ExtensionService(ILogger<ExtensionService> logger)
     {
         _logger = logger;
-        Numbers = new List<string>();
     }
 
 
@@ -57,9 +55,9 @@ public class ExtensionService : IExtensionService
     {
         using (IArrayDisposer<Extension> disposer = PhoneSystem.Root.GetAll<Extension>().GetDisposer())
         {
-            this.Numbers = disposer.Select(x => x.Number).ToArray();
+            var numbers= disposer.Select(x => x.Number).ToArray();
 
-            return this.Numbers;
+            return numbers;
         };
     }
     

@@ -1,0 +1,75 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package extension;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service ContactPbxService {
+  rpc GetContactInfoById(GetContactInfoByIdRequest) returns (ContactInfoDataReply);
+  rpc UpdateContactInfoById(UpdateContactInfoRequest) returns (ContactInfoDataReply);
+  rpc GetContactList(GetContactListRequest) returns (ContactListReply);
+  rpc DeleteContactById(DeleteContactByIdRequest) returns (ContactInfoDataReply);
+
+}
+
+message DeleteContactByIdRequest {
+  string contact_id = 1;
+}
+
+    
+message GetContactListRequest {
+  int32 page_number = 1;
+  int32 page_size = 2;
+}
+
+message ContactListReply {
+  repeated ContactInfoDataReply contacts = 1;
+  int32 page_number = 2;
+  int32 page_size = 3;
+  int32 total_count = 4;
+}
+
+message GetContactInfoByIdRequest {
+  string contact_id = 1;
+}
+
+message ContactInfoDataReply {
+  string contact_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string mobile = 4;
+  string company_name = 5;
+  string crm_contact_data = 6;
+  string tag = 7;
+  string mobile_two = 8;
+  string home = 9;
+  string home_two = 10;
+  string business = 11;
+  string business_two = 12;
+  string email_address = 13;
+  string other = 14;
+  string business_fax = 15;
+  string home_fax = 16;
+  string pager = 17;
+}
+
+message UpdateContactInfoRequest {
+  string contact_id = 1;
+  google.protobuf.StringValue first_name = 2;
+  google.protobuf.StringValue last_name = 3;
+  google.protobuf.StringValue mobile = 4;
+  google.protobuf.StringValue company_name = 5;
+  google.protobuf.StringValue crm_contact_data = 6;
+  google.protobuf.StringValue tag = 7;
+  google.protobuf.StringValue mobile_two = 8;
+  google.protobuf.StringValue home = 9;
+  google.protobuf.StringValue home_two = 10;
+  google.protobuf.StringValue business = 11;
+  google.protobuf.StringValue business_two = 12;
+  google.protobuf.StringValue email_address = 13;
+  google.protobuf.StringValue other = 14;
+  google.protobuf.StringValue business_fax = 15;
+  google.protobuf.StringValue home_fax = 16;
+  google.protobuf.StringValue pager = 17;
+}

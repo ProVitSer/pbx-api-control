@@ -71,6 +71,7 @@ namespace PbxApiControl
             // Map gRPC services
             app.MapGrpcService<ExtensionService>();
             app.MapGrpcService<RingGroupService>();
+            app.MapGrpcService<ContactService>();
 
             app.MapGrpcReflectionService();
 

@@ -6,6 +6,7 @@ namespace PbxApiControl.Models.Reply
     {
         public static ExtensionInfoReply GetExtensionInfoReply(ExtensionInfo extensionInfo)
         {
+            
             return new ExtensionInfoReply
             {
                 Extension = extensionInfo.Extension,
@@ -14,8 +15,8 @@ namespace PbxApiControl.Models.Reply
                 Email = extensionInfo.Email,
                 AuthId = extensionInfo.AuthID,
                 AuthPassword = extensionInfo.AuthPassword,
-                MobileNumber = extensionInfo.MobileNumber,
-                SipId = extensionInfo.SipID,
+                MobileNumber = extensionInfo.MobileNumber ?? "",
+                SipId = extensionInfo.SipID ?? "",
                 OutboundCallerId = extensionInfo.OutboundCallerID,
                 RecordingType = extensionInfo.RecordingType,
                 IsExtenionEnabled = extensionInfo.IsExtenionEnabled,

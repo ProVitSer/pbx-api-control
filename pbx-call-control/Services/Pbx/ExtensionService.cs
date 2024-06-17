@@ -160,7 +160,7 @@ public class ExtensionService : IExtensionService
 
     }
 
-    public ExtensionStatus SetExtForwardStatus(ExtensionForwardStatusDataMode data)
+    public ExtensionStatus SetExtForwardStatus(ExtensionForwardStatusDataModel data)
     {
 
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))

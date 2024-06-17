@@ -229,7 +229,7 @@ public class ExtensionService : ExtensionsPbxService.ExtensionsPbxServiceBase
 
                }
                
-               var extensionStatus = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataMode(request));
+               var extensionStatus = _extensionService.SetExtForwardStatus(new ExtensionForwardStatusDataModel(request));
         
                return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
 

@@ -109,7 +109,7 @@ public class RingGroupService : RingGroupPbxService.RingGroupPbxServiceBase
         }
         catch (Exception e)
         {
-            _logger.LogError("AddMemberInRingGroup: {@e}", e.ToString());
+            _logger.LogError("DeleteMemberInRingGroup: {@e}", e.ToString());
             
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 

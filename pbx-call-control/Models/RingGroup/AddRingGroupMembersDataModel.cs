@@ -1,7 +1,4 @@
-﻿using PbxApiControl.Enums;
-using System.ComponentModel.DataAnnotations;
-
-
+﻿
 namespace PbxApiControl.Models.RingGroup;
 
 public class AddRingGroupMembersDataModel

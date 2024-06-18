@@ -7,10 +7,12 @@
         public const string DnIsNotExten = "DN is not of type Extension";
         public const string DnIsNotRingGroup = "DN is not of type RingGroup";
         public const string RingGroupNotFound = "Номер группы вызова не найден";
-
         public const string TryParseError =
             "Input string is not in a correct format or represents a number that is too large or too small for an Int32.";
         public const string ContactIdNotFound = "Контакт с переданным Id не найден";
+        public const string DnIsNotQueue = "DN is not of type Queue";
+        public const string QueueNotFound = "Номер группы вызова не найден";
+
 
     }
 }

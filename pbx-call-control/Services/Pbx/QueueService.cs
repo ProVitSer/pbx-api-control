@@ -140,13 +140,11 @@ public class QueueService : IQueueService
         
         foreach (QueueAgentsDataModels queueA in queueAgents)
         {
-            queueAgentsList.Add(queueA);
+            if (queueA.AgentQueueStatus == QueuesStatusType.LoggedIn && GetExtensionStatus(queueA.Extension) == status)
+            {
+                queueAgentsList.Add(queueA);
+            }
             
-            // if (queueA.AgentQueueStatus && GetExtensionStatus(queueA.Extension) == status)
-            // {
-            //     queueAgentsList.Add(queueA);
-            // }
-            //
             
         }
         return queueAgentsList.ToArray();

@@ -1,0 +1,31 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package call;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service CallPbxService {
+  rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
+  rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
+  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
+}
+
+message MakeCallRequest {
+  string to = 1;
+  string from = 2;
+}
+
+message HangupCallRequest {
+  string extension = 1;
+}
+
+message TrasferCallRequest {
+  string extension = 1;
+  string destination_number = 2;
+}
+
+message BaseCallReply {
+  bool result = 1;
+  string message = 2;
+}

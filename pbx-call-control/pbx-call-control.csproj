@@ -7,8 +7,8 @@
         <Platforms>AnyCPU;x64</Platforms>
         <PublishSingleFile>true</PublishSingleFile>
         <SelfContained>true</SelfContained>
-<!--        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+<!--        <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
         <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
         <DebugType>embedded</DebugType>
         <ApplicationIcon />
@@ -21,6 +21,7 @@
         <Protobuf Include="Protos\ring-group.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\contact.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\queue.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\call.proto" GrpcServices="Server" />
     </ItemGroup>
     <ItemGroup>
         <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
@@ -54,10 +55,10 @@
     </ItemGroup>
     <ItemGroup>
         <Reference Include="3cxpscomcpp2">
-            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>
+<!--            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>-->
 
-<!--                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>-->
-            <Private>false</Private>
+                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>
+<!--            <Private>false</Private>-->
         </Reference>
     </ItemGroup>
 </Project>

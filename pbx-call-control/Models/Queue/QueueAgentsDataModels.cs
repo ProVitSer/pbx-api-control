@@ -1,5 +1,5 @@
 ﻿using TCX.Configuration;
-
+using PbxApiControl.Enums;
 
 namespace PbxApiControl.Models.Queue;
 public class QueueAgentsDataModels
@@ -7,14 +7,14 @@ public class QueueAgentsDataModels
     public string Extension { get; }
     public string FirstName { get; }
     public string LastName { get; }
-    public bool LoggedIn { get;  }
+    public QueuesStatusType AgentQueueStatus { get;  }
     
     
-    public QueueAgentsDataModels(Extension extension,  QueueAgent agent)
+    public QueueAgentsDataModels(Extension extension)
     {
         Extension = extension.Number;
         FirstName = extension.FirstName;
         LastName = extension.LastName;
-        LoggedIn = agent.QueueStatus == QueueStatusType.LoggedIn;
+        AgentQueueStatus = (QueuesStatusType)extension.QueueStatus;
     }
 }

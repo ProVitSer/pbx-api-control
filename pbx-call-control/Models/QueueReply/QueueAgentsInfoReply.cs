@@ -11,7 +11,7 @@ public class QueueAgentsInfoReply
             Extension = data.Extension,
             FirstName = data.FirstName,
             LastName = data.LastName,
-            LoggedIn = data.LoggedIn
+            AgentQueueStatus = data.AgentQueueStatus.ToString()
         };
     }
 }

@@ -43,8 +43,8 @@ public class QueueService : IQueueService
                 .Select(agent =>
                 {
                     Extension extension = agent.DN as Extension;
-                    _logger.LogDebug(agent.QueueStatus.ToString());
-                    return new QueueAgentsDataModels(extension, agent);
+                    
+                    return new QueueAgentsDataModels(extension);
                 })
                 .ToArray();
 
@@ -140,12 +140,13 @@ public class QueueService : IQueueService
         
         foreach (QueueAgentsDataModels queueA in queueAgents)
         {
+            queueAgentsList.Add(queueA);
             
-            if (queueA.LoggedIn && GetExtensionStatus(queueA.Extension) == status)
-            {
-                queueAgentsList.Add(queueA);
-            }
-        
+            // if (queueA.AgentQueueStatus && GetExtensionStatus(queueA.Extension) == status)
+            // {
+            //     queueAgentsList.Add(queueA);
+            // }
+            //
             
         }
         return queueAgentsList.ToArray();

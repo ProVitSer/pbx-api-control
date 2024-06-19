@@ -32,7 +32,7 @@ message QueueInfo {
   string extension = 1;
   string firstName = 2;
   string lastName = 3;
-  bool logged_in = 4;
+  string agent_queue_status = 4;
 }
 
 message QueueListDataReply {

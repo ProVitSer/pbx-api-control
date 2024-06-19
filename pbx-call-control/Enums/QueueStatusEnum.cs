@@ -6,6 +6,3 @@ internal enum QStatusType
     Off,
 
 }
-
-
-

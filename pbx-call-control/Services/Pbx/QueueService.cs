@@ -76,18 +76,11 @@ public class QueueService : IQueueService
 
             var qAgents = QueueAgents(queueNumber);
 
-            var updateAgents = agentsNumbers.Union(qAgents.Select(qa => qa.Extension).ToArray()).ToArray();
+            var remainingAgents = agentsNumbers.Union(qAgents.Select(qa => qa.Extension).ToArray()).ToArray();
 
-            QueueAgent[] agents = updateAgents.Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
-                .Where(x => x != null)
-                .Distinct()
-                .Select(x => queue.CreateAgent(x))
-                .ToArray();
+            AddQueueAgents(remainingAgents, queue);
 
-            queue.QueueAgents = agents;
-            queue.Save();
-
-            return new QueueDataModel(queueNumber, updateAgents);
+            return new QueueDataModel(queueNumber, remainingAgents);
         };
     }
 
@@ -104,19 +97,24 @@ public class QueueService : IQueueService
 
             var qAgents = QueueAgents(queueNumber);
 
-            var updateAgents = agentsNumbers.Except(qAgents.Select(qa => qa.Extension).ToArray()).ToArray();
+            var remainingAgents = qAgents.Where(qa => !agentsNumbers.Contains(qa.Extension)).ToArray().Select(x => x.Extension).ToArray();
 
-            QueueAgent[] agents = updateAgents.Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
-                .Where(x => x != null)
-                .Distinct()
-                .Select(x => queue.CreateAgent(x))
-                .ToArray();
-
-            queue.QueueAgents = agents;
-            queue.Save();
-
-            return new QueueDataModel(queueNumber, updateAgents);
+            AddQueueAgents(remainingAgents, queue);
+            
+            return new QueueDataModel(queueNumber, remainingAgents);
         };
+    }
+
+    private void AddQueueAgents(string[] agents, Queue queue)
+    {
+        QueueAgent[] queueAgent = agents.Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
+            .Where(x => x != null)
+            .Distinct()
+            .Select(x => queue.CreateAgent(x))
+            .ToArray();
+            
+        queue.QueueAgents = queueAgent;
+        queue.Save();
     }
 
     public bool IsQueueExists(string queueNumber)
@@ -135,7 +133,6 @@ public class QueueService : IQueueService
         
         if (queueAgents.Length == 0) return queueAgents;
         
-        
         List<QueueAgentsDataModels> queueAgentsList = new List<QueueAgentsDataModels>();
         
         foreach (QueueAgentsDataModels queueA in queueAgents)
@@ -144,8 +141,6 @@ public class QueueService : IQueueService
             {
                 queueAgentsList.Add(queueA);
             }
-            
-            
         }
         return queueAgentsList.ToArray();
 
@@ -162,7 +157,5 @@ public class QueueService : IQueueService
                 return disposer.Length == 0 ? ActiveConnectionsStatus.Idle : ActiveConnectionsStatus.Busy;
             };
         }
-
     }
-
 }

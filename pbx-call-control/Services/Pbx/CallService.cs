@@ -18,7 +18,10 @@ public class CallService : ICallService
 
     }
 
-
+    public int CountCalls()
+    {
+        return PhoneSystem.Root.GetActiveConnectionsByCallID().Count;
+    }
 
     public BaseCallResultModel MakeCall(string to, string from)
     {
@@ -171,7 +174,7 @@ public class CallService : ICallService
                 {
                     owner = kv.Key;
 
-                    _logger.LogDebug($"ID={owner.ID}:CCID={owner.CallConnectionID}:S={owner.Status}:DN={owner.DN.Number}:EP={owner.ExternalParty}:REC={owner.RecordingState}");
+                    //_logger.LogDebug($"ID={owner.ID}:CCID={owner.CallConnectionID}:S={owner.Status}:DN={owner.DN.Number}:EP={owner.ExternalParty}:REC={owner.RecordingState}");
                 }
 
                 if (owner == null)

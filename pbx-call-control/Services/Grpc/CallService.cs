@@ -1,4 +1,5 @@
-﻿using Grpc.Core;
+﻿using Google.Protobuf.WellKnownTypes;
+using Grpc.Core;
 using PbxApiControl.Interface;
 
 namespace PbxApiControl.Services.Grpc;
@@ -87,6 +88,25 @@ public class CallService : CallPbxService.CallPbxServiceBase
             var transferCallResult = _callService.TransferCall(request.Extension, request.DestinationNumber);
             
             return Task.FromResult(new BaseCallReply{ Result  = transferCallResult.Result, Message = transferCallResult.Message});
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("TransferCall: {@e}", e.ToString());
+            
+            throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
+
+        }
+        
+    }
+    
+    public override Task<GetCountCallsReply> GetCountCalls(Empty request, ServerCallContext context)
+    {
+        try
+        {
+
+            var currentCountCalls = _callService.CountCalls();
+            
+            return Task.FromResult(new GetCountCallsReply{ CurrentCountCalls = currentCountCalls });
         }
         catch (Exception e)
         {

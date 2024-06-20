@@ -6,16 +6,20 @@ import "google/protobuf/wrappers.proto";
 
 
 service CallPbxService {
+  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply);
   rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
   rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
   rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
 }
 
+
+message GetCountCallsReply {
+  int32 current_count_calls = 1;
+}
 message MakeCallRequest {
   string to = 1;
   string from = 2;
 }
-
 message HangupCallRequest {
   string extension = 1;
 }

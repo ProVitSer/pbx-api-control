@@ -17,7 +17,6 @@ message DeleteContactByIdRequest {
   string contact_id = 1;
 }
 
-    
 message GetContactListRequest {
   int32 page_number = 1;
   int32 page_size = 2;

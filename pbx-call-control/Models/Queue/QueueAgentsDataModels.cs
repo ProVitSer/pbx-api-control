@@ -1,5 +1,6 @@
 ﻿using TCX.Configuration;
 using PbxApiControl.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace PbxApiControl.Models.Queue;
 public class QueueAgentsDataModels

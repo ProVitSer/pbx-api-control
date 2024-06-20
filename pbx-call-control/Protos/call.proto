@@ -6,20 +6,35 @@ import "google/protobuf/wrappers.proto";
 
 
 service CallPbxService {
+  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply);
   rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply);
   rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
   rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
   rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
 }
 
+message GetActiveCallsInfoReply {
+  repeated GetActiveCallsInfoData active_calls_info_data = 1;
+}
+message GetActiveCallsInfoData {
+  int32  call_id = 1;
+  string call_direction = 2;
+  string status = 3;
+  optional string direction = 4;
+  optional string call_status = 5;
+  string local_number = 6;
+  string remote_number = 7;
+}
 
 message GetCountCallsReply {
   int32 current_count_calls = 1;
 }
+
 message MakeCallRequest {
   string to = 1;
   string from = 2;
 }
+
 message HangupCallRequest {
   string extension = 1;
 }

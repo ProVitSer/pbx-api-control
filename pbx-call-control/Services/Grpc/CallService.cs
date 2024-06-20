@@ -1,6 +1,7 @@
 ﻿using Google.Protobuf.WellKnownTypes;
 using Grpc.Core;
 using PbxApiControl.Interface;
+using PbxApiControl.Models.CallReply;
 
 namespace PbxApiControl.Services.Grpc;
 
@@ -110,7 +111,26 @@ public class CallService : CallPbxService.CallPbxServiceBase
         }
         catch (Exception e)
         {
-            _logger.LogError("TransferCall: {@e}", e.ToString());
+            _logger.LogError("GetCountCalls: {@e}", e.ToString());
+            
+            throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
+
+        }
+        
+    }
+    
+    public override Task<GetActiveCallsInfoReply> GetActiveCallsInfo(Empty request, ServerCallContext context)
+    {
+        try
+        {
+
+            var activeCallsInfo = _callService.ActiveCallsInfo();
+            
+            return Task.FromResult(ActiveCallsInfoReply.FormatActiveCallsInfo(activeCallsInfo));
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("GetActiveCallsInfo: {@e}", e.ToString());
             
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 

@@ -1,7 +1,7 @@
 ﻿using PbxApiControl.Interface;
 using PbxApiControl.Models.Call;
+using PbxApiControl.Enums;
 using TCX.Configuration;
-
 
 namespace PbxApiControl.Services.Pbx;
 
@@ -134,7 +134,121 @@ public class CallService : ICallService
 
         }
     }
+
+    public List<CallStateModel> ActiveCallsInfo()
+    {
+        try
+        {
+            List<CallStateModel> callsState = new List<CallStateModel>();
+
+            foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
+            {
+                var callState = new CallStateModel(keyValuePair.Key);
+                
+                callsState.Add(callState);
+            
+                foreach (var activeConnection in keyValuePair.Value)
+                {
+                    ProcessActiveConnection(callState, activeConnection);
+                }
+            }
+
+            foreach (var call in callsState)
+            {
+                _logger.LogDebug("Call ID: {CallID}, Call Direction: {CallDirection}, Status: {Status}, Direction: {Direction}, Call Status: {CallStatus}, Local Number: {LocalNumber}, Remote Number: {RemoteNumber}",
+                    call.CallID,
+                    call.CallDirection,
+                    call.Status,
+                    call.Direction,
+                    call.CallStatus,
+                    call.LocalNumber,
+                    call.RemoteNumber);
+            }
+            
+            return callsState;
+            
+        }catch (Exception e)
+        {
+            _logger.LogDebug(e.ToString());
+            
+            throw e;
+
+        }
+    }
     
+    private void ProcessActiveConnection(CallStateModel callState, ActiveConnection activeConnection)
+    {
+        if (callState.CallDirection == Direction.Undefined)
+        {
+            DetermineCallDirection(callState, activeConnection);
+        }
+        else
+        {
+            UpdateAConnStateStatus(callState, activeConnection);
+        }
+    }
+    
+    private void DetermineCallDirection(CallStateModel callState, ActiveConnection activeConnection)
+    {
+        _logger.LogDebug($"ID={activeConnection.ID}:CCID={activeConnection.CallConnectionID}:S={activeConnection.Status}:DN={activeConnection.DN.Number}:EP={activeConnection.ExternalParty}:REC={activeConnection.RecordingState}:STATUS={activeConnection.Status}");
+        _logger.LogDebug((activeConnection.DN is ExternalLine).ToString());
+
+        if (activeConnection.ExternalParty.Length > 5)
+        {
+            callState.RemoteNumber = activeConnection.ExternalParty;
+
+            if (activeConnection.DN is ExternalLine)
+            {
+                callState.CallDirection = Direction.Inbound;
+            }
+            else
+            {
+                callState.CallDirection = Direction.Outbound;
+                callState.LocalNumber = activeConnection.DN.Number;
+            }
+        }
+        else
+        {
+            callState.RemoteNumber = activeConnection.ExternalParty;
+            callState.CallDirection = Direction.Local;
+            callState.LocalNumber = activeConnection.DN.Number;
+        }
+    }
+    
+    private void UpdateAConnStateStatus(CallStateModel callState, ActiveConnection activeConnection)
+    {
+        switch (callState.CallDirection)
+        {
+            case Direction.Outbound:
+            case Direction.Local:
+                UpdateStatus(callState, activeConnection.Status);
+                break;
+            case Direction.Inbound:
+                callState.LocalNumber = activeConnection.DN.Number;
+                UpdateStatus(callState, activeConnection.Status);
+                break;
+        }
+    }
+    
+    private void UpdateStatus(CallStateModel callState, ConnectionStatus status)
+    {
+        switch (status)
+        {
+            case ConnectionStatus.Dialing:
+                callState.Status = CallStatus.Dialing;
+                break;
+            case ConnectionStatus.Ringing:
+                callState.Status = CallStatus.Ringing;
+                break;
+            case ConnectionStatus.Connected:
+                callState.Status = CallStatus.Talking;
+                break;
+            default:
+                callState.Status = CallStatus.Other;
+                break;
+        }
+    }
+
     private void TransferCallToDestNumber(string extension, string destinationNumber)
     {
 

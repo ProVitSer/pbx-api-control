@@ -9,4 +9,5 @@ public interface  ICallService
     BaseCallResultModel MakeCall(string to, string from);
     BaseCallResultModel HangupCall(string extension);
     BaseCallResultModel TransferCall(string extension, string destinationNumber);
+    List<FullActiveConnectionInfoModel> FullActiveConnectionsInfo();
 }

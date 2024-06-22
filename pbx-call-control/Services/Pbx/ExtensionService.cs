@@ -236,7 +236,7 @@ public class ExtensionService : IExtensionService
     {
         using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
         {
-
+            _logger.LogDebug((dnByNumber is Extension).ToString());
             return dnByNumber is Extension;
         };
     }

@@ -11,6 +11,29 @@ service CallPbxService {
   rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
   rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
   rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
+  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply);
+}
+
+message GetActiveConnectionsInfoReply {
+  repeated ActiveConnectionsInfo active_connections_info = 1;
+}
+
+message ActiveConnectionsInfo{
+  int32  call_id = 1;
+  repeated ConnectionsData connections_data = 2;
+}
+
+message ConnectionsData {
+  int32  id = 1;
+  int32  call_connection_id = 2;
+  string external_party = 3;
+  string recording_state = 4;
+  int32  party_connection_id = 5;
+  int32  referred_by = 6;
+  bool   is_outbound = 7;
+  bool   is_inbound = 8;
+  string dialed_number = 9;
+  string internal_party = 10;
 }
 
 message GetActiveCallsInfoReply {

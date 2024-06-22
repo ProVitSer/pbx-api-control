@@ -3,6 +3,7 @@ using Grpc.Core;
 using PbxApiControl.Interface;
 using PbxApiControl.Models.CallReply;
 
+
 namespace PbxApiControl.Services.Grpc;
 
 public class CallService : CallPbxService.CallPbxServiceBase
@@ -131,6 +132,26 @@ public class CallService : CallPbxService.CallPbxServiceBase
         catch (Exception e)
         {
             _logger.LogError("GetActiveCallsInfo: {@e}", e.ToString());
+            
+            throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
+
+        }
+        
+    }
+    
+    public override Task<GetActiveConnectionsInfoReply> GetActiveConnectionsInfo(Empty request, ServerCallContext context)
+    {
+        try
+        {
+            var activeConnectionsInfo = _callService.FullActiveConnectionsInfo();
+        
+            var formattedInfo = ActiveConnectionsInfoReply.FormatConnectionsInfoInfo(activeConnectionsInfo);
+        
+            return Task.FromResult(formattedInfo);
+        }
+        catch (Exception e)
+        {
+            _logger.LogError("GetActiveConnectionsInfo: {@e}", e.ToString());
             
             throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
 

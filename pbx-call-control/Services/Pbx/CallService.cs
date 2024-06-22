@@ -8,10 +8,10 @@ namespace PbxApiControl.Services.Pbx;
 public class CallService : ICallService
 {
     
-    private readonly ILogger<ContactService> _logger;
+    private readonly ILogger<CallService> _logger;
     private readonly IExtensionService _extensionService;
 
-    public CallService(ILogger<ContactService> logger, IExtensionService extensionService)
+    public CallService(ILogger<CallService> logger, IExtensionService extensionService)
     {
         _logger = logger;
         _extensionService = extensionService;
@@ -130,7 +130,7 @@ public class CallService : ICallService
         {
             _logger.LogDebug(e.ToString());
             
-            return new BaseCallResultModel( false, ServiceConstants.CallTransferError);
+            return new BaseCallResultModel( false, e.ToString());
 
         }
     }
@@ -149,20 +149,9 @@ public class CallService : ICallService
             
                 foreach (var activeConnection in keyValuePair.Value)
                 {
+ 
                     ProcessActiveConnection(callState, activeConnection);
                 }
-            }
-
-            foreach (var call in callsState)
-            {
-                _logger.LogDebug("Call ID: {CallID}, Call Direction: {CallDirection}, Status: {Status}, Direction: {Direction}, Call Status: {CallStatus}, Local Number: {LocalNumber}, Remote Number: {RemoteNumber}",
-                    call.CallID,
-                    call.CallDirection,
-                    call.Status,
-                    call.Direction,
-                    call.CallStatus,
-                    call.LocalNumber,
-                    call.RemoteNumber);
             }
             
             return callsState;
@@ -175,7 +164,30 @@ public class CallService : ICallService
 
         }
     }
-    
+
+    public List<FullActiveConnectionInfoModel> FullActiveConnectionsInfo()
+    {
+        List<FullActiveConnectionInfoModel> activeConnectionsInfo = new List<FullActiveConnectionInfoModel>();
+
+        
+        foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
+        {
+            var activeConnectionInfo = new FullActiveConnectionInfoModel(keyValuePair.Key);
+                
+            activeConnectionsInfo.Add(activeConnectionInfo);
+            
+            foreach (var activeConnection in keyValuePair.Value)
+            {
+
+                activeConnectionInfo.AddActiveConnectionInfo(activeConnection);
+                
+            }
+            
+        }
+
+        return activeConnectionsInfo;
+    }
+
     private void ProcessActiveConnection(CallStateModel callState, ActiveConnection activeConnection)
     {
         if (callState.CallDirection == Direction.Undefined)
@@ -190,9 +202,7 @@ public class CallService : ICallService
     
     private void DetermineCallDirection(CallStateModel callState, ActiveConnection activeConnection)
     {
-        _logger.LogDebug($"ID={activeConnection.ID}:CCID={activeConnection.CallConnectionID}:S={activeConnection.Status}:DN={activeConnection.DN.Number}:EP={activeConnection.ExternalParty}:REC={activeConnection.RecordingState}:STATUS={activeConnection.Status}");
-        _logger.LogDebug((activeConnection.DN is ExternalLine).ToString());
-
+        
         if (activeConnection.ExternalParty.Length > 5)
         {
             callState.RemoteNumber = activeConnection.ExternalParty;
@@ -251,14 +261,13 @@ public class CallService : ICallService
 
     private void TransferCallToDestNumber(string extension, string destinationNumber)
     {
-
+        
         var activeConnectionA = GetActiveConnectionByNumber(extension);
-        
+ 
         var externalParty = (string)activeConnectionA.ExternalParty;
-        
+
         var activeConnectionB = GetActiveConnectionByNumber(externalParty);
-
-
+        
         if (externalParty != extension)
         {
 
@@ -280,6 +289,7 @@ public class CallService : ICallService
         {
             using (IArrayDisposer<ActiveConnection> disposer = dnByNumber.GetActiveConnections().GetDisposer<ActiveConnection>())
             {
+
                 var allTakenConnections = disposer.ToDictionary(x => x, y => y.OtherCallParties);
 
                 ActiveConnection owner = null;
@@ -288,7 +298,7 @@ public class CallService : ICallService
                 {
                     owner = kv.Key;
 
-                    //_logger.LogDebug($"ID={owner.ID}:CCID={owner.CallConnectionID}:S={owner.Status}:DN={owner.DN.Number}:EP={owner.ExternalParty}:REC={owner.RecordingState}");
+                    _logger.LogDebug($"ID={owner.ID}:CCID={owner.CallConnectionID}:S={owner.Status}:DN={owner.DN.Number}:EP={owner.ExternalParty}:REC={owner.RecordingState}");
                 }
 
                 if (owner == null)

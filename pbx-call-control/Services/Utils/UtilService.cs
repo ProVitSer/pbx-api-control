@@ -1,24 +1,27 @@
 ﻿using System.Security.Cryptography;
 
-namespace PbxApiControl.Services.Utils;
-public class UtilService
+namespace PbxApiControl.Services.Utils
 {
-    public static string GeneratePassword(int length = 12)
+    public class UtilService
     {
-        const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+";
-
-        using (var rng = RandomNumberGenerator.Create())
+        public static string GeneratePassword(int length = 12)
         {
-            byte[] bytes = new byte[length];
-            rng.GetBytes(bytes);
+            const string validChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()-=_+";
 
-            char[] chars = new char[length];
-            for (int i = 0; i < length; i++)
+            using (var rng = RandomNumberGenerator.Create())
             {
-                chars[i] = validChars[bytes[i] % validChars.Length];
-            }
+                byte[] bytes = new byte[length];
+                rng.GetBytes(bytes);
 
-            return new string(chars);
-        };
+                char[] chars = new char[length];
+                for (int i = 0; i < length; i++)
+                {
+                    chars[i] = validChars[bytes[i] % validChars.Length];
+                }
+
+                return new string(chars);
+            }
+        }
     }
 }
+

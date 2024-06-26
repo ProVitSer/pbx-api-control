@@ -1,10 +1,12 @@
-﻿namespace PbxApiControl.Enums;
-
-public enum CallStatus
+﻿namespace PbxApiControl.Enums
 {
-    Dialing,
-    Ringing,
-    Talking,
-    Finish,
-    Other
+    public enum CallStatus
+    {
+        Dialing,
+        Ringing,
+        Talking,
+        Finish,
+        Other
+    }
 }
+

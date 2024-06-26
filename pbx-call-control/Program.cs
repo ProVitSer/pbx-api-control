@@ -30,7 +30,7 @@ namespace PbxApiControl
             }).AddJsonTranscoding();
             
             // Initialize configuration
-            PBXAPIConfig.InitConfig();
+            PbxApiConfig.InitConfig();
             
             builder.Services.AddGrpcReflection();
             
@@ -59,7 +59,7 @@ namespace PbxApiControl
                 .AddJsonFile("appsettings.json")
                 .Build();
 
-            string kestrelUrl = configuration["Kestrel:EndpointDefaults:Url"];
+            string kestrelUrl = configuration["Kestrel:EndpointDefaults:Url"]  ?? "http://127.0.0.1:5000";
             
             // Add URL bindings
             app.Urls.Add(kestrelUrl);

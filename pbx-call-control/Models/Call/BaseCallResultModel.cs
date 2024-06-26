@@ -1,15 +1,17 @@
-﻿namespace PbxApiControl.Models.Call;
-
-public class BaseCallResultModel
+﻿namespace PbxApiControl.Models.Call
 {
-    public bool Result { get; }
-
-    public string Message { get; }
-
-
-    internal BaseCallResultModel(bool result, string message)
+    public class BaseCallResultModel
     {
-        this.Result = result;
-        this.Message = message;
+        public bool Result { get; }
+
+        public string Message { get; }
+
+
+        internal BaseCallResultModel(bool result, string message)
+        {
+            this.Result = result;
+            this.Message = message;
+        }
     }
 }
+

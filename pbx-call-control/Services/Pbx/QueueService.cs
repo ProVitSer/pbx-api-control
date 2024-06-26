@@ -1,161 +1,129 @@
-﻿using System.Diagnostics;
-using TCX.Configuration;
+﻿using TCX.Configuration;
 using PbxApiControl.Interface;
 using PbxApiControl.Models.Queue;
 using PbxApiControl.Enums;
 
-namespace PbxApiControl.Services.Pbx;
-
-public class QueueService : IQueueService
+namespace PbxApiControl.Services.Pbx
 {
-    private readonly ILogger<QueueService> _logger;
-    
-    public QueueService(ILogger<QueueService> logger)
+    public class QueueService : IQueueService
     {
-        _logger = logger;
-    }
-    
-    
-    public string[] QueueList()
-    {
-        using (IArrayDisposer<Queue> disposer = PhoneSystem.Root.GetAll<Queue>().GetDisposer())
-        {
-            var queueNumbers = disposer.Select(x => x.Number).ToArray();
+        private readonly ILogger<QueueService> _logger;
 
-            return queueNumbers;
-        };
-    }
-
-    public QueueAgentsDataModels[] QueueAgents(string queueNumber)
-    {
-        
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber))
+        public QueueService(ILogger<QueueService> logger)
         {
-            if (!(dnByNumber is Queue))
+            _logger = logger;
+        }
+
+        public string[] QueueList()
+        {
+            using (var disposer = PhoneSystem.Root.GetAll<Queue>().GetDisposer())
             {
-                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
-            }
-            
-            var queue = (Queue)dnByNumber;
-
-            
-            QueueAgentsDataModels[] queueAgents = queue.QueueAgents
-                .Select(agent =>
-                {
-                    Extension extension = agent.DN as Extension;
-                    
-                    return new QueueAgentsDataModels(extension);
-                })
-                .ToArray();
-
-            return queueAgents;
-
-        };
-    }
-
-    public QueueAgentsDataModels[] FreeQueueAgents(string queueNumber)
-    {
-        return GetQueueAgentsByStatus(queueNumber, ActiveConnectionsStatus.Idle);
-    }
-    
-    public QueueAgentsDataModels[] BusyQueueAgents(string queueNumber)
-    {
-        return GetQueueAgentsByStatus(queueNumber, ActiveConnectionsStatus.Busy);
-    }
-
-    public QueueDataModel AddQueueAgents(string queueNumber, string[] agentsNumbers)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber))
-        {
-            if (!(dnByNumber is Queue))
-            {
-                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
-            }
-            
-            var queue = (Queue)dnByNumber;
-
-            var qAgents = QueueAgents(queueNumber);
-
-            var remainingAgents = agentsNumbers.Union(qAgents.Select(qa => qa.Extension).ToArray()).ToArray();
-
-            AddQueueAgents(remainingAgents, queue);
-
-            return new QueueDataModel(queueNumber, remainingAgents);
-        };
-    }
-
-    public QueueDataModel DeleteQueueAgents(string queueNumber, string[] agentsNumbers)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber))
-        {
-            if (!(dnByNumber is Queue))
-            {
-                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
-            }
-            
-            var queue = (Queue)dnByNumber;
-
-            var qAgents = QueueAgents(queueNumber);
-
-            var remainingAgents = qAgents.Where(qa => !agentsNumbers.Contains(qa.Extension)).ToArray().Select(x => x.Extension).ToArray();
-
-            AddQueueAgents(remainingAgents, queue);
-            
-            return new QueueDataModel(queueNumber, remainingAgents);
-        };
-    }
-
-    private void AddQueueAgents(string[] agents, Queue queue)
-    {
-        QueueAgent[] queueAgent = agents.Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
-            .Where(x => x != null)
-            .Distinct()
-            .Select(x => queue.CreateAgent(x))
-            .ToArray();
-            
-        queue.QueueAgents = queueAgent;
-        queue.Save();
-    }
-
-    public bool IsQueueExists(string queueNumber)
-    {
-
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber))
-        {
-            return dnByNumber is Queue;
-        };
-    }
-    
-    private QueueAgentsDataModels[] GetQueueAgentsByStatus(string queueNumber, ActiveConnectionsStatus status)
-    {
-
-        QueueAgentsDataModels[] queueAgents = QueueAgents(queueNumber);
-        
-        if (queueAgents.Length == 0) return queueAgents;
-        
-        List<QueueAgentsDataModels> queueAgentsList = new List<QueueAgentsDataModels>();
-        
-        foreach (QueueAgentsDataModels queueA in queueAgents)
-        {
-            if (queueA.AgentQueueStatus == QueuesStatusType.LoggedIn && GetExtensionStatus(queueA.Extension) == status)
-            {
-                queueAgentsList.Add(queueA);
+                return disposer.Select(x => x.Number).ToArray();
             }
         }
-        return queueAgentsList.ToArray();
 
-    }
-    
-    private ActiveConnectionsStatus GetExtensionStatus(string ext)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ext))
+        public QueueAgentsDataModels[] QueueAgents(string queueNumber)
         {
-            if (dnByNumber == null || !(dnByNumber is Extension)) return ActiveConnectionsStatus.DoesNotExists;
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber);
 
-            using (IArrayDisposer<ActiveConnection> disposer = dnByNumber.GetActiveConnections().GetDisposer())
+            if (dnByNumber is not Queue queue)
+            {
+                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
+            }
+
+            return queue.QueueAgents
+                .Select(agent => new QueueAgentsDataModels(agent.DN as Extension))
+                .ToArray();
+        }
+
+        public QueueAgentsDataModels[] FreeQueueAgents(string queueNumber)
+        {
+            return GetQueueAgentsByStatus(queueNumber, ActiveConnectionsStatus.Idle);
+        }
+
+        public QueueAgentsDataModels[] BusyQueueAgents(string queueNumber)
+        {
+            return GetQueueAgentsByStatus(queueNumber, ActiveConnectionsStatus.Busy);
+        }
+
+        public QueueDataModel AddQueueAgents(string queueNumber, string[] agentNumbers)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber);
+
+            if (dnByNumber is not Queue queue)
+            {
+                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
+            }
+
+            var currentAgents = QueueAgents(queueNumber);
+            var updatedAgents = agentNumbers.Union(currentAgents.Select(qa => qa.Extension)).ToArray();
+
+            UpdateQueueAgents(queue, updatedAgents);
+
+            return new QueueDataModel(queueNumber, updatedAgents);
+        }
+
+        public QueueDataModel RemoveQueueAgents(string queueNumber, string[] agentNumbers)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber);
+
+            if (dnByNumber is not Queue queue)
+            {
+                throw new InvalidOperationException(ServiceConstants.DnIsNotQueue);
+            }
+
+            var currentAgents = QueueAgents(queueNumber);
+            var updatedAgents = currentAgents
+                .Where(qa => !agentNumbers.Contains(qa.Extension))
+                .Select(x => x.Extension)
+                .ToArray();
+
+            UpdateQueueAgents(queue, updatedAgents);
+
+            return new QueueDataModel(queueNumber, updatedAgents);
+        }
+
+        private void UpdateQueueAgents(Queue queue, string[] agents)
+        {
+            var queueAgents = agents
+                .Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
+                .Where(x => x != null)
+                .Distinct()
+                .Select(x => queue.CreateAgent(x))
+                .ToArray();
+
+            queue.QueueAgents = queueAgents;
+            queue.Save();
+        }
+
+        public bool IsQueueExists(string queueNumber)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(queueNumber);
+            return dnByNumber is Queue;
+        }
+
+        private QueueAgentsDataModels[] GetQueueAgentsByStatus(string queueNumber, ActiveConnectionsStatus status)
+        {
+            var queueAgents = QueueAgents(queueNumber);
+
+            return queueAgents
+                .Where(qa => qa.AgentQueueStatus == QueuesStatusType.LoggedIn && GetExtensionStatus(qa.Extension) == status)
+                .ToArray();
+        }
+
+        private ActiveConnectionsStatus GetExtensionStatus(string extensionNumber)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(extensionNumber);
+
+            if (dnByNumber is not Extension)
+            {
+                return ActiveConnectionsStatus.DoesNotExists;
+            }
+
+            using (var disposer = dnByNumber.GetActiveConnections().GetDisposer())
             {
                 return disposer.Length == 0 ? ActiveConnectionsStatus.Idle : ActiveConnectionsStatus.Busy;
-            };
+            }
         }
     }
 }

@@ -1,9 +1,11 @@
-﻿namespace PbxApiControl.Enums;
-
-internal enum ActiveConnectionsStatus
+﻿namespace PbxApiControl.Enums
 {
-    DoesNotExists,
-    Idle,
-    Busy,
+    internal enum ActiveConnectionsStatus
+    {
+        DoesNotExists,
+        Idle,
+        Busy,
 
+    }
 }
+

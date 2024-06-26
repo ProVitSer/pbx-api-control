@@ -1,6 +1,6 @@
 ﻿using PbxApiControl.Models.Extensions;
 
-namespace PbxApiControl.Models.Reply
+namespace PbxApiControl.Models.ExtensionReply
 {
     public class ExtInfoReply
     {

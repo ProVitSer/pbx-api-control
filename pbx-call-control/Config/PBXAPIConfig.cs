@@ -3,25 +3,25 @@ using TCX.Configuration;
 
 namespace PbxApiControl.Config
 {
-    public static class PBXAPIConfig
+    public static class PbxApiConfig
     {
-        public static string? instanceBinPath;
+        public static string? InstanceBinPath;
 
         public static void InitConfig()
         {
             try
             {
-                Dictionary<string, Dictionary<string, string>> iniContent = new Dictionary<string, Dictionary<string, string>>((IEqualityComparer<string>)StringComparer.InvariantCultureIgnoreCase);
-                Dictionary<string, Dictionary<string, string>> Content = new Dictionary<string, Dictionary<string, string>>((IEqualityComparer<string>)StringComparer.InvariantCultureIgnoreCase);
+                var iniContent = new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
+                var content = new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
 
                 ReadConfiguration(iniContent, "api.ini");
-                ReadConfiguration(Content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
+                ReadConfiguration(content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
 
-                instanceBinPath = Path.Combine(Content["General"]["AppPath"], "Bin");
+                InstanceBinPath = Path.Combine(content["General"]["AppPath"], "Bin");
 
-                AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => CurrentDomain_AssemblyResolve(args, instanceBinPath);
+                AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => CurrentDomain_AssemblyResolve(args, InstanceBinPath);
 
-                ConnectToTCX(Content);
+                ConnectToTcx(content);
             }
             catch (Exception ex)
             {
@@ -29,20 +29,20 @@ namespace PbxApiControl.Config
             }
         }
 
-        private static void ConnectToTCX(Dictionary<string, Dictionary<string, string>> Content)
+        private static void ConnectToTcx(Dictionary<string, Dictionary<string, string>> content)
         {
             try
             {
                 PhoneSystem.CfgServerHost = "127.0.0.1";
-                PhoneSystem.CfgServerPort = int.Parse(Content["ConfService"]["ConfPort"]);
-                PhoneSystem.CfgServerUser = Content["ConfService"]["confUser"];
-                PhoneSystem.CfgServerPassword = Content["ConfService"]["confPass"];
+                PhoneSystem.CfgServerPort = int.Parse(content["ConfService"]["ConfPort"]);
+                PhoneSystem.CfgServerUser = content["ConfService"]["confUser"];
+                PhoneSystem.CfgServerPassword = content["ConfService"]["confPass"];
                 var ps = PhoneSystem.Reset(
                   PhoneSystem.ApplicationName + new Random(Environment.TickCount).Next().ToString(),
                   "127.0.0.1",
-                  int.Parse(Content["ConfService"]["ConfPort"]),
-                  Content["ConfService"]["confUser"],
-                  Content["ConfService"]["confPass"]);
+                  int.Parse(content["ConfService"]["ConfPort"]),
+                  content["ConfService"]["confUser"],
+                  content["ConfService"]["confPass"]);
 
                 ps.WaitForConnect(TimeSpan.FromSeconds(5.0));
             }
@@ -53,7 +53,7 @@ namespace PbxApiControl.Config
         }
 
         private static void ReadConfiguration(
-          Dictionary<string, Dictionary<string, string>> Content,
+          Dictionary<string, Dictionary<string, string>> content,
           string filePath)
         {
             if (!File.Exists(filePath))
@@ -63,24 +63,24 @@ namespace PbxApiControl.Config
 
             Dictionary<string, string> dictionary = null;
 
-            for (int index = 1; index < strArray.Length + 1; ++index)
+            foreach (var str in strArray)
             {
-                string str1 = strArray[index - 1].Trim();
+                string trimmedStr = str.Trim();
 
-                if (str1.StartsWith("["))
+                if (trimmedStr.StartsWith("["))
                 {
-                    string str2 = str1.Split(new char[2] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries)[0];
-                    dictionary = Content[str2] = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
+                    string section = trimmedStr.Split(new[] { '[', ']' }, StringSplitOptions.RemoveEmptyEntries)[0];
+                    dictionary = content[section] = new Dictionary<string, string>(StringComparer.InvariantCultureIgnoreCase);
                 }
-                else if (dictionary != null && !string.IsNullOrWhiteSpace(str1) && !str1.StartsWith("#") && !str1.StartsWith(";"))
+                else if (dictionary != null && !string.IsNullOrWhiteSpace(trimmedStr) && !trimmedStr.StartsWith("#") && !trimmedStr.StartsWith(";"))
                 {
-                    string[] array = str1.Split("=", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
+                    string[] array = trimmedStr.Split("=", StringSplitOptions.RemoveEmptyEntries).Select(x => x.Trim()).ToArray();
                     dictionary[array[0]] = array[1];
                 }
             }
         }
 
-        static Assembly CurrentDomain_AssemblyResolve(ResolveEventArgs args, string? instanceBinPath)
+        private static Assembly? CurrentDomain_AssemblyResolve(ResolveEventArgs args, string? instanceBinPath)
         {
             var name = new AssemblyName(args.Name).Name;
 

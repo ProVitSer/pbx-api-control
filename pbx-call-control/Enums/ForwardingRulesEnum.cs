@@ -1,10 +1,12 @@
-﻿namespace PbxApiControl.Enums;
-
-internal enum ForwardingRules
+﻿namespace PbxApiControl.Enums
 {
-    Available,
-    Away,
-    DND,
-    Lunch,
-    BusinessTrip,
+    internal enum ForwardingRules
+    {
+        Available,
+        Away,
+        DND,
+        Lunch,
+        BusinessTrip,
+    }
 }
+

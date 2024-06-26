@@ -1,21 +1,23 @@
-﻿namespace PbxApiControl.Models.Contact;
-
-public class ContaclListDataModel
+﻿namespace PbxApiControl.Models.Contact
 {
-    public ContactDataModel[] Contacts { get; }
+    public class ContaclListDataModel
+    {
+        public ContactDataModel[] Contacts { get; }
 
-    public int PageNumber { get; }
+        public int PageNumber { get; }
 
-    public int PageSize { get; }
+        public int PageSize { get; }
 
-    public int TotalCount { get; }
+        public int TotalCount { get; }
     
   
-    public ContaclListDataModel(int PageNumber, int PageSize, int  TotalCount, ContactDataModel[] Contacts)
-    {
-        this.Contacts = Contacts;
-        this.PageNumber = PageNumber;
-        this.PageSize = PageSize;
-        this.TotalCount = TotalCount;
+        public ContaclListDataModel(int pageNumber, int pageSize, int  totalCount, ContactDataModel[] contacts)
+        {
+            this.Contacts = contacts;
+            this.PageNumber = pageNumber;
+            this.PageSize = pageSize;
+            this.TotalCount = totalCount;
+        }
     }
 }
+

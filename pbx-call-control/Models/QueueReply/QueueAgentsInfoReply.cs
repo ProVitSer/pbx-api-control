@@ -1,17 +1,19 @@
 ﻿using PbxApiControl.Models.Queue;
 
-namespace PbxApiControl.Models.QueueReply;
-
-public class QueueAgentsInfoReply
+namespace PbxApiControl.Models.QueueReply
 {
-    public static QueueInfo FormatQueueInfo(QueueAgentsDataModels data)
+    public class QueueAgentsInfoReply
     {
-        return new QueueInfo
+        public static QueueInfo FormatQueueInfo(QueueAgentsDataModels data)
         {
-            Extension = data.Extension,
-            FirstName = data.FirstName,
-            LastName = data.LastName,
-            AgentQueueStatus = data.AgentQueueStatus.ToString()
-        };
-    }
+            return new QueueInfo
+            {
+                Extension = data.Extension,
+                FirstName = data.FirstName,
+                LastName = data.LastName,
+                AgentQueueStatus = data.AgentQueueStatus.ToString()
+            };
+        }
+    }  
 }
+

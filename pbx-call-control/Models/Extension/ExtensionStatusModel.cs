@@ -1,9 +1,9 @@
 ﻿using PbxApiControl.Enums;
 using TCX.Configuration;
 
-namespace PbxApiControl.Models.Extensions;
-
-public class ExtensionStatus
+namespace PbxApiControl.Models.Extensions
+{
+    public class ExtensionStatus
 {
     public string Extension { get; }
 
@@ -48,7 +48,7 @@ public class ExtensionStatus
                 return ForwardingRules.BusinessTrip.ToString();
             default:
                 return status;
-        };
+        }
     }
 
     private static string[] GetQueuesByStatus(Extension ext, QueueStatusType queueStatusType){
@@ -67,4 +67,5 @@ public class ExtensionStatus
 
         return queues.ToArray();
     }
+}
 }

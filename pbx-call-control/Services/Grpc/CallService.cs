@@ -4,9 +4,9 @@ using PbxApiControl.Interface;
 using PbxApiControl.Models.CallReply;
 
 
-namespace PbxApiControl.Services.Grpc;
-
-public class CallService : CallPbxService.CallPbxServiceBase
+namespace PbxApiControl.Services.Grpc
+{
+    public class CallService : CallPbxService.CallPbxServiceBase
 {
     private readonly ILogger<ContactService> _logger;
     private readonly ICallService _callService;
@@ -151,3 +151,5 @@ public class CallService : CallPbxService.CallPbxServiceBase
         
     }
 }
+}
+

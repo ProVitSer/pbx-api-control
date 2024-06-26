@@ -1,9 +1,12 @@
-﻿namespace PbxApiControl.Enums;
-
-public enum Direction
+﻿namespace PbxApiControl.Enums
 {
-    Undefined,
-    Inbound,
-    Outbound,
-    Local
+    public enum Direction
+    {
+        Undefined,
+        Inbound,
+        Outbound,
+        Local
+    }
 }
+
+

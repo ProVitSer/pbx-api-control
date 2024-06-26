@@ -1,4 +1,4 @@
-﻿namespace PbxApiControl.Models.Reply
+﻿namespace PbxApiControl.Models.ExtensionReply
 {
     public class DeleteExtensionResultReply
     {

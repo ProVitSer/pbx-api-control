@@ -9,10 +9,10 @@ namespace PbxApiControl.Models.Extensions
         public string? FirstName { get;  }
         public string? LastName { get; }
         public string? Email { get; }
-        public string? AuthID { get; }
+        public string? AuthId { get; }
         public string? AuthPassword { get; }
         public string? MobileNumber { get; }
-        public string? OutboundCallerID { get; }
+        public string? OutboundCallerId { get; }
         [EnumDataType(typeof(RecordType))]
         public string? RecordingType { get;  }
         public bool? IsExtenionEnabled { get; }
@@ -27,10 +27,10 @@ namespace PbxApiControl.Models.Extensions
             FirstName = request.FirstName;
             LastName = request.LastName;
             Email = request.Email;
-            AuthID = request.AuthId;
+            AuthId = request.AuthId;
             AuthPassword = request.AuthPassword;
             MobileNumber = request.MobileNumber;
-            OutboundCallerID = request.OutboundCallerId;
+            OutboundCallerId = request.OutboundCallerId;
             RecordingType = request.RecordingType;
             IsExtenionEnabled = request.IsExtensionEnabled;
             DisableExternalCalls = request.DisableExternalCalls;

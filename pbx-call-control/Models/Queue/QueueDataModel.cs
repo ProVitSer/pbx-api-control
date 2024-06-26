@@ -1,14 +1,16 @@
-﻿namespace PbxApiControl.Models.Queue;
-
-public class QueueDataModel
+﻿namespace PbxApiControl.Models.Queue
 {
-    public string QueueNumber { get; }
-    public string[] QueueAgents { get; }
-    
-    
-    public QueueDataModel(string queueNumber, string[] queueAgents)
+    public class QueueDataModel
     {
-        QueueNumber = queueNumber;
-        QueueAgents = queueAgents;
+        public string QueueNumber { get; }
+        public string[] QueueAgents { get; }
+    
+    
+        public QueueDataModel(string queueNumber, string[] queueAgents)
+        {
+            QueueNumber = queueNumber;
+            QueueAgents = queueAgents;
+        }
     }
 }
+

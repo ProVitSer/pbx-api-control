@@ -13,15 +13,15 @@ namespace PbxApiControl.Models.CallReply
             {
                 List<ConnectionsData> connectionsDataList  = new List<ConnectionsData>();
 
-                foreach (var ci in aci.activeConnectionInfo)
+                foreach (var ci in aci.ActiveConnectionInfo)
                 {
                     connectionsDataList .Add(new ConnectionsData
                     {
-                        Id = ci.ID,
-                        CallConnectionId = ci.CallConnectionID,
+                        Id = ci.Id,
+                        CallConnectionId = ci.CallConnectionId,
                         ExternalParty = ci.ExternalParty,
                         RecordingState = ci.RecordingState,
-                        PartyConnectionId = ci.PartyConnectionID,
+                        PartyConnectionId = ci.PartyConnectionId,
                         ReferredBy = ci.ReferredBy,
                         IsOutbound = ci.IsOutbound,
                         IsInbound = ci.IsInbound,
@@ -37,7 +37,7 @@ namespace PbxApiControl.Models.CallReply
 
                 var info = new ActiveConnectionsInfo
                 {
-                    CallId = (int)aci.CallID,
+                    CallId = (int)aci.CallId,
                     ConnectionsData =
                     {
                         connectionsData

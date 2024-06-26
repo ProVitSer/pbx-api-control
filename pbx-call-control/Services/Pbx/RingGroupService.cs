@@ -1,112 +1,96 @@
-﻿
-using TCX.Configuration;
+﻿using TCX.Configuration;
 using PbxApiControl.Interface;
 using PbxApiControl.Models.RingGroup;
 
-
-namespace PbxApiControl.Services.Pbx;
-public class RingGroupService : IRingGroupService
+namespace PbxApiControl.Services.Pbx
 {
-    private readonly ILogger<ExtensionService> _logger;
-    
-    public RingGroupService(ILogger<ExtensionService> logger)
+    public class RingGroupService : IRingGroupService
     {
-        _logger = logger;
-    }
-    
-    public string[] GetRingGroupList()
-    {
-        using (IArrayDisposer<RingGroup> disposer = PhoneSystem.Root.GetAll<RingGroup>().GetDisposer())
-        {
-            var ringGroupNumbers = disposer.Select(x => x.Number).ToArray();
+        private readonly ILogger<RingGroupService> _logger;
 
-            return ringGroupNumbers;
-        };
-    }
-    
-    public string[] GetRingGroupMembers(string ringGroupNumber)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ringGroupNumber))
+        public RingGroupService(ILogger<RingGroupService> logger)
         {
-            
-            if (!(dnByNumber is RingGroup))
-            {
-                throw new InvalidOperationException(ServiceConstants.DnIsNotRingGroup);
-            }
-            
-            var ringGroup = (RingGroup)dnByNumber;
+            _logger = logger;
+        }
 
-            using (IArrayDisposer<DN> disposer = ringGroup.Members.GetDisposer<DN>())
+        public string[] GetRingGroupList()
+        {
+            using (var disposer = PhoneSystem.Root.GetAll<RingGroup>().GetDisposer())
             {
                 return disposer.Select(x => x.Number).ToArray();
-            };
-        };
-    }
-    
-    
-    public string[] AddRingGroupMembers(AddRingGroupMembersDataModel data)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.RingGroupNumber))
-        {
-            
-            if (!(dnByNumber is RingGroup))
-            {
-                throw new InvalidOperationException(ServiceConstants.DnIsNotRingGroup);
             }
-            
-            UpdateRingGroupData((RingGroup)dnByNumber,
-                GetRingGroupMembers(data.RingGroupNumber).Union(data.Extensions).ToArray());
-            
-            return GetRingGroupMembers(data.RingGroupNumber);
+        }
 
-        };
-    }
-    
-    public string[] DeleteRingGroupMembers(DeleteRingGroupMembersDataModel data)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(data.RingGroupNumber))
+        public string[] GetRingGroupMembers(string ringGroupNumber)
         {
-            
-            if (!(dnByNumber is RingGroup))
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(ringGroupNumber);
+
+            if (dnByNumber is not RingGroup ringGroup)
             {
                 throw new InvalidOperationException(ServiceConstants.DnIsNotRingGroup);
             }
 
-            UpdateRingGroupData((RingGroup)dnByNumber,
-                GetRingGroupMembers(data.RingGroupNumber).Except(data.Extensions).ToArray());
-            
-            return GetRingGroupMembers(data.RingGroupNumber);
+            using (var disposer = ringGroup.Members.GetDisposer<DN>())
+            {
+                return disposer.Select(x => x.Number).ToArray();
+            }
+        }
 
-        };
-    }
-
-    private void UpdateRingGroupData(RingGroup ringGroup, string[] actualMembers)
-    {
-        ringGroup.Members = ParseMembers(actualMembers);
-            
-        ringGroup.Save();
-    }
-
-
-    public bool IsRingGroupExists(string ringGroupNumber)
-    {
-        using (DN dnByNumber = PhoneSystem.Root.GetDNByNumber(ringGroupNumber))
+        public string[] AddRingGroupMembers(AddRingGroupMembersDataModel data)
         {
-     
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(data.RingGroupNumber);
+
+            if (dnByNumber is not RingGroup ringGroup)
+            {
+                throw new InvalidOperationException(ServiceConstants.DnIsNotRingGroup);
+            }
+
+            var updatedMembers = GetRingGroupMembers(data.RingGroupNumber)
+                .Union(data.Extensions)
+                .ToArray();
+
+            UpdateRingGroupData(ringGroup, updatedMembers);
+
+            return GetRingGroupMembers(data.RingGroupNumber);
+        }
+
+        public string[] DeleteRingGroupMembers(DeleteRingGroupMembersDataModel data)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(data.RingGroupNumber);
+
+            if (dnByNumber is not RingGroup ringGroup)
+            {
+                throw new InvalidOperationException(ServiceConstants.DnIsNotRingGroup);
+            }
+
+            var updatedMembers = GetRingGroupMembers(data.RingGroupNumber)
+                .Except(data.Extensions)
+                .ToArray();
+
+            UpdateRingGroupData(ringGroup, updatedMembers);
+
+            return GetRingGroupMembers(data.RingGroupNumber);
+        }
+
+        private void UpdateRingGroupData(RingGroup ringGroup, string[] actualMembers)
+        {
+            ringGroup.Members = ParseMembers(actualMembers);
+            ringGroup.Save();
+        }
+
+        public bool IsRingGroupExists(string ringGroupNumber)
+        {
+            var dnByNumber = PhoneSystem.Root.GetDNByNumber(ringGroupNumber);
             return dnByNumber is RingGroup;
-        };
-    }
-    
-    private static DN[] ParseMembers(string[] memberNumbers)
-    {
-        DN[] dn = memberNumbers
-            .Select(x => PhoneSystem.Root.GetDNByNumber(x) as Extension)
-            .Where(x => x != null)
-            .Distinct()
-            .ToArray();
+        }
 
-        return dn;
+        private static DN[] ParseMembers(string[] memberNumbers)
+        {
+            return memberNumbers
+                .Select(x => PhoneSystem.Root.GetDNByNumber(x) as DN)
+                .Where(x => x is not null)
+                .Distinct()
+                .ToArray();
+        }
     }
-
-    
 }

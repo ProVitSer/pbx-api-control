@@ -1,25 +1,25 @@
 ﻿using TCX.Configuration;
-using PbxApiControl.Services.Pbx;
 
-
-namespace PbxApiControl.Models.Call;
-
-public class FullActiveConnectionInfoModel
+namespace PbxApiControl.Models.Call
 {
-    public uint CallID { get; set;}
-    
-    public List<ActiveConnectionInfoModel> activeConnectionInfo { get; set; }
-    
-    internal FullActiveConnectionInfoModel(uint callid)
+    public class FullActiveConnectionInfoModel
     {
-        this.CallID = callid;
-        this.activeConnectionInfo = new List<ActiveConnectionInfoModel>();
+        public uint CallId  { get; }
+    
+        public List<ActiveConnectionInfoModel> ActiveConnectionInfo  { get; }
+    
+        internal FullActiveConnectionInfoModel(uint callid)
+        {
+            this.CallId  = callid;
+            this.ActiveConnectionInfo  = new List<ActiveConnectionInfoModel>();
 
-    }
+        }
 
-    public void AddActiveConnectionInfo(ActiveConnection activeConnection)
-    {
-        this.activeConnectionInfo.Add(new ActiveConnectionInfoModel(activeConnection));
+        public void AddActiveConnectionInfo(ActiveConnection activeConnection)
+        {
+            this.ActiveConnectionInfo .Add(new ActiveConnectionInfoModel(activeConnection));
 
+        }
     }
 }
+

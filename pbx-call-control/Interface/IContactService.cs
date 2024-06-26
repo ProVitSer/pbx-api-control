@@ -1,17 +1,19 @@
 ﻿using PbxApiControl.Models.Contact;
 
-namespace PbxApiControl.Interface;
-
-public interface IContactService
+namespace PbxApiControl.Interface
 {
-    bool IsContactIdExists(string contactId);
+    public interface IContactService
+    {
+        bool IsContactIdExists(string contactId);
 
-    ContactDataModel GetContactInfoById(string contactId);
+        ContactDataModel GetContactInfoById(string contactId);
     
-    ContactDataModel UpdateContactById(UpdateContactDataModel data);
+        ContactDataModel UpdateContactById(UpdateContactDataModel data);
     
-    ContaclListDataModel ContactList(int pageNumber, int pageSize);
+        ContaclListDataModel ContactList(int pageNumber, int pageSize);
 
-    ContactDataModel DeleteContactById(string contactId);
+        ContactDataModel DeleteContactById(string contactId);
 
+    }
 }
+

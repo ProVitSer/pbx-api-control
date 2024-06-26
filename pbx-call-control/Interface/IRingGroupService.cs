@@ -1,17 +1,19 @@
 ﻿using PbxApiControl.Models.RingGroup;
 
-
-namespace PbxApiControl.Interface;
-
-public interface IRingGroupService
+namespace PbxApiControl.Interface
 {
+    public interface IRingGroupService
+    {
     
-    bool IsRingGroupExists(string ringGroupNumber);
-    string[] GetRingGroupList();
-    string[] GetRingGroupMembers(string ringGroupNumber);
+        bool IsRingGroupExists(string ringGroupNumber);
+        string[] GetRingGroupList();
+        string[] GetRingGroupMembers(string ringGroupNumber);
     
-    string[] AddRingGroupMembers(AddRingGroupMembersDataModel data);
+        string[] AddRingGroupMembers(AddRingGroupMembersDataModel data);
     
-    string[] DeleteRingGroupMembers(DeleteRingGroupMembersDataModel data);
+        string[] DeleteRingGroupMembers(DeleteRingGroupMembersDataModel data);
     
+    }
+
 }
+

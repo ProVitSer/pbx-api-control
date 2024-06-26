@@ -5,15 +5,15 @@ using PbxApiControl.Models.Contact;
 
 namespace PbxApiControl.Services.Grpc {
     public class ContactService: ContactPbxService.ContactPbxServiceBase {
-        private readonly ILogger < ContactService > _logger;
+        private readonly ILogger<ContactService> _logger;
         private readonly IContactService _contactService;
 
-        public ContactService(ILogger < ContactService > logger, IContactService contactService) {
+        public ContactService(ILogger<ContactService> logger, IContactService contactService) {
             _logger = logger;
             _contactService = contactService;
         }
 
-        public override Task < ContactInfoDataReply > GetContactInfoById(GetContactInfoByIdRequest request, ServerCallContext context) {
+        public override Task<ContactInfoDataReply>GetContactInfoById(GetContactInfoByIdRequest request, ServerCallContext context) {
             try {
 
                 var isContactExists = _contactService.IsContactIdExists(request.ContactId);
@@ -35,7 +35,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < ContactInfoDataReply > UpdateContactInfoById(UpdateContactInfoRequest request, ServerCallContext context) {
+        public override Task<ContactInfoDataReply>UpdateContactInfoById(UpdateContactInfoRequest request, ServerCallContext context) {
             try {
 
                 var isContactExists = _contactService.IsContactIdExists(request.ContactId);
@@ -57,7 +57,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < ContactListReply > GetContactList(GetContactListRequest request, ServerCallContext context) {
+        public override Task<ContactListReply>GetContactList(GetContactListRequest request, ServerCallContext context) {
             try {
                 var contactsList = _contactService.ContactList(request.PageNumber, request.PageSize);
 
@@ -79,7 +79,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < ContactInfoDataReply > DeleteContactById(DeleteContactByIdRequest request, ServerCallContext context) {
+        public override Task<ContactInfoDataReply>DeleteContactById(DeleteContactByIdRequest request, ServerCallContext context) {
             try {
                 var isContactExists = _contactService.IsContactIdExists(request.ContactId);
 

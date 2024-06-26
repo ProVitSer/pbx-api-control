@@ -7,15 +7,15 @@ using PbxApiControl.Models.ExtensionReply;
 namespace PbxApiControl.Services.Grpc {
     public class ExtensionService: ExtensionsPbxService.ExtensionsPbxServiceBase {
 
-        private readonly ILogger < ExtensionService > _logger;
+        private readonly ILogger<ExtensionService> _logger;
         private readonly IExtensionService _extensionService;
 
-        public ExtensionService(ILogger < ExtensionService > logger, IExtensionService extensionService) {
+        public ExtensionService(ILogger<ExtensionService> logger, IExtensionService extensionService) {
             _logger = logger;
             _extensionService = extensionService;
         }
 
-        public override Task < ExtensionStatusReply > GetExtensionStatus(GetExtensionStatusRequest request, ServerCallContext context) {
+        public override Task<ExtensionStatusReply>GetExtensionStatus(GetExtensionStatusRequest request, ServerCallContext context) {
             try {
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
 
@@ -36,7 +36,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < ExtensionInfoReply > GetExtensionInfo(GetExtensionInfoRequest request, ServerCallContext context) {
+        public override Task<ExtensionInfoReply>GetExtensionInfo(GetExtensionInfoRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
@@ -57,7 +57,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < GetExtensionsReply > GetExtensions(Empty request, ServerCallContext context) {
+        public override Task<GetExtensionsReply>GetExtensions(Empty request, ServerCallContext context) {
             try {
                 var extensions = _extensionService.AllExtensions();
 
@@ -71,7 +71,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < GetRegisteredExtensionsReply > GetRegisteredExtensions(Empty request, ServerCallContext context) {
+        public override Task<GetRegisteredExtensionsReply>GetRegisteredExtensions(Empty request, ServerCallContext context) {
             try {
                 var regExtensions = _extensionService.RegisteredExtensions();
 
@@ -86,7 +86,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < GetExtensionDeviceInfoReply > GetExtensionDeviceInfo(GetExtensionDeviceInfoRequest request, ServerCallContext context) {
+        public override Task<GetExtensionDeviceInfoReply>GetExtensionDeviceInfo(GetExtensionDeviceInfoRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
@@ -109,7 +109,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < ExtensionInfoReply > CreateExtension(CreateExtensionRequest request, ServerCallContext context) {
+        public override Task<ExtensionInfoReply>CreateExtension(CreateExtensionRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
@@ -132,7 +132,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < DeleteExtensionReply > DeleteExtension(DeleteExtensionRequest request, ServerCallContext context) {
+        public override Task<DeleteExtensionReply>DeleteExtension(DeleteExtensionRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
@@ -154,7 +154,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < ExtensionInfoReply > UpdateExtensionInfo(UpdateExtensionInfoRequest request, ServerCallContext context) {
+        public override Task<ExtensionInfoReply>UpdateExtensionInfo(UpdateExtensionInfoRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
@@ -176,7 +176,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < ExtensionStatusReply > SetExtensionForwardStatus(SetExtensionForwardStatusRequest request, ServerCallContext context) {
+        public override Task<ExtensionStatusReply>SetExtensionForwardStatus(SetExtensionForwardStatusRequest request, ServerCallContext context) {
             try {
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
 
@@ -197,7 +197,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < ExtensionStatusReply > SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest request, ServerCallContext context) {
+        public override Task<ExtensionStatusReply>SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest request, ServerCallContext context) {
             try {
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);
 
@@ -218,7 +218,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < ExtensionStatusReply > SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest request, ServerCallContext context) {
+        public override Task<ExtensionStatusReply>SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest request, ServerCallContext context) {
             try {
 
                 var extensionExists = _extensionService.IsExtensionExists(request.Extension);

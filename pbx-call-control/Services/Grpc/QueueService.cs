@@ -5,15 +5,15 @@ using PbxApiControl.Models.QueueReply;
 
 namespace PbxApiControl.Services.Grpc {
     public class QueueService: QueuePbxService.QueuePbxServiceBase {
-        private readonly ILogger < RingGroupService > _logger;
+        private readonly ILogger<QueueService> _logger;
         private readonly IQueueService _queueService;
 
-        public QueueService(ILogger < RingGroupService > logger, IQueueService queueService) {
+        public QueueService(ILogger<QueueService> logger, IQueueService queueService) {
             _logger = logger;
             _queueService = queueService;
         }
 
-        public override Task < QueueListDataReply > GetQueueList(Empty request, ServerCallContext context) {
+        public override Task<QueueListDataReply>GetQueueList(Empty request, ServerCallContext context) {
             try {
 
                 var queueList = _queueService.QueueList();
@@ -31,7 +31,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < QueueInfoReply > GetQueueAgents(QueueInfoRequest request, ServerCallContext context) {
+        public override Task<QueueInfoReply>GetQueueAgents(QueueInfoRequest request, ServerCallContext context) {
             try {
 
                 var isQueueNumberExists = _queueService.IsQueueExists(request.QueueNumber);
@@ -56,7 +56,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < QueueInfoReply > GetFreeQueueAgents(QueueInfoRequest request, ServerCallContext context) {
+        public override Task<QueueInfoReply>GetFreeQueueAgents(QueueInfoRequest request, ServerCallContext context) {
             try {
 
                 var isQueueNumberExists = _queueService.IsQueueExists(request.QueueNumber);
@@ -81,7 +81,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < QueueInfoReply > GetBusyQueueAgents(QueueInfoRequest request, ServerCallContext context) {
+        public override Task<QueueInfoReply>GetBusyQueueAgents(QueueInfoRequest request, ServerCallContext context) {
             try {
 
                 var isQueueNumberExists = _queueService.IsQueueExists(request.QueueNumber);
@@ -106,7 +106,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < QueueModifyReply > AddAgentsToQueue(QueueModifyRequest request, ServerCallContext context) {
+        public override Task<QueueModifyReply>AddAgentsToQueue(QueueModifyRequest request, ServerCallContext context) {
             try {
 
                 var isQueueNumberExists = _queueService.IsQueueExists(request.QueueNumber);
@@ -131,7 +131,7 @@ namespace PbxApiControl.Services.Grpc {
             }
         }
 
-        public override Task < QueueModifyReply > DeleteAgentsFromQueue(QueueModifyRequest request, ServerCallContext context) {
+        public override Task<QueueModifyReply>DeleteAgentsFromQueue(QueueModifyRequest request, ServerCallContext context) {
             try {
 
                 var isQueueNumberExists = _queueService.IsQueueExists(request.QueueNumber);

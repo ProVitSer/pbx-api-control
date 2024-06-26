@@ -162,6 +162,7 @@ namespace PbxApiControl.Services.Pbx
             foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
             {
                 var activeConnectionInfo = new FullActiveConnectionInfoModel(keyValuePair.Key);
+                
                 activeConnectionsInfo.Add(activeConnectionInfo);
 
                 foreach (var activeConnection in keyValuePair.Value)

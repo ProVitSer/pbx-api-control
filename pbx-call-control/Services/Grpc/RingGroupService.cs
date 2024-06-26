@@ -5,15 +5,15 @@ using PbxApiControl.Models.RingGroup;
 
 namespace PbxApiControl.Services.Grpc {
     public class RingGroupService: RingGroupPbxService.RingGroupPbxServiceBase {
-        private readonly ILogger < RingGroupService > _logger;
+        private readonly ILogger<RingGroupService> _logger;
         private readonly IRingGroupService _ringGroupService;
 
-        public RingGroupService(ILogger < RingGroupService > logger, IRingGroupService ringGroupService) {
+        public RingGroupService(ILogger<RingGroupService> logger, IRingGroupService ringGroupService) {
             _logger = logger;
             _ringGroupService = ringGroupService;
         }
 
-        public override Task < RingGroupListReply > GetRingGroupList(Empty request, ServerCallContext context) {
+        public override Task<RingGroupListReply>GetRingGroupList(Empty request, ServerCallContext context) {
             try {
 
                 var ringGroups = _ringGroupService.GetRingGroupList();
@@ -32,7 +32,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < RingGroupMembersReply > GetRingGroupMembers(GetRingGroupMembersRequest request, ServerCallContext context) {
+        public override Task<RingGroupMembersReply>GetRingGroupMembers(GetRingGroupMembersRequest request, ServerCallContext context) {
             try {
 
                 var ringGroupExists = _ringGroupService.IsRingGroupExists(request.RingGroupNumber);
@@ -58,7 +58,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < RingGroupMembersReply > AddMemberInRingGroup(AddMemberInRingGroupRequest request, ServerCallContext context) {
+        public override Task<RingGroupMembersReply>AddMemberInRingGroup(AddMemberInRingGroupRequest request, ServerCallContext context) {
             try {
 
                 var ringGroupExists = _ringGroupService.IsRingGroupExists(request.RingGroupNumber);
@@ -84,7 +84,7 @@ namespace PbxApiControl.Services.Grpc {
 
         }
 
-        public override Task < RingGroupMembersReply > DeleteMemberInRingGroup(DeleteMemberInRingGroupRequest request, ServerCallContext context) {
+        public override Task<RingGroupMembersReply>DeleteMemberInRingGroup(DeleteMemberInRingGroupRequest request, ServerCallContext context) {
             try {
 
                 var ringGroupExists = _ringGroupService.IsRingGroupExists(request.RingGroupNumber);

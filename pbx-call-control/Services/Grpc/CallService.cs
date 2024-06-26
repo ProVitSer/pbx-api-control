@@ -78,16 +78,8 @@ public class CallService : CallPbxService.CallPbxServiceBase
     {
         try
         {
-
-            var isExtensionExists = _extensionService.IsExtensionExists(request.Extension);
             
-            if (!isExtensionExists)
-            {
-                throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
-
-            }
-            
-            var transferCallResult = _callService.TransferCall(request.Extension, request.DestinationNumber);
+            var transferCallResult = _callService.TransferCallByCallId((uint)request.CallId, request.PartyConnectionId, request.DestinationNumber);
             
             return Task.FromResult(new BaseCallReply{ Result  = transferCallResult.Result, Message = transferCallResult.Message});
         }

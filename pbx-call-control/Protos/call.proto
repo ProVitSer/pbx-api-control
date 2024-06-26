@@ -63,8 +63,9 @@ message HangupCallRequest {
 }
 
 message TrasferCallRequest {
-  string extension = 1;
-  string destination_number = 2;
+  int32  callId = 1;
+  int32  partyConnectionId = 2;
+  string destinationNumber = 3;
 }
 
 message BaseCallReply {

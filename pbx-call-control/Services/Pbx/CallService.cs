@@ -7,7 +7,7 @@ namespace PbxApiControl.Services.Pbx;
 
 public class CallService : ICallService
 {
-    
+
     private readonly ILogger<CallService> _logger;
     private readonly IExtensionService _extensionService;
 
@@ -34,18 +34,18 @@ public class CallService : ICallService
                 {
                     throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
                 }
-            
+
                 PhoneSystem.Root.MakeCall(from, to);
-            
-                return new BaseCallResultModel( true, ServiceConstants.CallInitSuccess);
+
+                return new BaseCallResultModel(true, ServiceConstants.CallInitSuccess);
             }
 
         }
         catch (Exception e)
         {
             _logger.LogDebug(e.ToString());
-            
-            return new BaseCallResultModel( false, ServiceConstants.CallInitError);
+
+            return new BaseCallResultModel(false, ServiceConstants.CallInitError);
 
         }
     }
@@ -60,8 +60,9 @@ public class CallService : ICallService
                 {
                     throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
                 }
-                
-                using (IArrayDisposer<ActiveConnection> disposer = dnByNumber.GetActiveConnections().GetDisposer<ActiveConnection>())
+
+                using (IArrayDisposer<ActiveConnection> disposer =
+                       dnByNumber.GetActiveConnections().GetDisposer<ActiveConnection>())
                 {
 
                     foreach (ActiveConnection activeConnection in (IEnumerable<ActiveConnection>)disposer)
@@ -72,21 +73,55 @@ public class CallService : ICallService
 
                         }
                     }
+
                     return new BaseCallResultModel(true, ServiceConstants.CallDropSuccess);
-                };
-            };
+                }
+
+                ;
+            }
+
+            ;
 
         }
         catch (Exception e)
         {
             _logger.LogDebug(e.ToString());
-            
-            return new BaseCallResultModel( false, ServiceConstants.CallDropError);
+
+            return new BaseCallResultModel(false, ServiceConstants.CallDropError);
 
         }
     }
 
-    public BaseCallResultModel TransferCall(string extension, string destinationNumber)
+    public BaseCallResultModel TransferCallByCallId(uint callId, int partyConnectionId, string destinationNumber)
+    {
+        foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
+        {
+            uint kvp = keyValuePair.Key;
+
+            if (kvp == callId)
+            {
+              
+                foreach (var activeConnection in keyValuePair.Value)
+                {
+
+                    if (activeConnection.PartyConnectionID == partyConnectionId)
+                    {
+                        PhoneSystem.Root.TransferCall(activeConnection, destinationNumber);
+                        
+                        return new BaseCallResultModel(true, ServiceConstants.CallTransferSuccess);
+
+                    }
+
+                }  
+            }
+        }
+        
+        throw new InvalidOperationException( ServiceConstants.NoActiveConnection);
+
+    }
+
+
+    private BaseCallResultModel TransferCall(string extension, string destinationNumber)
     {
         try
         {

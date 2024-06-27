@@ -1,0 +1,15 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package pbx_subscribe_event;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service PbxSubscribeEventService {
+  rpc SubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc SubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc SubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc UnsubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc UnsubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  rpc UnsubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+}

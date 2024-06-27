@@ -74,6 +74,7 @@ namespace PbxApiControl
             app.MapGrpcService<ContactService>();
             app.MapGrpcService<QueueService>();
             app.MapGrpcService<CallService>();
+            app.MapGrpcService<PbxEventListenerService>();
 
             app.MapGrpcReflectionService();
 

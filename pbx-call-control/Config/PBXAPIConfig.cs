@@ -6,18 +6,17 @@ namespace PbxApiControl.Config
     public static class PbxApiConfig
     {
         public static string? InstanceBinPath;
+        
+        private static readonly string pbxIniPath = GetPbxIniPath();
 
         public static void InitConfig()
         {
             try
             {
-                var iniContent = new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
                 
                 var content = new Dictionary<string, Dictionary<string, string>>(StringComparer.InvariantCultureIgnoreCase);
-
-                ReadConfiguration(iniContent, "api.ini");
                 
-                ReadConfiguration(content, Path.Combine(iniContent["General"]["PBX_INI_PATH"], "3CXPhoneSystem.ini"));
+                ReadConfiguration(content, pbxIniPath);
 
                 InstanceBinPath = Path.Combine(content["General"]["AppPath"], "Bin");
 
@@ -97,6 +96,22 @@ namespace PbxApiControl.Config
             {
                 Console.WriteLine($"Assembly not found at path: {assemblyPath}");
                 return null;
+            }
+        }
+        
+        private static string GetPbxIniPath()
+        {
+            if (OperatingSystem.IsWindows())
+            {
+                return @"C:\Program Files\3CX Phone System\Bin\3CXPhoneSystem.ini";
+            }
+            else if (OperatingSystem.IsLinux())
+            {
+                return "/var/lib/3cxpbx/Bin/3CXPhoneSystem.ini";
+            }
+            else
+            {
+                throw new PlatformNotSupportedException("Unsupported OS");
             }
         }
     }

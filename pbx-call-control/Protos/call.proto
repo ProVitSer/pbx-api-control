@@ -1,0 +1,74 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package call;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service CallPbxService {
+  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply);
+  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply);
+  rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
+  rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
+  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
+  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply);
+}
+
+message GetActiveConnectionsInfoReply {
+  repeated ActiveConnectionsInfo active_connections_info = 1;
+}
+
+message ActiveConnectionsInfo{
+  int32  call_id = 1;
+  repeated ConnectionsData connections_data = 2;
+}
+
+message ConnectionsData {
+  int32  id = 1;
+  int32  call_connection_id = 2;
+  string external_party = 3;
+  string recording_state = 4;
+  int32  party_connection_id = 5;
+  int32  referred_by = 6;
+  bool   is_outbound = 7;
+  bool   is_inbound = 8;
+  string dialed_number = 9;
+  string internal_party = 10;
+}
+
+message GetActiveCallsInfoReply {
+  repeated GetActiveCallsInfoData active_calls_info_data = 1;
+}
+message GetActiveCallsInfoData {
+  int32  call_id = 1;
+  string call_direction = 2;
+  string status = 3;
+  optional string direction = 4;
+  optional string call_status = 5;
+  string local_number = 6;
+  string remote_number = 7;
+}
+
+message GetCountCallsReply {
+  int32 current_count_calls = 1;
+}
+
+message MakeCallRequest {
+  string to = 1;
+  string from = 2;
+}
+
+message HangupCallRequest {
+  string extension = 1;
+}
+
+message TrasferCallRequest {
+  int32  callId = 1;
+  int32  partyConnectionId = 2;
+  string destinationNumber = 3;
+}
+
+message BaseCallReply {
+  bool result = 1;
+  string message = 2;
+}

@@ -1,0 +1,36 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package ring_group;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service RingGroupPbxService {
+  rpc GetRingGroupList (google.protobuf.Empty) returns (RingGroupListReply);
+  rpc GetRingGroupMembers (GetRingGroupMembersRequest) returns (RingGroupMembersReply);
+  rpc AddMemberInRingGroup (AddMemberInRingGroupRequest) returns (RingGroupMembersReply);
+  rpc DeleteMemberInRingGroup (DeleteMemberInRingGroupRequest) returns (RingGroupMembersReply);
+}
+
+
+message RingGroupListReply {
+  repeated string ring_group_numbers = 1;
+}
+
+message GetRingGroupMembersRequest {
+  string ring_group_number = 1;
+}
+
+message RingGroupMembersReply {
+  repeated string numbers = 1;
+}
+
+message AddMemberInRingGroupRequest {
+  string ring_group_number = 1;
+  repeated string numbers = 2;
+}
+
+message DeleteMemberInRingGroupRequest {
+  string ring_group_number = 1;
+  repeated string numbers = 2;
+}

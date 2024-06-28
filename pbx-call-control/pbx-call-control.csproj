@@ -1,0 +1,67 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+    <PropertyGroup>
+        <OutputType>Exe</OutputType>
+        <TargetFramework>net8.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Platforms>AnyCPU;x64</Platforms>
+        <PublishSingleFile>true</PublishSingleFile>
+        <SelfContained>true</SelfContained>
+<!--        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
+        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
+        <DebugType>embedded</DebugType>
+        <ApplicationIcon />
+        <StartupObject>PbxApiControl.Program</StartupObject>
+        <RootNamespace>PbxApiControl</RootNamespace>
+        <AssemblyName>PbxApiControl</AssemblyName>
+    </PropertyGroup>
+    <ItemGroup>
+        <Protobuf Include="Protos\extension.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\ring-group.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\contact.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\queue.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\call.proto" GrpcServices="Server" />
+    </ItemGroup>
+    <ItemGroup>
+        <Content Update="appsettings.Development.json" CopyToPublishDirectory="Never" />
+    </ItemGroup>
+    <ItemGroup>
+        <Folder Include="Properties\" />
+        <PackageReference Include="Microsoft.AspNetCore.App" Version="8.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.1.38" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Localization" Version="2.1.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Mvc.Razor" Version="2.1.3" />
+        <PackageReference Include="Microsoft.AspNetCore.Server.Kestrel.Core" Version="2.2.0" />
+        <PackageReference Include="Microsoft.Extensions.Localization" Version="8.0.0" />
+        <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0-preview.5.24306.7" />
+        <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.0.0" />
+        <PackageReference Include="Microsoft.TestPlatform" Version="15.9.2" />
+        <PackageReference Include="Moq" Version="4.20.70" />
+        <PackageReference Include="System.Runtime" Version="4.3.1" />
+        <PackageReference Include="Newtonsoft.Json" Version="13.0.3" />
+        <PackageReference Include="Serilog.Expressions" Version="4.0.0" />
+        <PackageReference Include="Grpc.AspNetCore" Version="2.49.0" />
+        <PackageReference Include="Grpc.AspNetCore.Server.Reflection" Version="2.49.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Grpc.JsonTranscoding" Version="7.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Grpc.Swagger" Version="0.3.0" />
+        <PackageReference Include="Grpc.Tools" Version="2.50.0">
+            <PrivateAssets>all</PrivateAssets>
+            <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+        </PackageReference>
+        <PackageReference Include="Serilog.AspNetCore" Version="8.0.1" />
+    </ItemGroup>
+    <ItemGroup>
+        <Reference Include="3cxpscomcpp2">
+            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>
+
+<!--                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>-->
+            <Private>false</Private>
+        </Reference>
+    </ItemGroup>
+</Project>
+
+
+

@@ -1,0 +1,145 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package extension;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+service ExtensionsPbxService {
+    rpc GetExtensionInfo (GetExtensionInfoRequest) returns (ExtensionInfoReply);
+    rpc GetExtensionStatus (GetExtensionStatusRequest) returns (ExtensionStatusReply);
+    rpc GetExtensions (google.protobuf.Empty) returns (GetExtensionsReply);
+    rpc GetRegisteredExtensions (google.protobuf.Empty) returns (GetRegisteredExtensionsReply);
+    rpc GetExtensionDeviceInfo (GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply);
+    rpc CreateExtension (CreateExtensionRequest) returns (ExtensionInfoReply);
+    rpc DeleteExtension (DeleteExtensionRequest) returns (DeleteExtensionReply);
+    rpc UpdateExtensionInfo (UpdateExtensionInfoRequest) returns (ExtensionInfoReply);
+    rpc SetExtensionForwardStatus (SetExtensionForwardStatusRequest) returns (ExtensionStatusReply);
+    rpc SetExtensionGlobalQueuesStatus (SetExtensionGlobalQueuesStatusRequest) returns (ExtensionStatusReply);
+    rpc SetExtensionStatusInQueue (SetExtensionStatusInQueueRequest) returns (ExtensionStatusReply);
+}
+
+message SetExtensionStatusInQueueRequest {
+    string extension = 1;
+    string queue_number = 2;
+    string status = 3;
+}
+
+message SetExtensionGlobalQueuesStatusRequest {
+    string extension = 1;
+    string status = 2;
+}
+
+
+message SetExtensionForwardStatusRequest {
+    string extension = 1;
+    string status = 2;
+}
+
+message UpdateExtensionInfoRequest {
+    string extension = 1;
+    google.protobuf.StringValue first_name = 2;
+    google.protobuf.StringValue last_name = 3;
+    google.protobuf.StringValue email = 4;
+    google.protobuf.StringValue auth_id = 5;
+    google.protobuf.StringValue auth_password = 6;
+    google.protobuf.StringValue mobile_number = 7;
+    google.protobuf.StringValue outbound_caller_id = 8;
+    google.protobuf.StringValue recording_type = 9;
+    google.protobuf.BoolValue is_extension_enabled = 10;
+    google.protobuf.BoolValue disable_external_calls = 11;
+    google.protobuf.BoolValue deliver_audio = 12;
+    google.protobuf.BoolValue support_reinvite = 13;
+    google.protobuf.BoolValue support_replaces = 14;
+}
+
+message DeleteExtensionRequest {
+    string extension = 1;
+}
+
+message DeleteExtensionReply {
+    bool result = 1;
+}
+
+message CreateExtensionRequest {
+    string extension = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string auth_id = 5;
+    string auth_password = 6;
+    string mobile_number = 7;
+    string outbound_caller_id = 8;
+    string recording_type = 9;
+    bool is_extension_enabled = 10;
+    bool disable_external_calls = 11;
+    bool deliver_audio = 12;
+    bool support_reinvite = 13;
+    bool support_replaces = 14;
+}
+
+message ExtensionInfoReply {
+    string extension = 1;
+    string first_name = 2;
+    string last_name = 3;
+    string email = 4;
+    string auth_id = 5;
+    string auth_password = 6;
+    string mobile_number = 7;
+    string sip_id = 8;
+    string outbound_caller_id = 9;
+    string recording_type = 10;
+    bool is_extenion_enabled = 11;
+    bool disable_external_calls = 12;
+    bool deliver_audio = 13;
+    bool support_reinvite = 14;
+    bool support_replaces = 15;
+    string email_options = 16;
+    bool voice_mail_enable = 17;
+    string voice_mail_pin = 18;
+    bool voice_mail_play_caller_id = 19;
+    bool internal = 20;
+    int32 no_answer_timeout = 21;
+}
+        
+
+message GetExtensionDeviceInfoRequest {
+    string extension = 1;
+}
+
+message Device {
+    string userAgent = 1;
+    string contact = 2;
+}
+
+message GetExtensionDeviceInfoReply {
+    string extension = 1;
+    repeated Device devices = 2;
+}
+
+message GetExtensionsReply {
+    repeated string extensions = 1;
+}
+
+message GetRegisteredExtensionsReply {
+    repeated string extensions = 1;
+}
+
+message GetExtensionStatusRequest {
+    string extension = 1;
+}
+message ExtensionStatusReply {
+    string extension = 1;
+    bool registered = 2;
+    string forwarding_rules_status = 3;
+    string queues_status = 4;
+    repeated string groups = 5;
+    repeated string ring_groups = 6;
+    repeated string all_queues = 7;
+    repeated string logged_out_queues = 8;
+    repeated string logged_in_queues = 9;
+}
+
+
+message GetExtensionInfoRequest {
+    string extension = 1;
+}

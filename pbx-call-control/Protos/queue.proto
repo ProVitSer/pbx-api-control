@@ -1,0 +1,65 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package queue;
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+
+
+service QueuePbxService {
+  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply);
+  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply);
+  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply);
+}
+
+message QueueModifyReply {
+  string queue_number = 1;
+  repeated string agents = 2;
+}
+
+message QueueModifyRequest {
+  string queue_number = 1;
+  repeated string agents = 2;
+}
+
+message QueueInfoReply {
+  repeated QueueInfo queue_info = 1;
+}
+
+message QueueInfo {
+  string extension = 1;
+  string firstName = 2;
+  string lastName = 3;
+  string agent_queue_status = 4;
+}
+
+message QueueListDataReply {
+  repeated string queue_numbers = 1;
+}
+
+message QueueInfoRequest {
+  string queue_number = 1;
+}
+
+
+message QueueAgentsDataReply {
+  string contact_id = 1;
+  string first_name = 2;
+  string last_name = 3;
+  string mobile = 4;
+  string company_name = 5;
+  string crm_contact_data = 6;
+  string tag = 7;
+  string mobile_two = 8;
+  string home = 9;
+  string home_two = 10;
+  string business = 11;
+  string business_two = 12;
+  string email_address = 13;
+  string other = 14;
+  string business_fax = 15;
+  string home_fax = 16;
+  string pager = 17;
+}

@@ -3,6 +3,7 @@ using PbxApiControl.Interface;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using PbxApiControl.Interceptor;
 
 namespace PbxApiControl.Extensions
 {
@@ -20,7 +21,8 @@ namespace PbxApiControl.Extensions
                 var logger = provider.GetRequiredService<ILogger<PbxEventListenerService>>();
                 return PbxEventListenerService.GetInstance(logger);
             });
-            
+
+
             services.AddLocalization(options => options.ResourcesPath = "Resources");
 
             services.AddControllersWithViews()

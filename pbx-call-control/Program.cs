@@ -1,13 +1,16 @@
 using PbxApiControl.Services.Grpc;
 using PbxApiControl.Extensions;
 using PbxApiControl.Config;
+using PbxApiControl.Interceptor;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
-using PbxApiControl.Logging;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
+using System.Reflection;
+using Microsoft.AspNetCore.Server.Kestrel.Core;
+
 
 namespace PbxApiControl
 {
@@ -22,6 +25,21 @@ namespace PbxApiControl
             Thread.CurrentThread.CurrentUICulture = cultureInfo;
             
             var builder = WebApplication.CreateBuilder(args);
+            
+            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
+
+            var appsettings = environmentName == "Development"
+                ? $"PbxApiControl.appsettings.{environmentName}.json"
+                : "PbxApiControl.appsettings.json";
+            
+            
+            var configuration = new ConfigurationBuilder()
+                .AddJsonStream(GetEmbeddedResourceStream(appsettings))
+                .Build();
+
+            
+            string kestrelUrl = configuration["Kestrel:EndpointDefaults:Url"]  ?? "http://127.0.0.1:5000";
+            string kestrelProtocols = configuration["Kestrel:EndpointDefaults:Protocols"] ?? "Http1AndHttp2";
 
             // Add services to the container.
             builder.Services.AddGrpc(options =>
@@ -35,9 +53,11 @@ namespace PbxApiControl
             builder.Services.AddGrpcReflection();
             
             builder.Services.AddApplicationServices();
+            
+            builder.Services.AddSingleton(configuration);
 
             builder.Services.AddSerilog((services, lc) => lc
-               .ReadFrom.Configuration(builder.Configuration)
+               .ReadFrom.Configuration(configuration)
                .ReadFrom.Services(services)
                .Enrich.FromLogContext()
                .WriteTo.Console(new ExpressionTemplate(
@@ -52,14 +72,22 @@ namespace PbxApiControl
                 options.SupportedCultures = supportedCultures;
                 options.SupportedUICultures = supportedCultures;
             });
-
+            
+            // Configure Kestrel server
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(new Uri(kestrelUrl).Port, listenOptions =>
+                {
+                    listenOptions.Protocols = kestrelProtocols switch
+                    {
+                        "Http1" => HttpProtocols.Http1,
+                        "Http2" => HttpProtocols.Http2,
+                        _ => HttpProtocols.Http1AndHttp2,
+                    };
+                });
+            });
+            
             var app = builder.Build();
-
-            var configuration = new ConfigurationBuilder()
-                .AddJsonFile("appsettings.json")
-                .Build();
-
-            string kestrelUrl = configuration["Kestrel:EndpointDefaults:Url"]  ?? "http://127.0.0.1:5000";
             
             // Add URL bindings
             app.Urls.Add(kestrelUrl);
@@ -79,6 +107,19 @@ namespace PbxApiControl
             app.MapGrpcReflectionService();
 
             app.Run();
+        }
+        
+        private static Stream GetEmbeddedResourceStream(string resourceName)
+        {
+            var assembly = Assembly.GetExecutingAssembly();
+            var resourceStream = assembly.GetManifestResourceStream(resourceName);
+
+            if (resourceStream == null)
+            {
+                throw new FileNotFoundException("Embedded resource not found", resourceName);
+            }
+
+            return resourceStream;
         }
     }
 }

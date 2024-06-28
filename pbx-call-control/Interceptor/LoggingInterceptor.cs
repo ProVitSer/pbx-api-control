@@ -1,9 +1,10 @@
 ﻿
-using Grpc.Core;
-using Grpc.Core.Interceptors;
-
-namespace PbxApiControl.Logging
+namespace PbxApiControl.Interceptor
 {
+    using Grpc.Core;
+    using Grpc.Core.Interceptors;
+    using System.Linq;
+    using System.Threading.Tasks;
     public class LoggingInterceptor: Interceptor
     {
         private readonly ILogger<LoggingInterceptor> _logger;

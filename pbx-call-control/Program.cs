@@ -45,6 +45,7 @@ namespace PbxApiControl
             builder.Services.AddGrpc(options =>
             {
                 options.Interceptors.Add<LoggingInterceptor>();
+                
             }).AddJsonTranscoding();
             
             // Initialize configuration
@@ -96,6 +97,11 @@ namespace PbxApiControl
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);
 
+            // Log application version
+            var version = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+            var logger = app.Services.GetRequiredService<ILogger<Program>>();
+            logger.LogInformation($"Application Version: {version}");
+            
             // Map gRPC services
             app.MapGrpcService<ExtensionService>();
             app.MapGrpcService<RingGroupService>();

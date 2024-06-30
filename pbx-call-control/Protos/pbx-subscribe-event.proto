@@ -1,15 +1,57 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package pbx_subscribe_event;
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 
 
+// Сервис для подписки и отписки от событий PBX.
 service PbxSubscribeEventService {
-  rpc SubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
-  rpc SubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
-  rpc SubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
-  rpc UnsubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
-  rpc UnsubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
-  rpc UnsubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty);
+  // Подписывается на событие вставки.
+  rpc SubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/subscribe/inserted"
+      body: "*"
+    };
+  }
+
+  // Подписывается на событие удаления.
+  rpc SubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/subscribe/deleted"
+      body: "*"
+    };
+  }
+
+  // Подписывается на событие обновления.
+  rpc SubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/subscribe/updated"
+      body: "*"
+    };
+  }
+
+  // Отписывается от события вставки.
+  rpc UnsubscribeInsertedEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/unsubscribe/inserted"
+      body: "*"
+    };
+  }
+
+  // Отписывается от события удаления.
+  rpc UnsubscribeDeletedEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/unsubscribe/deleted"
+      body: "*"
+    };
+  }
+
+  // Отписывается от события обновления.
+  rpc UnsubscribeUpdateEvent(google.protobuf.Empty) returns (google.protobuf.Empty) {
+    option (google.api.http) = {
+      post: "/v1/events/unsubscribe/updated"
+      body: "*"
+    };
+  }
 }

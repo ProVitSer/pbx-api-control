@@ -1,65 +1,157 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package queue;
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 
-
+// Сервис для управления очередями PBX.
 service QueuePbxService {
-  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply);
-  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
-  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
-  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
-  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply);
-  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply);
+  // Получает список всех очередей.
+  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply) {
+    option (google.api.http) = {
+      get: "/v1/queues"
+    };
+  }
+
+  // Получает информацию об агентах в указанной очереди.
+  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
+    option (google.api.http) = {
+      get: "/v1/queue/{queue_number}/agents"
+    };
+  }
+
+  // Получает информацию о свободных агентах в указанной очереди.
+  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
+    option (google.api.http) = {
+      get: "/v1/queue/{queue_number}/agents/free"
+    };
+  }
+
+  // Получает информацию о занятых агентах в указанной очереди.
+  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
+    option (google.api.http) = {
+      get: "/v1/queue/{queue_number}/agents/busy"
+    };
+  }
+
+  // Добавляет агентов в указанную очередь.
+  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply) {
+    option (google.api.http) = {
+      post: "/v1/queue/{queue_number}/agents/add"
+      body: "*"
+    };
+  }
+
+  // Удаляет агентов из указанной очереди.
+  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply) {
+    option (google.api.http) = {
+      post: "/v1/queue/{queue_number}/agents/remove"
+      body: "*"
+    };
+  }
 }
 
-message QueueModifyReply {
+// Запрос для получения информации об агентах очереди.
+message QueueInfoRequest {
+  // Номер очереди.
   string queue_number = 1;
-  repeated string agents = 2;
 }
 
-message QueueModifyRequest {
-  string queue_number = 1;
-  repeated string agents = 2;
-}
-
+// Ответ с информацией об агентах очереди.
 message QueueInfoReply {
+  // Список информации об агентах.
   repeated QueueInfo queue_info = 1;
 }
 
+// Информация об агенте очереди.
 message QueueInfo {
+  // Расширение агента.
   string extension = 1;
-  string firstName = 2;
-  string lastName = 3;
+
+  // Имя агента.
+  string first_name = 2;
+
+  // Фамилия агента.
+  string last_name = 3;
+
+  // Статус агента в очереди.
   string agent_queue_status = 4;
 }
 
+// Запрос для добавления или удаления агентов из очереди.
+message QueueModifyRequest {
+  // Номер очереди.
+  string queue_number = 1;
+
+  // Список агентов (расширений).
+  repeated string agents = 2;
+}
+
+// Ответ на запрос добавления или удаления агентов из очереди.
+message QueueModifyReply {
+  // Номер очереди.
+  string queue_number = 1;
+
+  // Список агентов, которые были добавлены или удалены.
+  repeated string agents = 2;
+}
+
+// Ответ с данными о списке очередей.
 message QueueListDataReply {
+  // Список номеров очередей.
   repeated string queue_numbers = 1;
 }
 
-message QueueInfoRequest {
-  string queue_number = 1;
-}
-
-
+// Запрос для получения данных об агентах очереди.
 message QueueAgentsDataReply {
+  // Идентификатор контакта.
   string contact_id = 1;
+
+  // Имя контакта.
   string first_name = 2;
+
+  // Фамилия контакта.
   string last_name = 3;
+
+  // Мобильный телефон контакта.
   string mobile = 4;
+
+  // Название компании контакта.
   string company_name = 5;
+
+  // Данные CRM для контакта.
   string crm_contact_data = 6;
+
+  // Тег для контакта.
   string tag = 7;
+
+  // Второй мобильный телефон контакта.
   string mobile_two = 8;
+
+  // Домашний телефон контакта.
   string home = 9;
+
+  // Второй домашний телефон контакта.
   string home_two = 10;
+
+  // Рабочий телефон контакта.
   string business = 11;
+
+  // Второй рабочий телефон контакта.
   string business_two = 12;
+
+  // Адрес электронной почты контакта.
   string email_address = 13;
+
+  // Другие данные о контакте.
   string other = 14;
+
+  // Факс на рабочем месте контакта.
   string business_fax = 15;
+
+  // Домашний факс контакта.
   string home_fax = 16;
+
+  // Пейджер контакта.
   string pager = 17;
 }

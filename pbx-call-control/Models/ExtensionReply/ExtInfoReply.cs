@@ -19,7 +19,7 @@ namespace PbxApiControl.Models.ExtensionReply
                 SipId = extensionInfo.SipID ?? "",
                 OutboundCallerId = extensionInfo.OutboundCallerID,
                 RecordingType = extensionInfo.RecordingType,
-                IsExtenionEnabled = extensionInfo.IsExtenionEnabled,
+                IsExtensionEnabled = extensionInfo.IsExtenionEnabled,
                 DisableExternalCalls = extensionInfo.DisableExternalCalls,
                 DeliverAudio = extensionInfo.DeliverAudio,
                 SupportReinvite = extensionInfo.SupportReinvite,

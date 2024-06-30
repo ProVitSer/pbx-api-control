@@ -16,26 +16,21 @@ namespace PbxApiControl
 {
     public class Program
     {
+        private const string DevelopmentEnvironment = "Development";
+        private const string GrpcUrlKey = "Kestrel:Endpoints:grpc:Url";
+        private const string SwaggerUrlKey = "Kestrel:Endpoints:swagger:Url";
+        
         public static void Main(string[] args)
         {
-            CultureInfo cultureInfo = new CultureInfo("en-US");
-            
-            Thread.CurrentThread.CurrentCulture = cultureInfo;
-            Thread.CurrentThread.CurrentUICulture = cultureInfo;
             
             var builder = WebApplication.CreateBuilder(args);
-            
-            var environmentName = Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT") ?? "Development";
 
-            var appsettings = environmentName == "Development"
-                ? $"PbxApiControl.appsettings.{environmentName}.json"
-                : "PbxApiControl.appsettings.json";
+            SetCulture(builder);
             
-            var configuration = new ConfigurationBuilder()
-                .AddJsonStream(GetEmbeddedResourceStream(appsettings))
-                .Build();
+            var configuration = GetConfiguration(builder);
             
-            string kestrelUrl = configuration["Kestrel:EndpointDefaults:Url"]  ?? "http://127.0.0.1:5000";
+            string grpcUrl = configuration[GrpcUrlKey]  ?? throw new ArgumentException("Invalid host port args");
+            string swaggerUrl = configuration[SwaggerUrlKey]  ?? throw new ArgumentException("Invalid host port args");
 
             // Add services to the container.
             builder.Services.AddGrpc(options =>
@@ -44,18 +39,17 @@ namespace PbxApiControl
                 })
                 .AddJsonTranscoding(); // Add support for JSON transcoding
 
-
-            if (environmentName == "Development")
+            if (builder.Environment.EnvironmentName == "Development")
             {
                 builder.Services.AddSwaggerGen(c =>
                 {
                     c.SwaggerDoc("v1", new OpenApiInfo { Title = "gRPC JSON transcoding example", Version = "v1" });
-
+                
                     var filePath = Path.Combine(System.AppContext.BaseDirectory, "Server.xml");
                     c.IncludeXmlComments(filePath);
                     c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
                 });
-                builder.Services.AddGrpcSwagger();
+                builder.Services.AddGrpcSwagger();  
             }
             
             // Initialize configuration
@@ -72,29 +66,28 @@ namespace PbxApiControl
                .WriteTo.Console(new ExpressionTemplate(
                    "[{@t:HH:mm:ss} {@l:u3}{#if @tr is not null} ({substring(@tr,0,4)}:{substring(@sp,0,4)}){#end}] {@m}\n{@x}",
                    theme: TemplateTheme.Code)));
-
-            builder.Services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[] { new CultureInfo("en-US") };
-                options.DefaultRequestCulture = new RequestCulture("en-US");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-            });
-
-
+            
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.ListenAnyIP(new Uri(kestrelUrl).Port, listenOptions =>
+                int swaggerPort = new Uri(swaggerUrl).Port;
+                int grpcPort = new Uri(grpcUrl).Port;
+
+                options.ListenAnyIP(swaggerPort, listenOptions =>
                 {
-                    listenOptions.Protocols = HttpProtocols.Http1AndHttp2; // Allow both HTTP/1.1 and HTTP/2
+                    listenOptions.Protocols = HttpProtocols.Http1;
                 });
+
+                options.ListenAnyIP(grpcPort, listenOptions =>
+                {
+                    listenOptions.Protocols = HttpProtocols.Http2;
+                });
+
             });
             
             var app = builder.Build();
-            
 
-            if (environmentName == "Development")
+            if (builder.Environment.EnvironmentName == "Development")
             {
                 app.UseDefaultFiles();
                 app.UseStaticFiles();
@@ -103,29 +96,69 @@ namespace PbxApiControl
                 {
                     c.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC 3CX PBX CONTROL API V1");
                 });
+
             }
-   
-            
-            // Add URL bindings
-            app.Urls.Add(kestrelUrl);
+
+            app.Use(async (context, next) =>
+            {
+                if (context.Request.ContentType == "application/grpc")
+                {
+                    await next();
+                }
+                else if (builder.Environment.EnvironmentName != DevelopmentEnvironment)
+                {
+                    context.Response.StatusCode = StatusCodes.Status404NotFound;
+                }
+                else
+                {
+                    await next();
+                }
+            });
 
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);
 
             // Map gRPC services
-            app.MapGrpcService<ExtensionService>().EnableGrpcWeb();
-            app.MapGrpcService<RingGroupService>().EnableGrpcWeb();
-            app.MapGrpcService<ContactService>().EnableGrpcWeb();
-            app.MapGrpcService<QueueService>().EnableGrpcWeb();
-            app.MapGrpcService<CallService>().EnableGrpcWeb();
-            app.MapGrpcService<PbxEventListenerService>().EnableGrpcWeb();
-
+            app.MapGrpcService<ExtensionService>().DisableGrpcWeb();
+            app.MapGrpcService<RingGroupService>().DisableGrpcWeb();
+            app.MapGrpcService<ContactService>().DisableGrpcWeb();
+            app.MapGrpcService<QueueService>().DisableGrpcWeb();
+            app.MapGrpcService<CallService>().DisableGrpcWeb();
+            app.MapGrpcService<PbxEventListenerService>().DisableGrpcWeb();
             app.MapGrpcReflectionService();
-            
             app.Run();
         }
         
+        private static void SetCulture(WebApplicationBuilder builder)
+        {
+            var cultureInfo = new CultureInfo("en-US");
+
+            Thread.CurrentThread.CurrentCulture = cultureInfo;
+            Thread.CurrentThread.CurrentUICulture = cultureInfo;
+
+            builder.Services.Configure<RequestLocalizationOptions>(options =>
+            {
+                options.DefaultRequestCulture = new RequestCulture(cultureInfo);
+                options.SupportedCultures = new[] { cultureInfo };
+                options.SupportedUICultures = new[] { cultureInfo };
+            });
+        }
+
+        private static IConfigurationRoot GetConfiguration(WebApplicationBuilder builder)
+        {
+            Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
+
+            string appsettingsFile = builder.Environment.EnvironmentName == DevelopmentEnvironment
+                ? $"PbxApiControl.appsettings.{builder.Environment.EnvironmentName}.json"
+                : "PbxApiControl.appsettings.json";
+    
+            return new ConfigurationBuilder()
+                .AddJsonStream(GetEmbeddedResourceStream(appsettingsFile))
+                .Build();
+        }
+
+
         private static Stream GetEmbeddedResourceStream(string resourceName)
         {
             var assembly = Assembly.GetExecutingAssembly();

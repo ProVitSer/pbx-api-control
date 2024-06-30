@@ -32,6 +32,9 @@ namespace PbxApiControl
             string grpcUrl = configuration[GrpcUrlKey]  ?? throw new ArgumentException("Invalid host port args");
             string swaggerUrl = configuration[SwaggerUrlKey]  ?? throw new ArgumentException("Invalid host port args");
 
+            builder.Services.AddHttpClient();
+
+            
             // Add services to the container.
             builder.Services.AddGrpc(options =>
                 {
@@ -56,7 +59,7 @@ namespace PbxApiControl
             PbxApiConfig.InitConfig();
             
             builder.Services.AddGrpcReflection();
-            builder.Services.AddApplicationServices();
+            builder.Services.AddApplicationServices(configuration);
             builder.Services.AddSingleton(configuration);
 
             builder.Services.AddSerilog((services, lc) => lc

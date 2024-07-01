@@ -146,6 +146,8 @@ namespace PbxApiControl.Services.Pbx
                     }
                 }
 
+                LogCallsState(callsState);
+                
                 return callsState;
             }
             catch (Exception e)
@@ -265,7 +267,6 @@ namespace PbxApiControl.Services.Pbx
                 throw new InvalidOperationException(ServiceConstants.NoActiveConnection);
             }
 
-            _logger.LogDebug($"ID={owner.ID}:CCID={owner.CallConnectionID}:S={owner.Status}:DN={owner.DN.Number}:EP={owner.ExternalParty}:REC={owner.RecordingState}");
             return owner;
         }
 
@@ -273,6 +274,21 @@ namespace PbxApiControl.Services.Pbx
         {
             using var dnByNumber = PhoneSystem.Root.GetDNByNumber(extension);
             return dnByNumber.IsRegistered;
+        }
+
+        private void LogCallsState(List<CallStateModel> callsState)
+        {
+            foreach (var call in callsState)
+            {
+                _logger.LogInformation("Call ID: {CallID}, Call Direction: {CallDirection}, Status: {Status}, Direction: {Direction}, Call Status: {CallStatus}, Local Number: {LocalNumber}, Remote Number: {RemoteNumber}",
+                    call.CallID,
+                    call.CallDirection,
+                    call.Status,
+                    call.Direction,
+                    call.CallStatus,
+                    call.LocalNumber,
+                    call.RemoteNumber);
+            }
         }
     }
 }

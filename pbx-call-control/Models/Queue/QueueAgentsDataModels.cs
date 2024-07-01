@@ -16,7 +16,7 @@ namespace PbxApiControl.Models.Queue
             Extension = extension.Number;
             FirstName = extension.FirstName;
             LastName = extension.LastName;
-            AgentQueueStatus = (QueuesStatusType)extension.QueueStatus;
+            AgentQueueStatus = extension.QueueStatus == QueueStatusType.LoggedIn ? QueuesStatusType.LoggedIn: QueuesStatusType.LoggedOut;
         }
     }
 }

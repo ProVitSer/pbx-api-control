@@ -39,7 +39,6 @@ namespace PbxApiControl.Services.Pbx
             lock (_lock)
             {
                 PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
-                PhoneSystem.Root.Updated += ActiveConnectionsUpdatedHandler;
                 PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
 
             }

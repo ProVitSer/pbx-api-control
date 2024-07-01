@@ -25,18 +25,15 @@ namespace PbxApiControl.Services.Pbx
         {
             try
             {
-                using var dnByNumber = PhoneSystem.Root.GetDNByNumber(from);
-                if (dnByNumber is not Extension)
-                {
-                    throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
-                }
-
+                
                 PhoneSystem.Root.MakeCall(from, to);
+                
                 return new BaseCallResultModel(true, ServiceConstants.CallInitSuccess);
             }
             catch (Exception e)
             {
-                _logger.LogDebug(e.ToString());
+                _logger.LogDebug($"Error Make call: {e}");
+
                 return new BaseCallResultModel(false, ServiceConstants.CallInitError);
             }
         }
@@ -62,9 +59,17 @@ namespace PbxApiControl.Services.Pbx
 
                 return new BaseCallResultModel(true, ServiceConstants.CallDropSuccess);
             }
+            catch (InvalidOperationException e)
+            {
+                
+                _logger.LogDebug($"Invalid operation Hangup call: {e}");
+                
+                return new BaseCallResultModel(false, e.Message);
+            }
             catch (Exception e)
             {
-                _logger.LogDebug(e.ToString());
+                _logger.LogDebug($"Error Hangup call: {e}");
+                
                 return new BaseCallResultModel(false, ServiceConstants.CallDropError);
             }
         }
@@ -87,11 +92,20 @@ namespace PbxApiControl.Services.Pbx
                 }
 
                 PhoneSystem.Root.TransferCall(connection, destinationNumber);
+                
                 return new BaseCallResultModel(true, ServiceConstants.CallTransferSuccess);
+            }
+            catch (InvalidOperationException e)
+            {
+                
+                _logger.LogDebug($"Invalid operation transferring call: {e}");
+                
+                return new BaseCallResultModel(false, e.Message);
             }
             catch (Exception e)
             {
                 _logger.LogDebug($"Error transferring call: {e}");
+                
                 return new BaseCallResultModel(false, e.ToString());
             }
         }

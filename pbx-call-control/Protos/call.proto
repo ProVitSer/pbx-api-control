@@ -99,6 +99,9 @@ message ConnectionsData {
 
   // Внутренний абонент.
   string internal_party = 10;
+
+  string internal_party_number = 11;
+  
 }
 
 // Ответ на запрос информации об активных вызовах.

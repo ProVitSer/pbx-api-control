@@ -24,10 +24,10 @@ namespace PbxApiControl.Models.Call
     
         public string InternalParty  { get; set;}
     
-    
+        public string InternalPartyNumber  { get; set;}
+
         public ActiveConnectionInfoModel(ActiveConnection activeConnection)
         {
-
             this.Id = activeConnection.ID;
             this.CallConnectionId = activeConnection.CallConnectionID;
             this.ExternalParty = activeConnection.ExternalParty ?? string.Empty;
@@ -38,8 +38,7 @@ namespace PbxApiControl.Models.Call
             this.IsInbound = activeConnection.IsInbound;
             this.DialedNumber = activeConnection.DialedNumber ?? string.Empty;
             this.InternalParty = activeConnection.InternalParty.ToString() ?? string.Empty;
-
-        
+            this.InternalPartyNumber = activeConnection.InternalParty.Number;
         }
     
     }

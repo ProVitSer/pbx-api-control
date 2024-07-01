@@ -2,6 +2,7 @@ using PbxApiControl.Services.Grpc;
 using PbxApiControl.Extensions;
 using PbxApiControl.Config;
 using PbxApiControl.Interceptor;
+using PbxApiControl.Services;
 using Serilog;
 using Serilog.Templates;
 using Serilog.Templates.Themes;
@@ -61,6 +62,7 @@ namespace PbxApiControl
             builder.Services.AddGrpcReflection();
             builder.Services.AddApplicationServices(configuration);
             builder.Services.AddSingleton(configuration);
+            builder.Services.AddHostedService<StartupService>();
 
             builder.Services.AddSerilog((services, lc) => lc
                .ReadFrom.Configuration(configuration)

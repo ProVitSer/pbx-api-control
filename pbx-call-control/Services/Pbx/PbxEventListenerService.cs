@@ -34,6 +34,18 @@ namespace PbxApiControl.Services.Pbx
             }
         }
         
+        public void OnStartListenEvent()
+        {
+            lock (_lock)
+            {
+                PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
+                PhoneSystem.Root.Updated += ActiveConnectionsUpdatedHandler;
+                PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
+
+            }
+        }
+
+        
 
         public void StartListenInsertedEvent()
         {

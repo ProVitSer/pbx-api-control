@@ -2,6 +2,7 @@
 {
     public interface IPbxEventListenerService
     {
+        void OnStartListenEvent();
         void StartListenInsertedEvent();
         void StartListenUpdatedEvent();
         void StartListenDeletedEvent();

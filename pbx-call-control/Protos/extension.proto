@@ -291,11 +291,7 @@ message ExtensionStatusReply {
     // Список групп.
     repeated string groups = 5;
     // Список групп вызова.
-    repeated string ring_groups = 6;
-    // Список всех очередей.
-    repeated string all_queues = 7;
-    // Список очередей, в которые не вошли.
-    repeated string logged_out_queues = 8;
+    repeated string in_ring_groups = 6;
     // Список очередей, в которые вошли.
     repeated string logged_in_queues = 9;
 }

@@ -173,7 +173,7 @@ namespace PbxApiControl.Services.Pbx
                     }
                 }
 
-                return new ExtensionStatus(extension);
+                return ExtensionStatus(data.ExtensionNumber);
             }
         }
 
@@ -191,9 +191,16 @@ namespace PbxApiControl.Services.Pbx
                 extension.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString()
                     ? QueueStatusType.LoggedIn
                     : QueueStatusType.LoggedOut;
+
+                foreach (var queueAgent in extension.QueueMembership)
+                {
+                    queueAgent.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString()
+                        ? QueueStatusType.LoggedIn
+                        : QueueStatusType.LoggedOut;
+                }
                 extension.Save();
 
-                return new ExtensionStatus(extension);
+                return ExtensionStatus(data.ExtensionNumber);
             }
         }
 
@@ -219,7 +226,7 @@ namespace PbxApiControl.Services.Pbx
                     }
                 }
 
-                return new ExtensionStatus(extension);
+                return ExtensionStatus(data.ExtensionNumber);
             }
         }
 

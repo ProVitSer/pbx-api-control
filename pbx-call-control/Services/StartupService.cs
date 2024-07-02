@@ -18,6 +18,7 @@ namespace PbxApiControl.Services
             _logger.LogInformation("StartupService is starting.");
 
             _pbxEventListenerService.OnStartListenEvent();
+            
             return Task.CompletedTask;
         }
 

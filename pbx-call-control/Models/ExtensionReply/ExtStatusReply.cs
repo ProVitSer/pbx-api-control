@@ -13,10 +13,8 @@ namespace PbxApiControl.Models.ExtensionReply
                 ForwardingRulesStatus = extensionStatusData.ForwardingRulesStatus,
                 QueuesStatus = extensionStatusData.QueuesStatus,
                 Groups = { extensionStatusData.Groups },
-                RingGroups = { extensionStatusData.RingGroups },
-                AllQueues =  { extensionStatusData.AllQueues },
+                InRingGroups = { extensionStatusData.InRingGroups },
                 LoggedInQueues = { extensionStatusData.LoggedInQueues  },
-                LoggedOutQueues = { extensionStatusData.LoggedOutQueues  }
             };
         }
     }

@@ -105,7 +105,13 @@ namespace PbxApiControl.Services.Pbx
         private QueueAgentsDataModels[] GetQueueAgentsByStatus(string queueNumber, ActiveConnectionsStatus status)
         {
             var queueAgents = QueueAgents(queueNumber);
-
+            foreach (var call in queueAgents)
+            {
+                _logger.LogInformation("Extension: {Extension}, FirstName: {FirstName},  AgentQueueStatus: {AgentQueueStatus}",
+                    call.Extension,
+                    call.FirstName,
+                    call.AgentQueueStatus);
+            }
             return queueAgents
                 .Where(qa => qa.AgentQueueStatus == QueuesStatusType.LoggedIn && GetExtensionStatus(qa.Extension) == status)
                 .ToArray();

@@ -27,7 +27,7 @@ namespace PbxApiControl.Models.CallReply
                         IsInbound = ci.IsInbound,
                         DialedNumber = ci.DialedNumber,
                         InternalParty = ci.InternalParty,
-
+                        InternalPartyNumber = ci.InternalPartyNumber
                     });
                 }
                 

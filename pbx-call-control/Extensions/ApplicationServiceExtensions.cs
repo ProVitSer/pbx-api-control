@@ -1,16 +1,15 @@
-﻿using PbxApiControl.Services.Pbx;
+﻿using Microsoft.Extensions.Options;
 using PbxApiControl.Interface;
+using PbxApiControl.Services.Pbx;
 using Microsoft.AspNetCore.Mvc.Razor;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
-using PbxApiControl.Interceptor;
 
 namespace PbxApiControl.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static void AddApplicationServices(this IServiceCollection services)
+        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
         {
+            services.Configure<IApiHostSettings>(configuration.GetSection("ApiHostSettings"));
             services.AddScoped<IExtensionService, ExtensionService>();
             services.AddScoped<IRingGroupService, RingGroupService>();
             services.AddScoped<IContactService, ContactService>();
@@ -18,28 +17,22 @@ namespace PbxApiControl.Extensions
             services.AddScoped<ICallService, CallService>();
             services.AddSingleton<IPbxEventListenerService>(provider =>
             {
+                var apiHostSettings = provider.GetRequiredService<IOptions<IApiHostSettings>>().Value;
+                
                 var logger = provider.GetRequiredService<ILogger<PbxEventListenerService>>();
-                return PbxEventListenerService.GetInstance(logger);
+                
+                var httpClient = provider.GetRequiredService<HttpClient>();
+                
+                return PbxEventListenerService.GetInstance(logger, apiHostSettings, httpClient);
             });
 
 
             services.AddLocalization(options => options.ResourcesPath = "Resources");
-
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)
                 .AddDataAnnotationsLocalization();
-
-            services.Configure<RequestLocalizationOptions>(options =>
-            {
-                var supportedCultures = new[]
-                {
-                    new CultureInfo("en-US"),
-                };
-
-                options.DefaultRequestCulture = new RequestCulture("en-US");
-                options.SupportedCultures = supportedCultures;
-                options.SupportedUICultures = supportedCultures;
-            });
+            
+            
         }
 
     }

@@ -19,14 +19,7 @@ namespace PbxApiControl.Services.Grpc {
 
         public override Task<BaseCallReply>MakeCall(MakeCallRequest request, ServerCallContext context) {
             try {
-
-                var isExtensionExists = _extensionService.IsExtensionExists(request.From);
-
-                if (!isExtensionExists) {
-                    throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
-
-                }
-
+                
                 var makeCallResult = _callService.MakeCall(request.To, request.From);
 
                 return Task.FromResult(new BaseCallReply {

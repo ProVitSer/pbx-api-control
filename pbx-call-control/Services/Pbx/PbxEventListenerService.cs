@@ -11,24 +11,40 @@ namespace PbxApiControl.Services.Pbx
         private static readonly object _lock = new object();
         private static PbxEventListenerService _instance = null;
         private readonly ILogger<PbxEventListenerService> _logger;
-        private readonly string _url = "https://webhook.site/9427be0a-3aab-4f82-ac30-becb6b84b43c";
+        private readonly IApiHostSettings _apiHostSettings;
+        private readonly HttpClient _httpClient;
 
-        private PbxEventListenerService(ILogger<PbxEventListenerService> logger)
+        private PbxEventListenerService(ILogger<PbxEventListenerService> logger, IApiHostSettings apiHostSettings, HttpClient httpClient)
         {
+            
             _logger = logger;
+            _apiHostSettings = apiHostSettings;
+            _httpClient = httpClient;
         }
 
-        public static PbxEventListenerService GetInstance(ILogger<PbxEventListenerService> logger)
+        public static PbxEventListenerService GetInstance(ILogger<PbxEventListenerService> logger, IApiHostSettings apiHostSettings, HttpClient httpClient)
         {
             lock (_lock)
             {
                 if (_instance == null)
                 {
-                    _instance = new PbxEventListenerService(logger);
+                    _instance = new PbxEventListenerService(logger, apiHostSettings, httpClient);
                 }
                 return _instance;
             }
         }
+        
+        public void OnStartListenEvent()
+        {
+            lock (_lock)
+            {
+                PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
+                PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
+
+            }
+        }
+
+        
 
         public void StartListenInsertedEvent()
         {
@@ -83,8 +99,7 @@ namespace PbxApiControl.Services.Pbx
             var activeConnectionsInfo = ActiveConnectionsInfo();
             if (activeConnectionsInfo.Count > 0)
             {
-                SendPostRequest(activeConnectionsInfo, _url);
-                activeConnectionsInfo.Clear();
+                SendPostRequest(activeConnectionsInfo, _apiHostSettings.Insert).ConfigureAwait(false);
             }
         }
 
@@ -93,8 +108,7 @@ namespace PbxApiControl.Services.Pbx
             var activeConnectionsInfo = ActiveConnectionsInfo();
             if (activeConnectionsInfo.Count > 0)
             {
-                SendPostRequest(activeConnectionsInfo, _url);
-                activeConnectionsInfo.Clear();
+                SendPostRequest(activeConnectionsInfo, _apiHostSettings.Update).ConfigureAwait(false);
             }
         }
 
@@ -103,8 +117,7 @@ namespace PbxApiControl.Services.Pbx
             var activeConnectionsInfo = ActiveConnectionsInfo();
             if (activeConnectionsInfo.Count > 0)
             {
-                SendPostRequest(activeConnectionsInfo, _url);
-                activeConnectionsInfo.Clear();
+                SendPostRequest(activeConnectionsInfo, _apiHostSettings.Delete).ConfigureAwait(false);
             }
         }
 
@@ -126,20 +139,18 @@ namespace PbxApiControl.Services.Pbx
             }
         }
 
-        private async void SendPostRequest(List<FullActiveConnectionInfoModel> activeConnectionInfo, string url)
+        private async Task SendPostRequest(List<FullActiveConnectionInfoModel> activeConnectionInfo, string url)
         {
             try
             {
                 string jsonData = JsonConvert.SerializeObject(activeConnectionInfo, Formatting.Indented);
-                using (HttpClient httpClient = new HttpClient())
-                {
-                    HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
-                    HttpResponseMessage response = await httpClient.PostAsync(url, content);
-                }
+                HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+                response.EnsureSuccessStatusCode();
             }
             catch (Exception e)
             {
-                _logger.LogDebug("SendPostRequest: {@e}", e.ToString());
+                _logger.LogError(e, "SendPostRequest failed");
             }
         }
     }

@@ -1,36 +1,75 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package ring_group;
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 
 
+// Сервис для управления группами вызовов (Ring Groups) PBX.
 service RingGroupPbxService {
-  rpc GetRingGroupList (google.protobuf.Empty) returns (RingGroupListReply);
-  rpc GetRingGroupMembers (GetRingGroupMembersRequest) returns (RingGroupMembersReply);
-  rpc AddMemberInRingGroup (AddMemberInRingGroupRequest) returns (RingGroupMembersReply);
-  rpc DeleteMemberInRingGroup (DeleteMemberInRingGroupRequest) returns (RingGroupMembersReply);
+  // Получает список всех групп вызовов.
+  rpc GetRingGroupList(google.protobuf.Empty) returns (RingGroupListReply) {
+    option (google.api.http) = {
+      get: "/v1/ring-groups"
+    };
+  }
+
+  // Получает список участников указанной группы вызовов.
+  rpc GetRingGroupMembers(GetRingGroupMembersRequest) returns (RingGroupMembersReply) {
+    option (google.api.http) = {
+      get: "/v1/ring-groups/{ring_group_number}/members"
+    };
+  }
+
+  // Добавляет участников в указанную группу вызовов.
+  rpc AddMemberInRingGroup(AddMemberInRingGroupRequest) returns (RingGroupMembersReply) {
+    option (google.api.http) = {
+      post: "/v1/ring-groups/{ring_group_number}/members/add"
+      body: "*"
+    };
+  }
+
+  // Удаляет участников из указанной группы вызовов.
+  rpc DeleteMemberInRingGroup(DeleteMemberInRingGroupRequest) returns (RingGroupMembersReply) {
+    option (google.api.http) = {
+      post: "/v1/ring-groups/{ring_group_number}/members/remove"
+      body: "*"
+    };
+  }
 }
 
-
+// Ответ с данными о списке групп вызовов.
 message RingGroupListReply {
+  // Список номеров групп вызовов.
   repeated string ring_group_numbers = 1;
 }
 
+// Запрос для получения участников группы вызовов.
 message GetRingGroupMembersRequest {
+  // Номер группы вызовов.
   string ring_group_number = 1;
 }
 
+// Ответ с информацией об участниках группы вызовов.
 message RingGroupMembersReply {
+  // Список номеров участников.
   repeated string numbers = 1;
 }
 
+// Запрос для добавления участников в группу вызовов.
 message AddMemberInRingGroupRequest {
+  // Номер группы вызовов.
   string ring_group_number = 1;
+
+  // Список номеров участников для добавления.
   repeated string numbers = 2;
 }
 
+// Запрос для удаления участников из группы вызовов.
 message DeleteMemberInRingGroupRequest {
+  // Номер группы вызовов.
   string ring_group_number = 1;
+
+  // Список номеров участников для удаления.
   repeated string numbers = 2;
 }

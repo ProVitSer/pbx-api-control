@@ -1,145 +1,303 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package extension;
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
+// Сервис для управления внутренними номерами (Extensions) PBX.
 service ExtensionsPbxService {
-    rpc GetExtensionInfo (GetExtensionInfoRequest) returns (ExtensionInfoReply);
-    rpc GetExtensionStatus (GetExtensionStatusRequest) returns (ExtensionStatusReply);
-    rpc GetExtensions (google.protobuf.Empty) returns (GetExtensionsReply);
-    rpc GetRegisteredExtensions (google.protobuf.Empty) returns (GetRegisteredExtensionsReply);
-    rpc GetExtensionDeviceInfo (GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply);
-    rpc CreateExtension (CreateExtensionRequest) returns (ExtensionInfoReply);
-    rpc DeleteExtension (DeleteExtensionRequest) returns (DeleteExtensionReply);
-    rpc UpdateExtensionInfo (UpdateExtensionInfoRequest) returns (ExtensionInfoReply);
-    rpc SetExtensionForwardStatus (SetExtensionForwardStatusRequest) returns (ExtensionStatusReply);
-    rpc SetExtensionGlobalQueuesStatus (SetExtensionGlobalQueuesStatusRequest) returns (ExtensionStatusReply);
-    rpc SetExtensionStatusInQueue (SetExtensionStatusInQueueRequest) returns (ExtensionStatusReply);
+    // Получить информацию о внутреннем номере.
+    rpc GetExtensionInfo(GetExtensionInfoRequest) returns (ExtensionInfoReply) {
+        option (google.api.http) = {
+            get: "/v1/extensions/{extension}"
+        };
+    }
+
+    // Получить статус внутреннего номера.
+    rpc GetExtensionStatus(GetExtensionStatusRequest) returns (ExtensionStatusReply) {
+        option (google.api.http) = {
+            get: "/v1/extensions/{extension}/status"
+        };
+    }
+
+    // Получить список всех внутренних номеров.
+    rpc GetExtensions(google.protobuf.Empty) returns (GetExtensionsReply) {
+        option (google.api.http) = {
+            get: "/v1/extensions"
+        };
+    }
+
+    // Получить список зарегистрированных внутренних номеров.
+    rpc GetRegisteredExtensions(google.protobuf.Empty) returns (GetRegisteredExtensionsReply) {
+        option (google.api.http) = {
+            get: "/v1/extensions/registered"
+        };
+    }
+
+    // Получить информацию об устройствах которые зарегистрированны у данного внутреннего номера
+    rpc GetExtensionDeviceInfo(GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply) {
+        option (google.api.http) = {
+            get: "/v1/extensions/{extension}/device-info"
+        };
+    }
+
+    // Создание нового внутреннего номера.
+    rpc CreateExtension(CreateExtensionRequest) returns (ExtensionInfoReply) {
+        option (google.api.http) = {
+            post: "/v1/extensions"
+            body: "*"
+        };
+    }
+
+    // Удалить внутренний номер.
+    rpc DeleteExtension(DeleteExtensionRequest) returns (DeleteExtensionReply) {
+        option (google.api.http) = {
+            delete: "/v1/extensions/{extension}"
+        };
+    }
+
+    // Обновляет информацию у внутреннего номера.
+    rpc UpdateExtensionInfo(UpdateExtensionInfoRequest) returns (ExtensionInfoReply) {
+        option (google.api.http) = {
+            put: "/v1/extensions/{extension}"
+            body: "*"
+        };
+    }
+
+    // Устанавливает статус перенаправления вызовов у внутреннего номера.
+    rpc SetExtensionForwardStatus(SetExtensionForwardStatusRequest) returns (ExtensionStatusReply) {
+        option (google.api.http) = {
+            post: "/v1/extensions/{extension}/forward-status"
+            body: "*"
+        };
+    }
+
+    // Устанавливает глобальный статус очередей внутреннего номера.
+    rpc SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest) returns (ExtensionStatusReply) {
+        option (google.api.http) = {
+            post: "/v1/extensions/{extension}/global-queues-status"
+            body: "*"
+        };
+    }
+
+    // Устанавливает статус внутреннего номера в очереди.
+    rpc SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest) returns (ExtensionStatusReply) {
+        option (google.api.http) = {
+            post: "/v1/extensions/{extension}/queues/{queue_number}/status"
+            body: "*"
+        };
+    }
 }
 
+// Запрос для установки статуса внутреннего в очереди.
 message SetExtensionStatusInQueueRequest {
+    // Внутренний номер.
     string extension = 1;
+    // Номер очереди.
     string queue_number = 2;
+    // Статус.
     string status = 3;
 }
 
+// Запрос для установки глобального статуса очередей для внутреннего номера.
 message SetExtensionGlobalQueuesStatusRequest {
+    // Внутренний номер.
     string extension = 1;
+    // Статус.
     string status = 2;
 }
 
-
+// Запрос для установки статуса перенаправления вызовов для внутреннего номера.
 message SetExtensionForwardStatusRequest {
+    // Внутренний номер.
     string extension = 1;
+    // Статус.
     string status = 2;
 }
 
+// Запрос для обновления информации у внетреннего номера.
 message UpdateExtensionInfoRequest {
+    // Внутренний номер.
     string extension = 1;
+    // Имя.
     google.protobuf.StringValue first_name = 2;
+    // Фамилия.
     google.protobuf.StringValue last_name = 3;
+    // Адрес электронной почты.
     google.protobuf.StringValue email = 4;
+    // Идентификатор аутентификации.
     google.protobuf.StringValue auth_id = 5;
+    // Пароль аутентификации.
     google.protobuf.StringValue auth_password = 6;
+    // Мобильный номер.
     google.protobuf.StringValue mobile_number = 7;
+    // Исходящий идентификатор вызывающего абонента.
     google.protobuf.StringValue outbound_caller_id = 8;
+    // Тип записи.
     google.protobuf.StringValue recording_type = 9;
+    // Включено ли внутренний номер.
     google.protobuf.BoolValue is_extension_enabled = 10;
+    // Отключены ли внешние вызовы.
     google.protobuf.BoolValue disable_external_calls = 11;
+    // Доставлять ли аудио.
     google.protobuf.BoolValue deliver_audio = 12;
+    // Поддержка reinvite.
     google.protobuf.BoolValue support_reinvite = 13;
+    // Поддержка replaces.
     google.protobuf.BoolValue support_replaces = 14;
 }
 
+// Запрос для удаления внутреннего номера.
 message DeleteExtensionRequest {
+    // Внутренний номер.
     string extension = 1;
 }
 
+// Ответ на запрос удаления внутреннего номера.
 message DeleteExtensionReply {
+    // Результат операции.
     bool result = 1;
 }
 
+// Запрос для создания внутреннего номера.
 message CreateExtensionRequest {
+    // Внутренний номер.
     string extension = 1;
+    // Имя.
     string first_name = 2;
+    // Фамилия.
     string last_name = 3;
+    // Адрес электронной почты.
     string email = 4;
+    // Идентификатор аутентификации.
     string auth_id = 5;
+    // Пароль аутентификации.
     string auth_password = 6;
+    // Мобильный номер.
     string mobile_number = 7;
+    // Исходящий идентификатор вызывающего абонента.
     string outbound_caller_id = 8;
+    // Тип записи.
     string recording_type = 9;
+    // Включено ли внутренний номер.
     bool is_extension_enabled = 10;
+    // Отключены ли внешние вызовы.
     bool disable_external_calls = 11;
+    // Доставлять ли аудио.
     bool deliver_audio = 12;
+    // Поддержка reinvite.
     bool support_reinvite = 13;
+    // Поддержка replaces.
     bool support_replaces = 14;
 }
 
+// Ответ с информацией о внутреннем номере.
 message ExtensionInfoReply {
+    // Внутренний номер.
     string extension = 1;
+    // Имя.
     string first_name = 2;
+    // Фамилия.
     string last_name = 3;
+    // Адрес электронной почты.
     string email = 4;
+    // Идентификатор аутентификации.
     string auth_id = 5;
+    // Пароль аутентификации.
     string auth_password = 6;
+    // Мобильный номер.
     string mobile_number = 7;
+    // SIP идентификатор.
     string sip_id = 8;
+    // Исходящий идентификатор вызывающего абонента.
     string outbound_caller_id = 9;
+    // Тип записи.
     string recording_type = 10;
-    bool is_extenion_enabled = 11;
+    // Включено ли внутренний номер.
+    bool is_extension_enabled = 11;
+    // Отключены ли внешние вызовы.
     bool disable_external_calls = 12;
+    // Доставлять ли аудио.
     bool deliver_audio = 13;
+    // Поддержка reinvite.
     bool support_reinvite = 14;
+    // Поддержка replaces.
     bool support_replaces = 15;
+    // Опции электронной почты.
     string email_options = 16;
+    // Включена ли голосовая почта.
     bool voice_mail_enable = 17;
+    // PIN код голосовой почты.
     string voice_mail_pin = 18;
+    // Воспроизводить ли идентификатор вызывающего абонента в голосовой почте.
     bool voice_mail_play_caller_id = 19;
+    // Является ли внутренним.
     bool internal = 20;
+    // Тайм-аут без ответа.
     int32 no_answer_timeout = 21;
 }
-        
 
+// Запрос для получения информации об устройствах которые зарегистрированны у  данного внутреннего номера.
 message GetExtensionDeviceInfoRequest {
+    // Внутренний номер.
     string extension = 1;
 }
 
+// Информация о устройстве.
 message Device {
+    // User Agent.
     string userAgent = 1;
+    // Контакт.
     string contact = 2;
 }
 
+// Ответ с информацией об устройствах внутреннего номера.
 message GetExtensionDeviceInfoReply {
+    // Внутренний номер.
     string extension = 1;
+    // Список устройств.
     repeated Device devices = 2;
 }
 
+// Ответ с списком внутренних номеров.
 message GetExtensionsReply {
+    // Список внутренних номеров.
     repeated string extensions = 1;
 }
 
+// Ответ с списком зарегистрированных внутренних номерах.
 message GetRegisteredExtensionsReply {
+    // Список зарегистрированных внутренних номеров.
     repeated string extensions = 1;
 }
 
+// Запрос для получения статуса внутреннего номера.
 message GetExtensionStatusRequest {
+    // Внутренний номер.
     string extension = 1;
 }
+
+// Ответ с статусом внутреннего номера.
 message ExtensionStatusReply {
+    // Внутренний номер.
     string extension = 1;
+    // Зарегистрировано ли.
     bool registered = 2;
+    // Статус правил перенаправления вызовов.
     string forwarding_rules_status = 3;
+    // Статус очередей.
     string queues_status = 4;
+    // Список групп.
     repeated string groups = 5;
-    repeated string ring_groups = 6;
-    repeated string all_queues = 7;
-    repeated string logged_out_queues = 8;
+    // Список групп вызова.
+    repeated string in_ring_groups = 6;
+    // Список очередей, в которые вошли.
     repeated string logged_in_queues = 9;
 }
 
-
+// Запрос для получения информации о внутреннем номере.
 message GetExtensionInfoRequest {
+    // Внутренний номер.
     string extension = 1;
 }

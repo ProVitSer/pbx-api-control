@@ -1,74 +1,178 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package call;
+import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
-import "google/protobuf/wrappers.proto";
 
 
+// Сервис для управления вызовами PBX
 service CallPbxService {
-  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply);
-  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply);
-  rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
-  rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
-  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
-  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply);
+  // Получает информацию о всех активных вызовах.
+  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply) {
+    option (google.api.http) = {
+      get: "/v1/active-calls-info"
+    };
+  }
+
+  // Получает количество активных вызовов.
+  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply) {
+    option (google.api.http) = {
+      get: "/v1/count-calls"
+    };
+  }
+
+  // Инициирует новый вызов.
+  rpc MakeCall(MakeCallRequest) returns (BaseCallReply) {
+    option (google.api.http) = {
+      post: "/v1/make-call"
+      body: "*"
+    };
+  }
+
+  // Завершает текущий вызов по расширению.
+  rpc HangupCall(HangupCallRequest) returns (BaseCallReply) {
+    option (google.api.http) = {
+      post: "/v1/hangup-call"
+      body: "*"
+    };
+  }
+
+  // Передает вызов на другой номер.
+  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply) {
+    option (google.api.http) = {
+      post: "/v1/transfer-call"
+      body: "*"
+    };
+  }
+
+  // Получает информацию о всех активных соединениях.
+  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply) {
+    option (google.api.http) = {
+      get: "/v1/active-connections-info"
+    };
+  }
 }
 
+// Ответ на запрос информации об активных соединениях.
 message GetActiveConnectionsInfoReply {
+  // Список информации о активных соединениях.
   repeated ActiveConnectionsInfo active_connections_info = 1;
 }
 
-message ActiveConnectionsInfo{
+// Информация об активном соединении.
+message ActiveConnectionsInfo {
+  // Идентификатор вызова.
   int32  call_id = 1;
+
+  // Данные о соединениях для данного вызова.
   repeated ConnectionsData connections_data = 2;
 }
 
+// Данные о соединении.
 message ConnectionsData {
+  // Идентификатор соединения.
   int32  id = 1;
+
+  // Идентификатор вызова.
   int32  call_connection_id = 2;
+
+  // Внешняя сторона соединения.
   string external_party = 3;
+
+  // Состояние записи.
   string recording_state = 4;
+
+  // Идентификатор внешнего соединения.
   int32  party_connection_id = 5;
+
+  // Идентификатор передавшего вызов.
   int32  referred_by = 6;
+
+  // Является ли вызов исходящим.
   bool   is_outbound = 7;
+
+  // Является ли вызов входящим.
   bool   is_inbound = 8;
+
+  // Набранный номер.
   string dialed_number = 9;
+
+  // Внутренний абонент.
   string internal_party = 10;
+
+  string internal_party_number = 11;
+  
 }
 
+// Ответ на запрос информации об активных вызовах.
 message GetActiveCallsInfoReply {
+  // Список данных об активных вызовах.
   repeated GetActiveCallsInfoData active_calls_info_data = 1;
 }
+
+// Данные об активном вызове.
 message GetActiveCallsInfoData {
+  // Идентификатор вызова.
   int32  call_id = 1;
+
+  // Направление вызова.
   string call_direction = 2;
+
+  // Статус вызова.
   string status = 3;
-  optional string direction = 4;
-  optional string call_status = 5;
-  string local_number = 6;
-  string remote_number = 7;
+
+  // Локальный номер.
+  string local_number = 4;
+
+  // Удаленный номер.
+  string remote_number = 5;
+
+  // Направление вызова (опционально).
+  optional string direction = 6;
+
+  // Статус вызова (опционально).
+  optional string call_status = 7;
+
 }
 
+// Ответ на запрос количества вызовов.
 message GetCountCallsReply {
+  // Текущее количество вызовов.
   int32 current_count_calls = 1;
 }
 
+// Запрос на создание вызова.
 message MakeCallRequest {
+  // Номер для вызова.
   string to = 1;
+
+  // Номер, с которого осуществляется вызов.
   string from = 2;
 }
 
+// Запрос на завершение вызова по расширению.
 message HangupCallRequest {
+  // Внутренний номер.
   string extension = 1;
 }
 
+// Запрос на передачу вызова.
 message TrasferCallRequest {
-  int32  callId = 1;
-  int32  partyConnectionId = 2;
-  string destinationNumber = 3;
+  // Идентификатор вызова.
+  int32  call_id = 1;
+
+  // Идентификатор внешнего соединения.
+  int32  party_connection_id = 2;
+
+  // Номер назначения для переадресации вызова.
+  string destination_number = 3;
 }
 
+// Ответ на запрос выполнения операции с вызовом.
 message BaseCallReply {
+  // Результат выполнения операции.
   bool result = 1;
+
+  // Сообщение о результате выполнения операции.
   string message = 2;
 }

@@ -17,7 +17,7 @@ namespace PbxApiControl.Models.Call
 
         public void AddActiveConnectionInfo(ActiveConnection activeConnection)
         {
-            this.ActiveConnectionInfo .Add(new ActiveConnectionInfoModel(activeConnection));
+            this.ActiveConnectionInfo.Add(new ActiveConnectionInfoModel(activeConnection));
 
         }
     }

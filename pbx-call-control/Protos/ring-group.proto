@@ -1,41 +1,23 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package ring_group;
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 
 // Сервис для управления группами вызовов (Ring Groups) PBX.
 service RingGroupPbxService {
+  
   // Получает список всех групп вызовов.
-  rpc GetRingGroupList(google.protobuf.Empty) returns (RingGroupListReply) {
-    option (google.api.http) = {
-      get: "/v1/ring-groups"
-    };
-  }
+  rpc GetRingGroupList(google.protobuf.Empty) returns (RingGroupListReply);
 
   // Получает список участников указанной группы вызовов.
-  rpc GetRingGroupMembers(GetRingGroupMembersRequest) returns (RingGroupMembersReply) {
-    option (google.api.http) = {
-      get: "/v1/ring-groups/{ring_group_number}/members"
-    };
-  }
-
+  rpc GetRingGroupMembers(GetRingGroupMembersRequest) returns (RingGroupMembersReply);
+  
   // Добавляет участников в указанную группу вызовов.
-  rpc AddMemberInRingGroup(AddMemberInRingGroupRequest) returns (RingGroupMembersReply) {
-    option (google.api.http) = {
-      post: "/v1/ring-groups/{ring_group_number}/members/add"
-      body: "*"
-    };
-  }
-
+  rpc AddMemberInRingGroup(AddMemberInRingGroupRequest) returns (RingGroupMembersReply);
+  
   // Удаляет участников из указанной группы вызовов.
-  rpc DeleteMemberInRingGroup(DeleteMemberInRingGroupRequest) returns (RingGroupMembersReply) {
-    option (google.api.http) = {
-      post: "/v1/ring-groups/{ring_group_number}/members/remove"
-      body: "*"
-    };
-  }
+  rpc DeleteMemberInRingGroup(DeleteMemberInRingGroupRequest) returns (RingGroupMembersReply);
 }
 
 // Ответ с данными о списке групп вызовов.

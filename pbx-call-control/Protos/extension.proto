@@ -1,93 +1,47 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package extension;
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
 
 // Сервис для управления внутренними номерами (Extensions) PBX.
 service ExtensionsPbxService {
+    
     // Получить информацию о внутреннем номере.
-    rpc GetExtensionInfo(GetExtensionInfoRequest) returns (ExtensionInfoReply) {
-        option (google.api.http) = {
-            get: "/v1/extensions/{extension}"
-        };
-    }
+    rpc GetExtensionInfo(GetExtensionInfoRequest) returns (ExtensionInfoReply);
 
     // Получить статус внутреннего номера.
-    rpc GetExtensionStatus(GetExtensionStatusRequest) returns (ExtensionStatusReply) {
-        option (google.api.http) = {
-            get: "/v1/extensions/{extension}/status"
-        };
-    }
+    rpc GetExtensionStatus(GetExtensionStatusRequest) returns (ExtensionStatusReply);
 
     // Получить список всех внутренних номеров.
-    rpc GetExtensions(google.protobuf.Empty) returns (GetExtensionsReply) {
-        option (google.api.http) = {
-            get: "/v1/extensions"
-        };
-    }
+    rpc GetExtensions(google.protobuf.Empty) returns (GetExtensionsReply);
 
     // Получить список зарегистрированных внутренних номеров.
-    rpc GetRegisteredExtensions(google.protobuf.Empty) returns (GetRegisteredExtensionsReply) {
-        option (google.api.http) = {
-            get: "/v1/extensions/registered"
-        };
-    }
+    rpc GetRegisteredExtensions(google.protobuf.Empty) returns (GetRegisteredExtensionsReply);
 
     // Получить информацию об устройствах которые зарегистрированны у данного внутреннего номера
-    rpc GetExtensionDeviceInfo(GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply) {
-        option (google.api.http) = {
-            get: "/v1/extensions/{extension}/device-info"
-        };
-    }
+    rpc GetExtensionDeviceInfo(GetExtensionDeviceInfoRequest) returns (GetExtensionDeviceInfoReply);
 
     // Создание нового внутреннего номера.
-    rpc CreateExtension(CreateExtensionRequest) returns (ExtensionInfoReply) {
-        option (google.api.http) = {
-            post: "/v1/extensions"
-            body: "*"
-        };
-    }
+    rpc CreateExtension(CreateExtensionRequest) returns (ExtensionInfoReply);
 
     // Удалить внутренний номер.
-    rpc DeleteExtension(DeleteExtensionRequest) returns (DeleteExtensionReply) {
-        option (google.api.http) = {
-            delete: "/v1/extensions/{extension}"
-        };
-    }
+    rpc DeleteExtension(DeleteExtensionRequest) returns (DeleteExtensionReply);
 
     // Обновляет информацию у внутреннего номера.
-    rpc UpdateExtensionInfo(UpdateExtensionInfoRequest) returns (ExtensionInfoReply) {
-        option (google.api.http) = {
-            put: "/v1/extensions/{extension}"
-            body: "*"
-        };
-    }
+    rpc UpdateExtensionInfo(UpdateExtensionInfoRequest) returns (ExtensionInfoReply);
 
     // Устанавливает статус перенаправления вызовов у внутреннего номера.
-    rpc SetExtensionForwardStatus(SetExtensionForwardStatusRequest) returns (ExtensionStatusReply) {
-        option (google.api.http) = {
-            post: "/v1/extensions/{extension}/forward-status"
-            body: "*"
-        };
-    }
+    rpc SetExtensionForwardStatus(SetExtensionForwardStatusRequest) returns (ExtensionStatusReply);
 
     // Устанавливает глобальный статус очередей внутреннего номера.
-    rpc SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest) returns (ExtensionStatusReply) {
-        option (google.api.http) = {
-            post: "/v1/extensions/{extension}/global-queues-status"
-            body: "*"
-        };
-    }
+    rpc SetExtensionGlobalQueuesStatus(SetExtensionGlobalQueuesStatusRequest) returns (ExtensionStatusReply);
 
     // Устанавливает статус внутреннего номера в очереди.
-    rpc SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest) returns (ExtensionStatusReply) {
-        option (google.api.http) = {
-            post: "/v1/extensions/{extension}/queues/{queue_number}/status"
-            body: "*"
-        };
-    }
+    rpc SetExtensionStatusInQueue(SetExtensionStatusInQueueRequest) returns (ExtensionStatusReply);
+    
+    // Устанавливает переадресацию вызовов у внутреннего номера.
+    rpc SetExtensionCallForwardStatus(SetExtensionCallForwardStatusRequest) returns (ExtensionStatusReply);
 }
 
 // Запрос для установки статуса внутреннего в очереди.
@@ -112,7 +66,7 @@ message SetExtensionGlobalQueuesStatusRequest {
 message SetExtensionForwardStatusRequest {
     // Внутренний номер.
     string extension = 1;
-    // Статус.
+    // Статус переадресации внутреннего номера.
     string status = 2;
 }
 
@@ -300,4 +254,18 @@ message ExtensionStatusReply {
 message GetExtensionInfoRequest {
     // Внутренний номер.
     string extension = 1;
+}
+
+// Запрос для установки маршрутизации для перенаправления вызовов у внутреннего номера.
+message SetExtensionCallForwardStatusRequest {
+    // Внутренний номер.
+    string extension = 1;
+    // Правило переадресации.
+    string fw_status = 2;
+    // Тип вызовов(внешних, внутренних, все).
+    string call_type = 3;
+    // Тип переадресации.
+    string fw_type = 4;
+    // Номера на который нужно переадресаовать вызовы.
+    optional string number = 5;
 }

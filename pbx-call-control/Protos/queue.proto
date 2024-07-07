@@ -1,54 +1,28 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package queue;
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 // Сервис для управления очередями PBX.
 service QueuePbxService {
+  
   // Получает список всех очередей.
-  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply) {
-    option (google.api.http) = {
-      get: "/v1/queues"
-    };
-  }
+  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply);
 
   // Получает информацию об агентах в указанной очереди.
-  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents"
-    };
-  }
-
+  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  
   // Получает информацию о свободных агентах в указанной очереди.
-  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents/free"
-    };
-  }
+  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
 
   // Получает информацию о занятых агентах в указанной очереди.
-  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents/busy"
-    };
-  }
-
+  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  
   // Добавляет агентов в указанную очередь.
-  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply) {
-    option (google.api.http) = {
-      post: "/v1/queue/{queue_number}/agents/add"
-      body: "*"
-    };
-  }
-
+  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply);
+  
   // Удаляет агентов из указанной очереди.
-  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply) {
-    option (google.api.http) = {
-      post: "/v1/queue/{queue_number}/agents/remove"
-      body: "*"
-    };
-  }
+  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply);
 }
 
 // Запрос для получения информации об агентах очереди.

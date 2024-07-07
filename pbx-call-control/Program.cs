@@ -25,16 +25,17 @@ namespace PbxApiControl
         {
             
             var builder = WebApplication.CreateBuilder(args);
-
+            builder.Services.AddWindowsService(options =>
+            {
+                options.ServiceName = "PbxApiControl";
+            });
+            
+            
             SetCulture(builder);
             
             var configuration = GetConfiguration(builder);
             
-            string grpcUrl = configuration[GrpcUrlKey]  ?? throw new ArgumentException("Invalid host port args");
-            string swaggerUrl = configuration[SwaggerUrlKey]  ?? throw new ArgumentException("Invalid host port args");
-
             builder.Services.AddHttpClient();
-
             
             // Add services to the container.
             builder.Services.AddGrpc(options =>
@@ -42,19 +43,6 @@ namespace PbxApiControl
                     options.Interceptors.Add<LoggingInterceptor>();
                 })
                 .AddJsonTranscoding(); // Add support for JSON transcoding
-
-            if (builder.Environment.EnvironmentName == "Development")
-            {
-                builder.Services.AddSwaggerGen(c =>
-                {
-                    c.SwaggerDoc("v1", new OpenApiInfo { Title = "gRPC JSON transcoding example", Version = "v1" });
-                
-                    var filePath = Path.Combine(System.AppContext.BaseDirectory, "Server.xml");
-                    c.IncludeXmlComments(filePath);
-                    c.IncludeGrpcXmlComments(filePath, includeControllerXmlComments: true);
-                });
-                builder.Services.AddGrpcSwagger();  
-            }
             
             // Initialize configuration
             PbxApiConfig.InitConfig();
@@ -63,7 +51,7 @@ namespace PbxApiControl
             builder.Services.AddApplicationServices(configuration);
             builder.Services.AddSingleton(configuration);
             builder.Services.AddHostedService<StartupService>();
-
+            builder.Services.AddHostedService<WindowsBackgroundService>();
             builder.Services.AddSerilog((services, lc) => lc
                .ReadFrom.Configuration(configuration)
                .ReadFrom.Services(services)
@@ -75,15 +63,7 @@ namespace PbxApiControl
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
             {
-                int swaggerPort = new Uri(swaggerUrl).Port;
-                int grpcPort = new Uri(grpcUrl).Port;
-
-                options.ListenAnyIP(swaggerPort, listenOptions =>
-                {
-                    listenOptions.Protocols = HttpProtocols.Http1;
-                });
-
-                options.ListenAnyIP(grpcPort, listenOptions =>
+                options.ListenAnyIP(new Uri("http://127.0.0.1:2838").Port, listenOptions =>
                 {
                     listenOptions.Protocols = HttpProtocols.Http2;
                 });
@@ -91,35 +71,7 @@ namespace PbxApiControl
             });
             
             var app = builder.Build();
-
-            if (builder.Environment.EnvironmentName == "Development")
-            {
-                app.UseDefaultFiles();
-                app.UseStaticFiles();
-                app.UseSwagger();
-                app.UseSwaggerUI(c =>
-                {
-                    c.SwaggerEndpoint("/swagger/v1/swagger.json", "gRPC 3CX PBX CONTROL API V1");
-                });
-
-            }
-
-            app.Use(async (context, next) =>
-            {
-                if (context.Request.ContentType == "application/grpc")
-                {
-                    await next();
-                }
-                else if (builder.Environment.EnvironmentName != DevelopmentEnvironment)
-                {
-                    context.Response.StatusCode = StatusCodes.Status404NotFound;
-                }
-                else
-                {
-                    await next();
-                }
-            });
-
+            
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);

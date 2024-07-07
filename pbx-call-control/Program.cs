@@ -4,36 +4,30 @@ using PbxApiControl.Config;
 using PbxApiControl.Interceptor;
 using PbxApiControl.Services;
 using Serilog;
-using Serilog.Templates;
-using Serilog.Templates.Themes;
-using System.Globalization;
-using Microsoft.AspNetCore.Localization;
 using Microsoft.Extensions.Options;
-using System.Reflection;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using Microsoft.OpenApi.Models;
 
 namespace PbxApiControl
 {
     public class Program
     {
-        private const string DevelopmentEnvironment = "Development";
-        private const string GrpcUrlKey = "Kestrel:Endpoints:grpc:Url";
-        private const string SwaggerUrlKey = "Kestrel:Endpoints:swagger:Url";
         
         public static void Main(string[] args)
         {
+
+            // Configure Serilog
+            LoggerService.ConfigureLogger(args);
             
             var builder = WebApplication.CreateBuilder(args);
+            builder.Host.UseSerilog(); // Use Serilog for logging
             builder.Services.AddWindowsService(options =>
             {
                 options.ServiceName = "PbxApiControl";
             });
             
+            CulturService.SetCulture(builder);
             
-            SetCulture(builder);
-            
-            var configuration = GetConfiguration(builder);
+            var configuration = ConfigService.GetConfiguration(builder);
             
             builder.Services.AddHttpClient();
             
@@ -51,15 +45,11 @@ namespace PbxApiControl
             builder.Services.AddApplicationServices(configuration);
             builder.Services.AddSingleton(configuration);
             builder.Services.AddHostedService<StartupService>();
-            builder.Services.AddHostedService<WindowsBackgroundService>();
-            builder.Services.AddSerilog((services, lc) => lc
-               .ReadFrom.Configuration(configuration)
-               .ReadFrom.Services(services)
-               .Enrich.FromLogContext()
-               .WriteTo.Console(new ExpressionTemplate(
-                   "[{@t:HH:mm:ss} {@l:u3}{#if @tr is not null} ({substring(@tr,0,4)}:{substring(@sp,0,4)}){#end}] {@m}\n{@x}",
-                   theme: TemplateTheme.Code)));
-            
+            if (OperatingSystem.IsWindows())
+            {
+                builder.Services.AddHostedService<WindowsBackgroundService>();
+            }
+
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
             {
@@ -87,46 +77,5 @@ namespace PbxApiControl
             app.Run();
         }
         
-        private static void SetCulture(WebApplicationBuilder builder)
-        {
-            var cultureInfo = new CultureInfo("en-US");
-
-            Thread.CurrentThread.CurrentCulture = cultureInfo;
-            Thread.CurrentThread.CurrentUICulture = cultureInfo;
-
-            builder.Services.Configure<RequestLocalizationOptions>(options =>
-            {
-                options.DefaultRequestCulture = new RequestCulture(cultureInfo);
-                options.SupportedCultures = new[] { cultureInfo };
-                options.SupportedUICultures = new[] { cultureInfo };
-            });
-        }
-
-        private static IConfigurationRoot GetConfiguration(WebApplicationBuilder builder)
-        {
-            Console.WriteLine($"Environment: {builder.Environment.EnvironmentName}");
-
-            string appsettingsFile = builder.Environment.EnvironmentName == DevelopmentEnvironment
-                ? $"PbxApiControl.appsettings.{builder.Environment.EnvironmentName}.json"
-                : "PbxApiControl.appsettings.json";
-    
-            return new ConfigurationBuilder()
-                .AddJsonStream(GetEmbeddedResourceStream(appsettingsFile))
-                .Build();
-        }
-
-
-        private static Stream GetEmbeddedResourceStream(string resourceName)
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceStream = assembly.GetManifestResourceStream(resourceName);
-
-            if (resourceStream == null)
-            {
-                throw new FileNotFoundException("Embedded resource not found", resourceName);
-            }
-
-            return resourceStream;
-        }
     }
 }

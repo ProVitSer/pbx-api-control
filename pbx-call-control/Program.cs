@@ -3,6 +3,8 @@ using PbxApiControl.Extensions;
 using PbxApiControl.Config;
 using PbxApiControl.Interceptor;
 using PbxApiControl.Services;
+using PbxApiControl.Middleware;
+using PbxApiControl.Interface;
 using Serilog;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
@@ -27,7 +29,12 @@ namespace PbxApiControl
             
             CulturService.SetCulture(builder);
             
-            var configuration = ConfigService.GetConfiguration(builder);
+            // Initialize configuration
+            var configuration = builder.Configuration;
+
+            // Register TokenValidationService with configuration
+            builder.Services.AddSingleton<ITokenValidationService>(sp => new TokenValidationService(configuration));
+            
             
             builder.Services.AddHttpClient();
             
@@ -49,6 +56,7 @@ namespace PbxApiControl
             {
                 builder.Services.AddHostedService<WindowsBackgroundService>();
             }
+            builder.Services.AddSingleton<ITokenValidationService, TokenValidationService>();
 
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
@@ -61,7 +69,8 @@ namespace PbxApiControl
             });
             
             var app = builder.Build();
-            
+            app.UseMiddleware<AuthMiddleware>();
+
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
             app.UseRequestLocalization(localizationOptions);

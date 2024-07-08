@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using PbxApiControl.Models.Queue;
 using PbxApiControl.Enums;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Pbx
 {

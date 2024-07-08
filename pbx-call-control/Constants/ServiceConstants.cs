@@ -1,4 +1,4 @@
-﻿namespace PbxApiControl.Services
+﻿namespace PbxApiControl.Constants
 {
     public static class ServiceConstants
     {
@@ -21,8 +21,7 @@
         public const string CallTransferSuccess = "Вызов успешно переадресован";
         public const string CallTransferError = "Проблемы переадресации вызова";
         public const string NoActiveConnection = "Нет активных вызовов по номеру";
-
-
+        public const string DataError = "Переданно некорректно значение";
     }
 }
 

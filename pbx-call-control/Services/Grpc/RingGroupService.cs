@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using Google.Protobuf.WellKnownTypes;
 using PbxApiControl.Models.RingGroup;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Grpc {
     public class RingGroupService: RingGroupPbxService.RingGroupPbxServiceBase {

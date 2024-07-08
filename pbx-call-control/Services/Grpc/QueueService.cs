@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using Google.Protobuf.WellKnownTypes;
 using PbxApiControl.Models.QueueReply;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Grpc {
     public class QueueService: QueuePbxService.QueuePbxServiceBase {

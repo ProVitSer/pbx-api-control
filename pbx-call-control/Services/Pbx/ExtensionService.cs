@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using PbxApiControl.Models.Extensions;
 using PbxApiControl.Enums;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Pbx
 {
@@ -176,6 +177,184 @@ namespace PbxApiControl.Services.Pbx
                 return ExtensionStatus(data.ExtensionNumber);
             }
         }
+        
+       public ExtensionStatus SetExtCallForwarding(ExtensionCallForwardDataModel data)
+        {
+            using (var dnByNumber = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber))
+            {
+                if (!(dnByNumber is Extension))
+                {
+                    throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
+                }
+
+                var extension = (Extension)dnByNumber;
+
+                var frs = GetForwardingRulesStatus(data.FwStatus);
+                var newfwdProfile = extension.CurrentProfile;
+
+                foreach (var fwdProfile in extension.FwdProfiles)
+                {
+                    if (fwdProfile.Name == frs) 
+                    {
+                        newfwdProfile = UpdateRoute(extension, fwdProfile, data);
+                    }
+                }
+
+                extension.CurrentProfile = newfwdProfile;
+                extension.OverrideExpiresAt = DateTime.UtcNow;
+                extension.Save();
+
+                return ExtensionStatus(data.ExtensionNumber);
+            }
+        }
+
+        private FwdProfile UpdateRoute(Extension extension, FwdProfile fwdProfile, ExtensionCallForwardDataModel data)
+        {
+            var dest = CreateDestination(extension, data);
+
+            if (fwdProfile.TypeOfRouting == RoutingType.Available)
+            {
+                UpdateAvailableRoute(fwdProfile.AvailableRoute, dest, data);
+            }
+            else if (fwdProfile.TypeOfRouting == RoutingType.Away)
+            {
+                UpdateAwayRoute(fwdProfile.AwayRoute, dest, data);
+            }
+
+            return fwdProfile;
+        }
+
+        private DestinationStruct CreateDestination(Extension extension, ExtensionCallForwardDataModel data)
+        {
+            var dest = new DestinationStruct
+            {
+                To = GetDestinationType(data.FwTo)
+            };
+
+            switch (data.FwTo)
+            {
+                case "Extension":
+                case "Queue":
+                case "IVR":
+                case "RingGroup":
+                    if (string.IsNullOrEmpty(data.Number))
+                    {
+                        throw new InvalidOperationException(ServiceConstants.DataError);
+                    }
+                    dest.Internal = PhoneSystem.Root.GetDNByNumber(data.Number);
+                    break;
+                case "Mobile":
+                    dest.External = extension.GetPropertyValue("MOBILENUMBER");
+                    break;
+                case "External":
+                    dest.External = data.Number;
+                    break;
+                case "VoiceMail":
+                    dest.Internal = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber);
+                    break;
+            }
+
+            return dest;
+        }
+
+        private void UpdateAwayRoute(AwayRouting route, DestinationStruct dest, ExtensionCallForwardDataModel data)
+        {
+            switch (data.fwCall)
+            {
+                case "External":
+                    route.External.AllHours = dest;
+                    route.External.OutOfOfficeHours = dest;
+                    break;
+                case "Internal":
+                    route.Internal.AllHours = dest;
+                    route.Internal.OutOfOfficeHours = dest;
+                    break;
+                case "Both":
+                    route.External.AllHours = dest;
+                    route.External.OutOfOfficeHours = dest;
+                    route.Internal.AllHours = dest;
+                    route.Internal.OutOfOfficeHours = dest;
+                    break;
+            }
+        }
+
+        private void UpdateAvailableRoute(AvailableRouting route, DestinationStruct dest, ExtensionCallForwardDataModel data)
+        {
+            void UpdateNoAnswer()
+            {
+                var noAnswerRoute = route.NoAnswer.Internal;
+                
+                if (data.fwCall == "External" )
+                {
+                    route.NoAnswer.AllCalls = dest;
+                    route.NoAnswer.Internal = noAnswerRoute;
+                }
+                
+                if (data.fwCall == "Internal" )
+                {
+                    route.NoAnswer.Internal = dest;
+                }
+            }
+
+            void UpdateBusyNotRegistered()
+            {
+                var busyRoute = route.Busy.Internal;
+                var notRegisteredRoute = route.NotRegistered.Internal;
+                
+                if (data.fwCall == "External" )
+                {
+                    route.Busy.AllCalls = dest;
+                    route.Busy.Internal = busyRoute;
+                    route.NotRegistered.AllCalls = dest;
+                    route.NotRegistered.Internal = notRegisteredRoute;
+                }
+                
+                if (data.fwCall == "Internal" )
+                {
+                    route.Busy.Internal = dest;
+                    route.NotRegistered.Internal = dest;
+                }
+            }
+
+            switch (data.ExtensionState)
+            {
+                case "NoAnswer":
+                    UpdateNoAnswer();
+                    break;
+                case "BusyNotRegistered":
+                    UpdateBusyNotRegistered();
+                    break;
+            }
+
+            if (data.fwCall == "Both")
+            {
+                route.NoAnswer.AllCalls = dest;
+                route.Busy.AllCalls = dest;
+                route.NotRegistered.AllCalls = dest;
+                route.Busy.Internal = dest;
+                route.NoAnswer.Internal = dest;
+                route.NotRegistered.Internal = dest;
+            }
+        }
+        
+        private static DestinationType GetDestinationType(string fwType)
+        {
+            return fwType switch
+            {
+                "Extension" => DestinationType.Extension,
+                "External" => DestinationType.External,
+                "Mobile" => DestinationType.External,
+                "Queue" => DestinationType.Queue,
+                "RingGroup" => DestinationType.RingGroup, 
+                "IVR" => DestinationType.IVR,
+                "EndCall" => DestinationType.None,
+                "VoiceMail" => DestinationType.VoiceMail,
+                _ => throw new ArgumentOutOfRangeException(nameof(fwType), $"Unsupported forwarding type: {fwType}")
+
+            };
+        }
+
+            
 
         public ExtensionStatus SetExtQueuesStatus(ExtensionQueuesStatusDataModel data)
         {
@@ -248,7 +427,7 @@ namespace PbxApiControl.Services.Pbx
                 _ => status
             };
         }
-
+        
         private void SetExtensionProperties(Extension extension, CreateExtensionDataModel data)
         {
             var newGuid = Guid.NewGuid();

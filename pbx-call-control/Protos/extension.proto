@@ -260,12 +260,14 @@ message GetExtensionInfoRequest {
 message SetExtensionCallForwardStatusRequest {
     // Внутренний номер.
     string extension = 1;
-    // Правило переадресации.
+    // Правило переадресации (DND,BusinessTrip ....).
     string fw_status = 2;
-    // Тип вызовов(внешних, внутренних, все).
-    string call_type = 3;
-    // Тип переадресации.
-    string fw_type = 4;
-    // Номера на который нужно переадресаовать вызовы.
-    optional string number = 5;
+    // Переадресовывать на какой тип номеров (Extension, Mobile ....).
+    string fw_to = 3;
+    // Передаресация для типов вызовов (External, Internal, Both).
+    string fw_call = 4;
+    // Состояние внутреннего номера(NoAnswer, Busy, NotRegistered).
+    optional string extension_state  = 5;
+    // Номера на который нужно переадресаовать вызовы(в случае переадресаций на конкретные номера).
+    optional string number = 6;
 }

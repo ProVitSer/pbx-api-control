@@ -3,6 +3,7 @@ using PbxApiControl.Interface;
 using Google.Protobuf.WellKnownTypes;
 using PbxApiControl.Models.Extensions;
 using PbxApiControl.Models.ExtensionReply;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Grpc {
     public class ExtensionService: ExtensionsPbxService.ExtensionsPbxServiceBase {
@@ -229,6 +230,28 @@ namespace PbxApiControl.Services.Grpc {
                 }
 
                 var extensionStatus = _extensionService.SetExtQueueStatus(new ExtensionQueueStatusDataModel(request));
+
+                return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
+
+            } catch (Exception e) {
+                _logger.LogError("SetExtensionStatusInQueue: {@e}", e.ToString());
+
+                throw new RpcException(new Status(StatusCode.Internal, e.ToString()));
+
+            }
+        }
+        
+        public override Task<ExtensionStatusReply>SetExtensionCallForwardStatus(SetExtensionCallForwardStatusRequest request, ServerCallContext context) {
+            try {
+
+                var extensionExists = _extensionService.IsExtensionExists(request.Extension);
+
+                if (!extensionExists) {
+                    throw new RpcException(new Status(StatusCode.NotFound, ServiceConstants.ExtensionNotFound));
+
+                }
+
+                var extensionStatus = _extensionService.SetExtCallForwarding(new ExtensionCallForwardDataModel(request));
 
                 return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
 

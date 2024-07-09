@@ -28,6 +28,7 @@ namespace PbxApiControl.Services.Grpc {
                 var extensionStatus = _extensionService.ExtensionStatus(request.Extension);
 
                 return Task.FromResult(ExtStatusReply.GetExtensionStatus(extensionStatus));
+                
             } catch (Exception e) {
                 _logger.LogError("GetExtensionInfo: {@e}", e.ToString());
 

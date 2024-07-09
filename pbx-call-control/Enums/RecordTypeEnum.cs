@@ -1,6 +1,6 @@
 ﻿namespace PbxApiControl.Enums
 {
-    internal enum RecordType
+    public enum RecordType
     {
         RecordingOff,
         RecordingAll,

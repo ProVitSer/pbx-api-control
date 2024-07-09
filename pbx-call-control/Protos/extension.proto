@@ -44,14 +44,19 @@ service ExtensionsPbxService {
     rpc SetExtensionCallForwardStatus(SetExtensionCallForwardStatusRequest) returns (ExtensionStatusReply);
 }
 
-// Запрос для установки статуса внутреннего в очереди.
+// Запрос для установки статуса внутреннего номера в очереди.
 message SetExtensionStatusInQueueRequest {
     // Внутренний номер.
     string extension = 1;
     // Номер очереди.
     string queue_number = 2;
     // Статус.
-    string status = 3;
+    ExtensionQueueStatus status = 3;
+}
+
+enum ExtensionQueueStatus {
+    LoggedIn = 0;
+    LoggedOut = 1;
 }
 
 // Запрос для установки глобального статуса очередей для внутреннего номера.
@@ -59,7 +64,7 @@ message SetExtensionGlobalQueuesStatusRequest {
     // Внутренний номер.
     string extension = 1;
     // Статус.
-    string status = 2;
+    ExtensionQueueStatus status = 2;
 }
 
 // Запрос для установки статуса перенаправления вызовов для внутреннего номера.
@@ -67,7 +72,15 @@ message SetExtensionForwardStatusRequest {
     // Внутренний номер.
     string extension = 1;
     // Статус переадресации внутреннего номера.
-    string status = 2;
+    ExtensionForwardStatus fw_status = 2;
+}
+
+enum ExtensionForwardStatus {
+    Available   = 0;
+    Away        = 1;
+    DND         = 2;
+    Lunch       = 3;
+    BusinessTrip = 4;
 }
 
 // Запрос для обновления информации у внетреннего номера.
@@ -89,7 +102,7 @@ message UpdateExtensionInfoRequest {
     // Исходящий идентификатор вызывающего абонента.
     google.protobuf.StringValue outbound_caller_id = 8;
     // Тип записи.
-    google.protobuf.StringValue recording_type = 9;
+    optional RecordingType recording_type = 9;
     // Включено ли внутренний номер.
     google.protobuf.BoolValue is_extension_enabled = 10;
     // Отключены ли внешние вызовы.
@@ -133,7 +146,7 @@ message CreateExtensionRequest {
     // Исходящий идентификатор вызывающего абонента.
     string outbound_caller_id = 8;
     // Тип записи.
-    string recording_type = 9;
+    RecordingType recording_type = 9;
     // Включено ли внутренний номер.
     bool is_extension_enabled = 10;
     // Отключены ли внешние вызовы.
@@ -167,7 +180,7 @@ message ExtensionInfoReply {
     // Исходящий идентификатор вызывающего абонента.
     string outbound_caller_id = 9;
     // Тип записи.
-    string recording_type = 10;
+    RecordingType recording_type = 10;
     // Включено ли внутренний номер.
     bool is_extension_enabled = 11;
     // Отключены ли внешние вызовы.
@@ -179,7 +192,7 @@ message ExtensionInfoReply {
     // Поддержка replaces.
     bool support_replaces = 15;
     // Опции электронной почты.
-    string email_options = 16;
+    EmailOptionsType email_options = 16;
     // Включена ли голосовая почта.
     bool voice_mail_enable = 17;
     // PIN код голосовой почты.
@@ -192,6 +205,18 @@ message ExtensionInfoReply {
     int32 no_answer_timeout = 21;
 }
 
+enum EmailOptionsType {
+    None = 0;
+    Notificatione = 1;
+    Attachmente = 2;
+    AttachmentAndDeletee = 3;
+}
+
+enum RecordingType {
+    RecordingOff = 0;
+    RecordingAll = 1;
+    RecordingExternal = 2;
+}
 // Запрос для получения информации об устройствах которые зарегистрированны у  данного внутреннего номера.
 message GetExtensionDeviceInfoRequest {
     // Внутренний номер.
@@ -251,9 +276,9 @@ message ExtensionStatusReply {
     // Зарегистрировано ли.
     bool registered = 5;
     // Статус правил перенаправления вызовов.
-    string forwarding_rules_status = 6;
+    ExtensionForwardStatus forwarding_rules_status = 6;
     // Статус очередей.
-    string queues_status = 7;
+    ExtensionQueueStatus queues_status = 7;
     // Список групп.
     repeated string groups = 8;
     // Список групп вызова.
@@ -275,13 +300,35 @@ message SetExtensionCallForwardStatusRequest {
     // Внутренний номер.
     string extension = 1;
     // Правило переадресации (DND,BusinessTrip ....).
-    string fw_status = 2;
+    ExtensionForwardStatus fw_status = 2;
     // Переадресовывать на какой тип номеров (Extension, Mobile ....).
-    string fw_to = 3;
+    FwToType fw_to = 3;
     // Передаресация для типов вызовов (External, Internal, Both).
-    string fw_call = 4;
+    FwCallType fw_call = 4;
     // Состояние внутреннего номера(NoAnswer, Busy, NotRegistered).
-    optional string extension_state  = 5;
+    optional ExtensionStateType extension_state  = 5;
     // Номера на который нужно переадресаовать вызовы(в случае переадресаций на конкретные номера).
     optional string number = 6;
+}
+
+enum FwToType {
+    Extension = 0;
+    Queue = 1;
+    IVR = 3;
+    RingGroup = 4;
+    Mobile  = 5;
+    External  = 6;
+    VoiceMail  = 7;
+    EndCall = 8;
+}
+
+enum FwCallType {
+    ExternalCall = 0;
+    InternalCall = 1;
+    BothCall = 2;
+}
+
+enum ExtensionStateType {
+    NoAnswer = 0;
+    BusyNotRegistered = 1;
 }

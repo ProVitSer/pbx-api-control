@@ -1,25 +1,24 @@
-﻿using System.ComponentModel.DataAnnotations;
-using TCX.Configuration;
+﻿using PbxApiControl.Enums;
 
 namespace PbxApiControl.Models.Extensions
 {
     public class ExtensionCallForwardDataModel
     {
         public string ExtensionNumber { get; }
-        public string FwStatus { get; }
-        public string FwTo { get; }
-        public string fwCall { get; }
-        public string? ExtensionState { get; }
+        public ForwardingRules FwStatus { get; }
+        public ForwardingToEnum FwTo { get; }
+        public ForwardingCallTypeEnum FwCall { get; }
+        public ExtensionStateTypeEnum? ExtensionState { get; }
         public string? Number { get; }
 
         
         public ExtensionCallForwardDataModel(SetExtensionCallForwardStatusRequest request)
         {
             ExtensionNumber = request.Extension;
-            FwStatus = request.FwStatus;
-            FwTo = request.FwTo;
-            fwCall = request.FwCall;
-            ExtensionState = request.ExtensionState;
+            FwStatus = (ForwardingRules)request.FwStatus;
+            FwTo = (ForwardingToEnum)request.FwTo;
+            FwCall = (ForwardingCallTypeEnum)request.FwCall;
+            ExtensionState = (ExtensionStateTypeEnum)request.ExtensionState;
             Number = request.Number;
         }
     }

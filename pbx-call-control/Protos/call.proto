@@ -89,10 +89,10 @@ message GetActiveCallsInfoData {
   int32  call_id = 1;
 
   // Направление вызова.
-  string call_direction = 2;
+  CallDirection call_direction = 2;
 
   // Статус вызова.
-  string status = 3;
+  ActiveCallsStatus status = 3;
 
   // Локальный номер.
   string local_number = 4;
@@ -106,6 +106,20 @@ message GetActiveCallsInfoData {
   // Статус вызова (опционально).
   optional string call_status = 7;
 
+}
+
+enum ActiveCallsStatus {
+    Dialing = 0;
+    Ringing = 1;
+    Talking = 2;
+    Other   = 3;
+    Finish  = 4;
+}
+
+enum CallDirection {
+  Inbound   = 0;
+  Outbound  = 1;
+  Local     = 2;
 }
 
 // Ответ на запрос количества вызовов.

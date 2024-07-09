@@ -126,7 +126,7 @@ namespace PbxApiControl.Services.Pbx
                     extension.AuthID = data.AuthId ?? extensionInfo.AuthID;
                     extension.AuthPassword = data.AuthPassword ?? extensionInfo.AuthPassword;
                     extension.SetProperty("MOBILENUMBER", data.MobileNumber ?? extensionInfo.MobileNumber);
-                    SetRecordingTypeProperties(extension, data.RecordingType ?? extensionInfo.RecordingType);
+                    SetRecordingTypeProperties(extension, data.RecordingType ?? (RecordType)extensionInfo.RecordingType);
                     extension.OutboundCallerID = data.OutboundCallerId ?? extensionInfo.OutboundCallerID;
                     extension.Enabled = data.IsExtenionEnabled ?? extensionInfo.IsExtenionEnabled;
                     extension.Internal = data.DisableExternalCalls ?? extensionInfo.DisableExternalCalls;
@@ -173,7 +173,7 @@ namespace PbxApiControl.Services.Pbx
 
                 foreach (var fwdProfile in extension.FwdProfiles)
                 {
-                    if (fwdProfile.Name == GetForwardingRulesStatus(data.Status))
+                    if (fwdProfile.Name == GetForwardingRulesStatus(data.FwStatus))
                     {
                         extension.CurrentProfile = fwdProfile;
                         extension.OverrideExpiresAt = DateTime.UtcNow;
@@ -197,6 +197,7 @@ namespace PbxApiControl.Services.Pbx
                 var extension = (Extension)dnByNumber;
 
                 var frs = GetForwardingRulesStatus(data.FwStatus);
+                
                 var newfwdProfile = extension.CurrentProfile;
 
                 foreach (var fwdProfile in extension.FwdProfiles)
@@ -240,23 +241,23 @@ namespace PbxApiControl.Services.Pbx
 
             switch (data.FwTo)
             {
-                case "Extension":
-                case "Queue":
-                case "IVR":
-                case "RingGroup":
+                case ForwardingToEnum.Extension:
+                case ForwardingToEnum.Queue:
+                case ForwardingToEnum.IVR:
+                case ForwardingToEnum.RingGroup:
                     if (string.IsNullOrEmpty(data.Number))
                     {
                         throw new InvalidOperationException(ServiceConstants.DataError);
                     }
                     dest.Internal = PhoneSystem.Root.GetDNByNumber(data.Number);
                     break;
-                case "Mobile":
+                case ForwardingToEnum.Mobile:
                     dest.External = extension.GetPropertyValue("MOBILENUMBER");
                     break;
-                case "External":
+                case ForwardingToEnum.External:
                     dest.External = data.Number;
                     break;
-                case "VoiceMail":
+                case ForwardingToEnum.VoiceMail:
                     dest.Internal = PhoneSystem.Root.GetDNByNumber(data.ExtensionNumber);
                     break;
             }
@@ -266,17 +267,17 @@ namespace PbxApiControl.Services.Pbx
 
         private void UpdateAwayRoute(AwayRouting route, DestinationStruct dest, ExtensionCallForwardDataModel data)
         {
-            switch (data.fwCall)
+            switch (data.FwCall)
             {
-                case "External":
+                case  ForwardingCallTypeEnum.ExternalCall:
                     route.External.AllHours = dest;
                     route.External.OutOfOfficeHours = dest;
                     break;
-                case "Internal":
+                case ForwardingCallTypeEnum.InternalCall:
                     route.Internal.AllHours = dest;
                     route.Internal.OutOfOfficeHours = dest;
                     break;
-                case "Both":
+                case ForwardingCallTypeEnum.BothCall:
                     route.External.AllHours = dest;
                     route.External.OutOfOfficeHours = dest;
                     route.Internal.AllHours = dest;
@@ -291,13 +292,13 @@ namespace PbxApiControl.Services.Pbx
             {
                 var noAnswerRoute = route.NoAnswer.Internal;
                 
-                if (data.fwCall == "External" )
+                if (data.FwCall == ForwardingCallTypeEnum.ExternalCall)
                 {
                     route.NoAnswer.AllCalls = dest;
                     route.NoAnswer.Internal = noAnswerRoute;
                 }
                 
-                if (data.fwCall == "Internal" )
+                if (data.FwCall == ForwardingCallTypeEnum.InternalCall )
                 {
                     route.NoAnswer.Internal = dest;
                 }
@@ -308,7 +309,7 @@ namespace PbxApiControl.Services.Pbx
                 var busyRoute = route.Busy.Internal;
                 var notRegisteredRoute = route.NotRegistered.Internal;
                 
-                if (data.fwCall == "External" )
+                if (data.FwCall == ForwardingCallTypeEnum.ExternalCall )
                 {
                     route.Busy.AllCalls = dest;
                     route.Busy.Internal = busyRoute;
@@ -316,7 +317,7 @@ namespace PbxApiControl.Services.Pbx
                     route.NotRegistered.Internal = notRegisteredRoute;
                 }
                 
-                if (data.fwCall == "Internal" )
+                if (data.FwCall == ForwardingCallTypeEnum.InternalCall)
                 {
                     route.Busy.Internal = dest;
                     route.NotRegistered.Internal = dest;
@@ -325,15 +326,15 @@ namespace PbxApiControl.Services.Pbx
 
             switch (data.ExtensionState)
             {
-                case "NoAnswer":
+                case ExtensionStateTypeEnum.NoAnswer:
                     UpdateNoAnswer();
                     break;
-                case "BusyNotRegistered":
+                case ExtensionStateTypeEnum.BusyNotRegistered:
                     UpdateBusyNotRegistered();
                     break;
             }
 
-            if (data.fwCall == "Both")
+            if (data.FwCall == ForwardingCallTypeEnum.BothCall)
             {
                 route.NoAnswer.AllCalls = dest;
                 route.Busy.AllCalls = dest;
@@ -344,18 +345,18 @@ namespace PbxApiControl.Services.Pbx
             }
         }
         
-        private static DestinationType GetDestinationType(string fwType)
+        private static DestinationType GetDestinationType(ForwardingToEnum fwType)
         {
             return fwType switch
             {
-                "Extension" => DestinationType.Extension,
-                "External" => DestinationType.External,
-                "Mobile" => DestinationType.External,
-                "Queue" => DestinationType.Queue,
-                "RingGroup" => DestinationType.RingGroup, 
-                "IVR" => DestinationType.IVR,
-                "EndCall" => DestinationType.None,
-                "VoiceMail" => DestinationType.VoiceMail,
+                ForwardingToEnum.Extension => DestinationType.Extension,
+                ForwardingToEnum.External => DestinationType.External,
+                ForwardingToEnum.Mobile => DestinationType.External,
+                ForwardingToEnum.Queue => DestinationType.Queue,
+                ForwardingToEnum.RingGroup => DestinationType.RingGroup, 
+                ForwardingToEnum.IVR => DestinationType.IVR,
+                ForwardingToEnum.EndCall => DestinationType.None,
+                ForwardingToEnum.VoiceMail => DestinationType.VoiceMail,
                 _ => throw new ArgumentOutOfRangeException(nameof(fwType), $"Unsupported forwarding type: {fwType}")
 
             };
@@ -374,13 +375,13 @@ namespace PbxApiControl.Services.Pbx
 
                 var extension = (Extension)dnByNumber;
 
-                extension.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString()
+                extension.QueueStatus = data.Status.ToString() == QueuesStatusType.LoggedIn.ToString()
                     ? QueueStatusType.LoggedIn
                     : QueueStatusType.LoggedOut;
 
                 foreach (var queueAgent in extension.QueueMembership)
                 {
-                    queueAgent.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString()
+                    queueAgent.QueueStatus = data.Status.ToString() == QueuesStatusType.LoggedIn.ToString()
                         ? QueueStatusType.LoggedIn
                         : QueueStatusType.LoggedOut;
                 }
@@ -405,7 +406,7 @@ namespace PbxApiControl.Services.Pbx
                 {
                     if (queueAgent.Queue.Number == data.QueueNumber)
                     {
-                        queueAgent.QueueStatus = data.Status == QueuesStatusType.LoggedIn.ToString()
+                        queueAgent.QueueStatus = data.Status.ToString() == QueueStatusType.LoggedIn.ToString()
                             ? QueueStatusType.LoggedIn
                             : QueueStatusType.LoggedOut;
                         extension.Save();
@@ -424,14 +425,16 @@ namespace PbxApiControl.Services.Pbx
             }
         }
 
-        private static string GetForwardingRulesStatus(string status)
+        private static string GetForwardingRulesStatus(ForwardingRules status)
         {
             return status switch
             {
-                "DND" => "Out of office",
-                "Lunch" => "Custom 1",
-                "BusinessTrip" => "Custom 2",
-                _ => status
+                ForwardingRules.DND => "Out of office",
+                ForwardingRules.Lunch => "Custom 1",
+                ForwardingRules.BusinessTrip => "Custom 2",
+                ForwardingRules.Available => "Available",
+                ForwardingRules.Away => "Away",
+
             };
         }
         
@@ -518,13 +521,11 @@ namespace PbxApiControl.Services.Pbx
             }
         }
 
-        private static void SetRecordingTypeProperties(Extension extension, string recordingType)
+        private static void SetRecordingTypeProperties(Extension extension, RecordType recordingType)
         {
-            if (Enum.TryParse<RecordType>(recordingType, out var recordingTypeEnum))
-            {
                 extension.RecordCalls = true;
 
-                switch (recordingTypeEnum)
+                switch (recordingType)
                 {
                     case RecordType.RecordingExternal:
                         extension.SetProperty("RECORD_EXTERNAL_CALLS_ONLY", "1");
@@ -536,7 +537,6 @@ namespace PbxApiControl.Services.Pbx
                         extension.RecordCalls = false;
                         break;
                 }
-            }
         }
 
         private static IEnumerable<string> RegisteredExtensions<T>() where T : class, DN

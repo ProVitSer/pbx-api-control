@@ -13,8 +13,8 @@ namespace PbxApiControl.Models.Extensions
 
     public string Email { get; }
     public bool Registered { get; }
-    public string ForwardingRulesStatus { get; }
-    public string QueuesStatus { get; }
+    public ForwardingRules ForwardingRulesStatus { get; }
+    public QueuesStatusType QueuesStatus { get; }
     public string[] Groups { get; }
     public string[] LoggedInQueues { get; }
     public string[] InRingGroups { get; }
@@ -27,8 +27,8 @@ namespace PbxApiControl.Models.Extensions
         this.Email = ext.EmailAddress;
         this.Extension = ext.Number;
         this.Registered = ext.IsRegistered;
-        this.ForwardingRulesStatus = ext.IsOverrideActiveNow ? ext.CurrentProfileOverride.Name : GetForwardingRulesStatus(ext.CurrentProfile.Name);
-        this.QueuesStatus = (ext.QueueStatus is QueueStatusType.LoggedIn) ? QueuesStatusType.LoggedIn.ToString() : QueuesStatusType.LoggedOut.ToString();
+        this.ForwardingRulesStatus = GetForwardingRulesStatus(ext.CurrentProfile.Name);//ext.IsOverrideActiveNow ? ext.CurrentProfileOverride.Name : GetForwardingRulesStatus(ext.CurrentProfile.Name);
+        this.QueuesStatus = (ext.QueueStatus is QueueStatusType.LoggedIn) ? QueuesStatusType.LoggedIn : QueuesStatusType.LoggedOut;
         this.Groups = ext.GroupMembership.Select(x => x.Group.Name).ToArray();
         this.InRingGroups = ext.GetRingGroups().Select(x => x.Number).ToArray();
         this.LoggedInQueues = GetQueuesByStatus(ext, QueueStatusType.LoggedIn);
@@ -36,18 +36,22 @@ namespace PbxApiControl.Models.Extensions
 
     }
     
-    private static string GetForwardingRulesStatus(string status)
+    private static ForwardingRules GetForwardingRulesStatus(string status)
     {
         switch (status)
         {
             case "Out of office":
-                return ForwardingRules.DND.ToString();
+                return ForwardingRules.DND;
             case "Custom 1":
-                return ForwardingRules.Lunch.ToString();
+                return ForwardingRules.Lunch;
             case "Custom 2":
-                return ForwardingRules.BusinessTrip.ToString();
+                return ForwardingRules.BusinessTrip;
+            case "Away":
+                return ForwardingRules.Away;
+            case "Available":
+                return ForwardingRules.Available;
             default:
-                return status;
+                return ForwardingRules.Unknown;
         }
     }
 

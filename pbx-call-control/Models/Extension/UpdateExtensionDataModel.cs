@@ -13,8 +13,7 @@ namespace PbxApiControl.Models.Extensions
         public string? AuthPassword { get; }
         public string? MobileNumber { get; }
         public string? OutboundCallerId { get; }
-        [EnumDataType(typeof(RecordType))]
-        public string? RecordingType { get;  }
+        public RecordType? RecordingType { get;  }
         public bool? IsExtenionEnabled { get; }
         public bool? DisableExternalCalls { get; }
         public bool? DeliverAudio { get;  }
@@ -31,7 +30,7 @@ namespace PbxApiControl.Models.Extensions
             AuthPassword = request.AuthPassword;
             MobileNumber = request.MobileNumber;
             OutboundCallerId = request.OutboundCallerId;
-            RecordingType = request.RecordingType;
+            RecordingType = (RecordType)request.RecordingType;
             IsExtenionEnabled = request.IsExtensionEnabled;
             DisableExternalCalls = request.DisableExternalCalls;
             DeliverAudio = request.DeliverAudio;

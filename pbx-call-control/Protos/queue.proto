@@ -73,7 +73,13 @@ message QueueModifyReply {
 // Ответ с данными о списке очередей.
 message QueueListDataReply {
   // Список номеров очередей.
-  repeated string queue_numbers = 1;
+  repeated QueueListInfo queues = 1;
+}
+
+//Информации о очереди
+message QueueListInfo {
+  string name = 1;
+  string number = 2;
 }
 
 // Запрос для получения данных об агентах очереди.

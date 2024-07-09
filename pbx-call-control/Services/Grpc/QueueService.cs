@@ -19,11 +19,16 @@ namespace PbxApiControl.Services.Grpc {
 
                 var queueList = _queueService.QueueList();
 
-                return Task.FromResult(new QueueListDataReply {
-                    QueueNumbers = {
-                        queueList
-                    }
-                });
+                var response = new QueueListDataReply();
+                
+                response.Queues.AddRange(queueList.Select(q => new QueueListInfo
+                {
+                    Name = q.Name,
+                    Number = q.Number
+                }));
+                
+                return Task.FromResult(response);
+                
             } catch (Exception e) {
                 _logger.LogError("GetQueueList: {@e}", e.ToString());
 

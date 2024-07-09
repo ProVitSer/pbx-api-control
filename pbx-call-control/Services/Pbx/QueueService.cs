@@ -15,11 +15,15 @@ namespace PbxApiControl.Services.Pbx
             _logger = logger;
         }
 
-        public string[] QueueList()
+        public QueueInfoModel[] QueueList()
         {
             using (var disposer = PhoneSystem.Root.GetAll<Queue>().GetDisposer())
             {
-                return disposer.Select(x => x.Number).ToArray();
+                return disposer.Select(x => new QueueInfoModel
+                {
+                    Name = x.Name,
+                    Number = x.Number
+                }).ToArray();
             }
         }
 

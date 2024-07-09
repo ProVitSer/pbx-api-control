@@ -4,37 +4,37 @@
     {
         public string ContactId { get; }
 
-        public string FirstName { get; }
+        public string? FirstName { get; }
 
-        public string LastName { get; }
+        public string? LastName { get; }
 
-        public string CompanyName { get; }
+        public string? CompanyName { get; }
 
-        public string CrmContactData { get; }
+        public string? CrmContactData { get; }
 
-        public string Tag { get; }
+        public string? Tag { get; }
 
-        public string Mobile { get; }
+        public string? Mobile { get; }
 
-        public string MobileTwo { get; }
+        public string? MobileTwo { get; }
 
-        public string Home { get; }
+        public string? Home { get; }
 
-        public string HomeTwo { get; }
+        public string? HomeTwo { get; }
 
-        public string Business { get; }
+        public string? Business { get; }
 
-        public string BusinessTwo { get; }
+        public string? BusinessTwo { get; }
 
-        public string EmailAddress { get; }
+        public string? EmailAddress { get; }
 
-        public string Other { get; }
+        public string? Other { get; }
 
-        public string BusinessFax { get; }
+        public string? BusinessFax { get; }
 
-        public string HomeFax { get; }
+        public string? HomeFax { get; }
 
-        public string Pager { get; }
+        public string? Pager { get; }
 
         public UpdateContactDataModel(UpdateContactInfoRequest request)
         {

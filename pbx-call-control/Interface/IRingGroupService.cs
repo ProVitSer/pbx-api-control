@@ -6,7 +6,7 @@ namespace PbxApiControl.Interface
     {
     
         bool IsRingGroupExists(string ringGroupNumber);
-        string[] GetRingGroupList();
+        RingGroupInfoModel[] GetRingGroupList();
         string[] GetRingGroupMembers(string ringGroupNumber);
     
         string[] AddRingGroupMembers(AddRingGroupMembersDataModel data);

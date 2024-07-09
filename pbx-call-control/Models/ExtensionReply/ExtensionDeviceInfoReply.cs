@@ -9,6 +9,9 @@ namespace PbxApiControl.Models.ExtensionReply
             var reply = new GetExtensionDeviceInfoReply
             {
             
+                FirstName = extensionDeviceInfo.FirstName,
+                LastName = extensionDeviceInfo.LastName,
+                Email = extensionDeviceInfo.Email,
                 Extension = extensionDeviceInfo.Extension
             
             };

@@ -25,7 +25,8 @@ namespace PbxApiControl.Services.Pbx
                 }
 
                 var extension = (Extension)dnByNumber;
-                return new ExtensionStatus(extension);
+                
+                return new ExtensionStatus(extension, ExtensionDeviceInfo(ext));
             }
         }
 
@@ -39,6 +40,7 @@ namespace PbxApiControl.Services.Pbx
                 }
 
                 var extension = (Extension)dnByNumber;
+                
                 return new ExtensionInfo(extension);
             }
         }
@@ -65,6 +67,8 @@ namespace PbxApiControl.Services.Pbx
                     throw new InvalidOperationException(ServiceConstants.DnIsNotExten);
                 }
 
+                var extension = (Extension)dnByNumber;
+                
                 using (var disposer = dnByNumber.GetRegistrarContactsEx().GetDisposer<RegistrarRecord>())
                 {
                     var devices = disposer.Select(record => new DevInfo
@@ -76,6 +80,9 @@ namespace PbxApiControl.Services.Pbx
                     return new ExtensionDeviceInfo()
                     {
                         Extension = ext,
+                        FirstName = extension.FirstName,
+                        LastName = extension.LastName,
+                        Email = extension.EmailAddress,
                         Devices = devices
                     };
                 }

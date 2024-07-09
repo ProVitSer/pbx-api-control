@@ -2,7 +2,7 @@
 using PbxApiControl.Interface;
 using PbxApiControl.Services.Pbx;
 using Microsoft.AspNetCore.Mvc.Razor;
-using PbxApiControl.Services;
+using PbxApiControl.Services.Utils;
 
 namespace PbxApiControl.Extensions
 {
@@ -16,6 +16,7 @@ namespace PbxApiControl.Extensions
             services.AddScoped<IContactService, ContactService>();
             services.AddScoped<IQueueService, QueueService>();
             services.AddScoped<ICallService, CallService>();
+            services.AddScoped<ILogUtilService, LogUtilService>();
             services.AddSingleton<IPbxEventListenerService>(provider =>
             {
                 var apiHostSettings = provider.GetRequiredService<IOptions<IApiHostSettings>>().Value;

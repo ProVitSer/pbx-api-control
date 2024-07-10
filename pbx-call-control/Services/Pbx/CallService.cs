@@ -2,6 +2,7 @@
 using PbxApiControl.Models.Call;
 using PbxApiControl.Enums;
 using TCX.Configuration;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Pbx
 {
@@ -9,11 +10,14 @@ namespace PbxApiControl.Services.Pbx
     {
         private readonly ILogger<CallService> _logger;
         private readonly IExtensionService _extensionService;
+        private readonly ILogUtilService _logUtilService;
+
         private const  int MaxLocalExtLength = 5;
-        public CallService(ILogger<CallService> logger, IExtensionService extensionService)
+        public CallService(ILogger<CallService> logger, IExtensionService extensionService, ILogUtilService logUtilService)
         {
             _logger = logger;
             _extensionService = extensionService;
+            _logUtilService = logUtilService;
         }
 
         public int CountCalls()
@@ -86,6 +90,7 @@ namespace PbxApiControl.Services.Pbx
                 }
 
                 var connection = connections.FirstOrDefault(ac => ac.PartyConnectionID == partyConnectionId);
+                
                 if (connection == null)
                 {
                     throw new InvalidOperationException(ServiceConstants.NoActiveConnection);
@@ -134,6 +139,7 @@ namespace PbxApiControl.Services.Pbx
                 }
 
                 TransferCallToDestNumber(extension, destinationNumber);
+                
                 return new BaseCallResultModel(true, ServiceConstants.CallTransferSuccess);
             }
             catch (Exception e)
@@ -152,6 +158,7 @@ namespace PbxApiControl.Services.Pbx
                 foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
                 {
                     var callState = new CallStateModel(keyValuePair.Key);
+                    
                     callsState.Add(callState);
 
                     foreach (var activeConnection in keyValuePair.Value)
@@ -160,7 +167,7 @@ namespace PbxApiControl.Services.Pbx
                     }
                 }
 
-                LogCallsState(callsState);
+                _logUtilService.LogCallsState(callsState);
                 
                 return callsState;
             }
@@ -290,20 +297,7 @@ namespace PbxApiControl.Services.Pbx
             return dnByNumber.IsRegistered;
         }
 
-        private void LogCallsState(List<CallStateModel> callsState)
-        {
-            foreach (var call in callsState)
-            {
-                _logger.LogInformation("Call ID: {CallID}, Call Direction: {CallDirection}, Status: {Status}, Direction: {Direction}, Call Status: {CallStatus}, Local Number: {LocalNumber}, Remote Number: {RemoteNumber}",
-                    call.CallID,
-                    call.CallDirection,
-                    call.Status,
-                    call.Direction,
-                    call.CallStatus,
-                    call.LocalNumber,
-                    call.RemoteNumber);
-            }
-        }
+  
     }
 }
 

@@ -23,7 +23,7 @@ public class ExtensionInfo
 
     public string OutboundCallerID { get; }
 
-    public string RecordingType { get; }
+    public RecordType RecordingType { get; }
 
     public bool IsExtenionEnabled { get; }
 
@@ -35,7 +35,7 @@ public class ExtensionInfo
 
     public bool SupportReplaces { get; }
 
-    public string EmailOptions { get; }
+    public VoiceMailEmailOptionsTypeEnum EmailOptions { get; }
 
     public bool VoiceMailEnable { get; }
 
@@ -65,7 +65,7 @@ public class ExtensionInfo
         this.DeliverAudio = ext.DeliverAudio;
         this.SupportReinvite = ext.SupportReinvite;
         this.SupportReplaces = ext.SupportReplaces;
-        this.EmailOptions = ext.VMEmailOptions.ToString();
+        this.EmailOptions = (VoiceMailEmailOptionsTypeEnum)ext.VMEmailOptions;
         this.VoiceMailEnable = ext.VMEnabled;
         this.VoiceMailPin = ext.VMPIN;
         this.VoiceMailPlayCallerID = ext.VMPlayCallerID;
@@ -73,15 +73,15 @@ public class ExtensionInfo
         this.NoAnswerTimeout = ext.NoAnswerTimeout;
     }
 
-    private static string GetRecordType(Extension ext)
+    private static RecordType GetRecordType(Extension ext)
     {
         if (!ext.RecordCalls)
         {
-            return RecordType.RecordingOff.ToString();
+            return RecordType.RecordingOff;
         }
 
         var externalOnly = ext.GetPropertyValue("RECORD_EXTERNAL_CALLS_ONLY");
         
-        return (externalOnly == "1") ? RecordType.RecordingExternal.ToString() : RecordType.RecordingAll.ToString();
+        return (externalOnly == "1") ? RecordType.RecordingExternal: RecordType.RecordingAll;
     }
 }

@@ -401,3 +401,6 @@ FodyWeavers.xsd
 # Custom
 3cxpscomcpp2.dll
 .idea
+
+appsettings.json
+appsettings.Development.json

@@ -1,6 +1,6 @@
 ﻿namespace PbxApiControl.Enums
 {
-    internal enum QStatusType
+    public enum QStatusType
     {
         On,
         Off,

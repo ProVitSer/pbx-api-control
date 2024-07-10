@@ -17,6 +17,8 @@ namespace PbxApiControl.Interface
         ExtensionStatus SetExtForwardStatus(ExtensionForwardStatusDataModel data);
         ExtensionStatus SetExtQueuesStatus(ExtensionQueuesStatusDataModel data);
         ExtensionStatus SetExtQueueStatus(ExtensionQueueStatusDataModel data);
+        ExtensionStatus SetExtCallForwarding(ExtensionCallForwardDataModel data);
 
+        
     }
 }

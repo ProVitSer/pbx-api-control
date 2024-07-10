@@ -103,7 +103,7 @@ namespace PbxApiControl.Config
         {
             if (OperatingSystem.IsWindows())
             {
-                return @"C:\Program Files\3CX Phone System\Bin\3CXPhoneSystem.ini";
+                return @"C:\ProgramData\3CX\Bin\3CXPhoneSystem.ini";
             }
             else if (OperatingSystem.IsLinux())
             {

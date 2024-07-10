@@ -5,7 +5,7 @@ namespace PbxApiControl.Interface
     public interface IQueueService
     {
         bool IsQueueExists(string queueNumber);
-        string[] QueueList();
+        QueueInfoModel[] QueueList();
         QueueAgentsDataModels[] QueueAgents(string queueNumber);
         QueueAgentsDataModels[] FreeQueueAgents(string queueNumber);
         QueueAgentsDataModels[] BusyQueueAgents(string queueNumber);

@@ -6,14 +6,12 @@ namespace PbxApiControl.Models.Extensions
     public class ExtensionQueuesStatusDataModel
     {
         public string ExtensionNumber { get; }
-
-        [EnumDataType(typeof(QueuesStatusType))]
-        public string Status { get; }
+        public QueuesStatusType Status { get; }
         
         public ExtensionQueuesStatusDataModel(SetExtensionGlobalQueuesStatusRequest request)
         {
             ExtensionNumber = request.Extension;
-            Status = request.Status;
+            Status = (QueuesStatusType)request.Status;
         }
     }
 }

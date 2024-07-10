@@ -18,7 +18,12 @@ namespace PbxApiControl.Services.Pbx
         {
             
             _logger = logger;
-            _apiHostSettings = apiHostSettings;
+            _apiHostSettings = new IApiHostSettings
+            {
+                Insert = "http://127.0.0.1:2839/v1/api/pac/insert",
+                Delete = "http://127.0.0.1:2839/v1/api/pac/delete",
+                Update = "http://127.0.0.1:2839/v1/api/pac/update"
+            };
             _httpClient = httpClient;
         }
 

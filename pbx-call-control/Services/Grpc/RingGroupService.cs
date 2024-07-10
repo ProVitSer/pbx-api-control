@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using Google.Protobuf.WellKnownTypes;
 using PbxApiControl.Models.RingGroup;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Grpc {
     public class RingGroupService: RingGroupPbxService.RingGroupPbxServiceBase {
@@ -17,12 +18,17 @@ namespace PbxApiControl.Services.Grpc {
             try {
 
                 var ringGroups = _ringGroupService.GetRingGroupList();
+                
+                var response = new RingGroupListReply();
+                
+                response.RingGroups.AddRange(ringGroups.Select(q => new RingGroupListInfo
+                {
+                    Name = q.Name,
+                    Number = q.Number
+                }));
 
-                return Task.FromResult(new RingGroupListReply {
-                    RingGroupNumbers = {
-                        ringGroups
-                    }
-                });
+
+                return Task.FromResult(response);
             } catch (Exception e) {
                 _logger.LogError("GetRingGroupList: {@e}", e.ToString());
 

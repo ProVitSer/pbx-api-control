@@ -2,6 +2,7 @@
 using PbxApiControl.Interface;
 using PbxApiControl.Models.ContactReply;
 using PbxApiControl.Models.Contact;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Grpc {
     public class ContactService: ContactPbxService.ContactPbxServiceBase {

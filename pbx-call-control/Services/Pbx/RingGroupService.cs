@@ -1,6 +1,7 @@
 ﻿using TCX.Configuration;
 using PbxApiControl.Interface;
 using PbxApiControl.Models.RingGroup;
+using PbxApiControl.Constants;
 
 namespace PbxApiControl.Services.Pbx
 {
@@ -13,11 +14,15 @@ namespace PbxApiControl.Services.Pbx
             _logger = logger;
         }
 
-        public string[] GetRingGroupList()
+        public RingGroupInfoModel[] GetRingGroupList()
         {
             using (var disposer = PhoneSystem.Root.GetAll<RingGroup>().GetDisposer())
             {
-                return disposer.Select(x => x.Number).ToArray();
+                return disposer.Select(x => new RingGroupInfoModel
+                {
+                    Name = x.Name,
+                    Number = x.Number
+                }).ToArray();
             }
         }
 

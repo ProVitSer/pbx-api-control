@@ -1,39 +1,22 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package contact;
-import "google/api/annotations.proto";
 import "google/protobuf/wrappers.proto";
 
 // Сервис для управления контактами PBX.
 service ContactPbxService {
+  
   // Получает информацию о контакте по его идентификатору.
-  rpc GetContactInfoById(GetContactInfoByIdRequest) returns (ContactInfoDataReply) {
-    option (google.api.http) = {
-      get: "/v1/contact/{contact_id}"
-    };
-  }
+  rpc GetContactInfoById(GetContactInfoByIdRequest) returns (ContactInfoDataReply);
 
   // Обновляет информацию о контакте по его идентификатору.
-  rpc UpdateContactInfoById(UpdateContactInfoRequest) returns (ContactInfoDataReply) {
-    option (google.api.http) = {
-      put: "/v1/contact/{contact_id}"
-      body: "*"
-    };
-  }
+  rpc UpdateContactInfoById(UpdateContactInfoRequest) returns (ContactInfoDataReply);
 
   // Получает список контактов с указанием номера страницы и размера страницы.
-  rpc GetContactList(GetContactListRequest) returns (ContactListReply) {
-    option (google.api.http) = {
-      get: "/v1/contacts"
-    };
-  }
-
+  rpc GetContactList(GetContactListRequest) returns (ContactListReply);
+  
   // Удаляет контакт по его идентификатору.
-  rpc DeleteContactById(DeleteContactByIdRequest) returns (ContactInfoDataReply) {
-    option (google.api.http) = {
-      delete: "/v1/contact/{contact_id}"
-    };
-  }
+  rpc DeleteContactById(DeleteContactByIdRequest) returns (ContactInfoDataReply);
 }
 
 // Запрос для получения информации о контакте по его идентификатору.

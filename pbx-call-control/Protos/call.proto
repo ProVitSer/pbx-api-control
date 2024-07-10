@@ -1,56 +1,29 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package call;
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 
 // Сервис для управления вызовами PBX
 service CallPbxService {
+  
   // Получает информацию о всех активных вызовах.
-  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/active-calls-info"
-    };
-  }
+  rpc GetActiveCallsInfo(google.protobuf.Empty) returns (GetActiveCallsInfoReply);
 
   // Получает количество активных вызовов.
-  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply) {
-    option (google.api.http) = {
-      get: "/v1/count-calls"
-    };
-  }
+  rpc GetCountCalls(google.protobuf.Empty) returns (GetCountCallsReply);
 
   // Инициирует новый вызов.
-  rpc MakeCall(MakeCallRequest) returns (BaseCallReply) {
-    option (google.api.http) = {
-      post: "/v1/make-call"
-      body: "*"
-    };
-  }
+  rpc MakeCall(MakeCallRequest) returns (BaseCallReply);
 
   // Завершает текущий вызов по расширению.
-  rpc HangupCall(HangupCallRequest) returns (BaseCallReply) {
-    option (google.api.http) = {
-      post: "/v1/hangup-call"
-      body: "*"
-    };
-  }
+  rpc HangupCall(HangupCallRequest) returns (BaseCallReply);
 
   // Передает вызов на другой номер.
-  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply) {
-    option (google.api.http) = {
-      post: "/v1/transfer-call"
-      body: "*"
-    };
-  }
+  rpc TransferCall(TrasferCallRequest) returns (BaseCallReply);
 
   // Получает информацию о всех активных соединениях.
-  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/active-connections-info"
-    };
-  }
+  rpc GetActiveConnectionsInfo(google.protobuf.Empty) returns (GetActiveConnectionsInfoReply);
 }
 
 // Ответ на запрос информации об активных соединениях.
@@ -116,10 +89,10 @@ message GetActiveCallsInfoData {
   int32  call_id = 1;
 
   // Направление вызова.
-  string call_direction = 2;
+  CallDirection call_direction = 2;
 
   // Статус вызова.
-  string status = 3;
+  ActiveCallsStatus status = 3;
 
   // Локальный номер.
   string local_number = 4;
@@ -133,6 +106,20 @@ message GetActiveCallsInfoData {
   // Статус вызова (опционально).
   optional string call_status = 7;
 
+}
+
+enum ActiveCallsStatus {
+    Dialing = 0;
+    Ringing = 1;
+    Talking = 2;
+    Other   = 3;
+    Finish  = 4;
+}
+
+enum CallDirection {
+  Inbound   = 0;
+  Outbound  = 1;
+  Local     = 2;
 }
 
 // Ответ на запрос количества вызовов.

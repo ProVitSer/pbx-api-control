@@ -1,4 +1,5 @@
 ﻿using PbxApiControl.Models.Queue;
+using PbxApiControl.Enums;
 
 namespace PbxApiControl.Models.QueueReply
 {
@@ -11,7 +12,17 @@ namespace PbxApiControl.Models.QueueReply
                 Extension = data.Extension,
                 FirstName = data.FirstName,
                 LastName = data.LastName,
-                AgentQueueStatus = data.AgentQueueStatus.ToString()
+                AgentQueueStatus = ConvertAgentQueueStatus(data.AgentQueueStatus)
+            };
+        }
+        
+        private static AgentQueueStatus ConvertAgentQueueStatus(QueuesStatusType agentQueueStatus)
+        {
+            return agentQueueStatus switch
+            {
+                QueuesStatusType.LoggedOut => AgentQueueStatus.LoggedOut,
+                QueuesStatusType.LoggedIn => AgentQueueStatus.LoggedIn,
+                _ => throw new ArgumentOutOfRangeException(nameof(agentQueueStatus), $"Неизвестный статус агента: {agentQueueStatus}")
             };
         }
     }  

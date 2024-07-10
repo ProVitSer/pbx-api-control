@@ -1,54 +1,28 @@
 ﻿syntax = "proto3";
 option csharp_namespace = "PbxApiControl";
 package queue;
-import "google/api/annotations.proto";
 import "google/protobuf/empty.proto";
 
 // Сервис для управления очередями PBX.
 service QueuePbxService {
+  
   // Получает список всех очередей.
-  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply) {
-    option (google.api.http) = {
-      get: "/v1/queues"
-    };
-  }
+  rpc GetQueueList(google.protobuf.Empty) returns (QueueListDataReply);
 
   // Получает информацию об агентах в указанной очереди.
-  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents"
-    };
-  }
-
+  rpc GetQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  
   // Получает информацию о свободных агентах в указанной очереди.
-  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents/free"
-    };
-  }
+  rpc GetFreeQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
 
   // Получает информацию о занятых агентах в указанной очереди.
-  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply) {
-    option (google.api.http) = {
-      get: "/v1/queue/{queue_number}/agents/busy"
-    };
-  }
-
+  rpc GetBusyQueueAgents(QueueInfoRequest) returns (QueueInfoReply);
+  
   // Добавляет агентов в указанную очередь.
-  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply) {
-    option (google.api.http) = {
-      post: "/v1/queue/{queue_number}/agents/add"
-      body: "*"
-    };
-  }
-
+  rpc AddAgentsToQueue(QueueModifyRequest) returns (QueueModifyReply);
+  
   // Удаляет агентов из указанной очереди.
-  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply) {
-    option (google.api.http) = {
-      post: "/v1/queue/{queue_number}/agents/remove"
-      body: "*"
-    };
-  }
+  rpc DeleteAgentsFromQueue(QueueModifyRequest) returns (QueueModifyReply);
 }
 
 // Запрос для получения информации об агентах очереди.
@@ -75,7 +49,12 @@ message QueueInfo {
   string last_name = 3;
 
   // Статус агента в очереди.
-  string agent_queue_status = 4;
+  AgentQueueStatus agent_queue_status = 4;
+}
+
+enum AgentQueueStatus {
+  LoggedIn = 0;
+  LoggedOut = 1;
 }
 
 // Запрос для добавления или удаления агентов из очереди.
@@ -99,59 +78,11 @@ message QueueModifyReply {
 // Ответ с данными о списке очередей.
 message QueueListDataReply {
   // Список номеров очередей.
-  repeated string queue_numbers = 1;
+  repeated QueueListInfo queues = 1;
 }
 
-// Запрос для получения данных об агентах очереди.
-message QueueAgentsDataReply {
-  // Идентификатор контакта.
-  string contact_id = 1;
-
-  // Имя контакта.
-  string first_name = 2;
-
-  // Фамилия контакта.
-  string last_name = 3;
-
-  // Мобильный телефон контакта.
-  string mobile = 4;
-
-  // Название компании контакта.
-  string company_name = 5;
-
-  // Данные CRM для контакта.
-  string crm_contact_data = 6;
-
-  // Тег для контакта.
-  string tag = 7;
-
-  // Второй мобильный телефон контакта.
-  string mobile_two = 8;
-
-  // Домашний телефон контакта.
-  string home = 9;
-
-  // Второй домашний телефон контакта.
-  string home_two = 10;
-
-  // Рабочий телефон контакта.
-  string business = 11;
-
-  // Второй рабочий телефон контакта.
-  string business_two = 12;
-
-  // Адрес электронной почты контакта.
-  string email_address = 13;
-
-  // Другие данные о контакте.
-  string other = 14;
-
-  // Факс на рабочем месте контакта.
-  string business_fax = 15;
-
-  // Домашний факс контакта.
-  string home_fax = 16;
-
-  // Пейджер контакта.
-  string pager = 17;
+//Информации о очереди
+message QueueListInfo {
+  string name = 1;
+  string number = 2;
 }

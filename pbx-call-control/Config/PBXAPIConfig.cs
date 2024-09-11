@@ -9,6 +9,12 @@ namespace PbxApiControl.Config
         
         private static readonly string pbxIniPath = GetPbxIniPath();
 
+        public static string? DbHost { get; private set; }
+        public static string? DbPort { get; private set; }
+        public static string? DbName { get; private set; }
+        public static string? DbUser { get; private set; }
+        public static string? DbPassword { get; private set; }
+
         public static void InitConfig()
         {
             try
@@ -19,6 +25,12 @@ namespace PbxApiControl.Config
                 ReadConfiguration(content, pbxIniPath);
 
                 InstanceBinPath = Path.Combine(content["General"]["AppPath"], "Bin");
+                
+                DbHost = "127.0.0.1";
+                DbPort = "5432";
+                DbName = content["QMDatabase"]["DBName"];
+                DbUser = content["DbAdminREADONLY"]["User"];
+                DbPassword = content["DbAdminREADONLY"]["Password"];
 
                 AppDomain.CurrentDomain.AssemblyResolve += (sender, args) => CurrentDomain_AssemblyResolve(args, InstanceBinPath);
 

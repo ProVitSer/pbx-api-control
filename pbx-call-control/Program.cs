@@ -69,7 +69,7 @@ namespace PbxApiControl
             });
             
             var app = builder.Build();
-            app.UseMiddleware<AuthMiddleware>();
+            // app.UseMiddleware<AuthMiddleware>();
 
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;
@@ -82,6 +82,7 @@ namespace PbxApiControl
             app.MapGrpcService<QueueService>().DisableGrpcWeb();
             app.MapGrpcService<CallService>().DisableGrpcWeb();
             app.MapGrpcService<PbxEventListenerService>().DisableGrpcWeb();
+            app.MapGrpcService<SqlService>().DisableGrpcWeb();
             app.MapGrpcReflectionService();
             app.Run();
         }

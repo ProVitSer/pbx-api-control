@@ -69,7 +69,7 @@ namespace PbxApiControl
             });
             
             var app = builder.Build();
-            // app.UseMiddleware<AuthMiddleware>();
+            app.UseMiddleware<AuthMiddleware>();
 
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;

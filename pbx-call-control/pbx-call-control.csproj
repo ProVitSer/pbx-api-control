@@ -33,6 +33,7 @@
         <Folder Include="Properties\" />
         <PackageReference Include="Grpc.AspNetCore.Web" Version="2.63.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" Version="8.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.1.38" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
@@ -68,6 +69,10 @@
                         <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>
 <!--            <Private>false</Private>-->
         </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="appsettings.json" />
+        <EmbeddedResource Include="appsettings.Development.json" />
     </ItemGroup>
 </Project>
 

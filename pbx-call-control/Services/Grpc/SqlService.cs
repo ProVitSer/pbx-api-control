@@ -18,6 +18,7 @@ namespace PbxApiControl.Services.Grpc
 
         public override async Task<SqlResponse> ExecuteSql(SqlRequest request, ServerCallContext context) 
         {
+            
             var response = new SqlResponse();
             var sqlQueryResult = new SqlQueryResultModel();
 

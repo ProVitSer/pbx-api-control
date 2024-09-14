@@ -3,7 +3,6 @@ namespace PbxApiControl.Interceptor
 {
     using Grpc.Core;
     using Grpc.Core.Interceptors;
-    using System.Linq;
     using System.Threading.Tasks;
     public class LoggingInterceptor: Interceptor
     {

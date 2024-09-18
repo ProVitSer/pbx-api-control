@@ -9,8 +9,8 @@
         <PublishSingleFile>true</PublishSingleFile>
         <IncludeHttpRuleProtos>true</IncludeHttpRuleProtos>
         <SelfContained>true</SelfContained>
-<!--        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
-        <RuntimeIdentifier>win-x64</RuntimeIdentifier>
+        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
+<!--        <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
         <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
         <DebugType>embedded</DebugType>
         <ApplicationIcon />
@@ -25,12 +25,15 @@
         <Protobuf Include="Protos\queue.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\call.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\pbx-subscribe-event.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\sql.proto" GrpcServices="Server" />
 
     </ItemGroup>
     <ItemGroup>
+        <Folder Include="Logs\" />
         <Folder Include="Properties\" />
         <PackageReference Include="Grpc.AspNetCore.Web" Version="2.63.0" />
         <PackageReference Include="Microsoft.AspNetCore.App" Version="8.0.0" />
+        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.8" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc" Version="2.1.3" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Abstractions" Version="2.1.38" />
         <PackageReference Include="Microsoft.AspNetCore.Mvc.Core" Version="2.1.38" />
@@ -41,6 +44,7 @@
         <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="9.0.0-preview.5.24306.7" />
         <PackageReference Include="Microsoft.Extensions.Hosting" Version="8.0.0" />
         <PackageReference Include="Microsoft.Extensions.Hosting.WindowsServices" Version="8.0.0" />
+        <PackageReference Include="Npgsql" Version="8.0.4" />
         <PackageReference Include="Serilog.Enrichers.Environment" Version="3.0.1" />
         <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="8.0.0-preview1" />
         <PackageReference Include="System.Runtime" Version="4.3.1" />
@@ -60,11 +64,15 @@
     </ItemGroup>
     <ItemGroup>
         <Reference Include="3cxpscomcpp2">
-            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>
+<!--            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>-->
 
-<!--                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>-->
-            <Private>false</Private>
+                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>
+<!--            <Private>false</Private>-->
         </Reference>
+    </ItemGroup>
+    <ItemGroup>
+        <EmbeddedResource Include="appsettings.json" />
+        <EmbeddedResource Include="appsettings.Development.json" />
     </ItemGroup>
 </Project>
 

@@ -1,0 +1,16 @@
+﻿syntax = "proto3";
+option csharp_namespace = "PbxApiControl";
+package sql;
+
+service SqlServicePbxService {
+  rpc ExecuteSql(SqlRequest) returns (SqlResponse);
+}
+
+message SqlRequest {
+  string query = 1;
+}
+
+message SqlResponse {
+  string result = 1;
+  string error = 2;
+}

@@ -16,13 +16,12 @@ namespace PbxApiControl.Services.Pbx
 
         private PbxEventListenerService(ILogger<PbxEventListenerService> logger, IApiHostSettings apiHostSettings, HttpClient httpClient)
         {
-            
             _logger = logger;
             _apiHostSettings = new IApiHostSettings
             {
-                Insert = "http://127.0.0.1:2839/v1/api/pac/insert",
-                Delete = "http://127.0.0.1:2839/v1/api/pac/delete",
-                Update = "http://127.0.0.1:2839/v1/api/pac/update"
+                Insert = apiHostSettings.Insert,
+                Delete = apiHostSettings.Delete,
+                Update = apiHostSettings.Update
             };
             _httpClient = httpClient;
         }
@@ -44,6 +43,7 @@ namespace PbxApiControl.Services.Pbx
             lock (_lock)
             {
                 PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
+                PhoneSystem.Root.Updated += ActiveConnectionsUpdatedHandler;
                 PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
 
             }
@@ -103,7 +103,7 @@ namespace PbxApiControl.Services.Pbx
         {
             var activeConnectionsInfo = ActiveConnectionsInfo();
             if (activeConnectionsInfo.Count > 0)
-            {
+            {               
                 SendPostRequest(activeConnectionsInfo, _apiHostSettings.Insert).ConfigureAwait(false);
             }
         }
@@ -121,7 +121,7 @@ namespace PbxApiControl.Services.Pbx
         {
             var activeConnectionsInfo = ActiveConnectionsInfo();
             if (activeConnectionsInfo.Count > 0)
-            {
+            {               
                 SendPostRequest(activeConnectionsInfo, _apiHostSettings.Delete).ConfigureAwait(false);
             }
         }

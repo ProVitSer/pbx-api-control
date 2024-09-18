@@ -13,7 +13,7 @@ namespace PbxApiControl.Services
             string appsettingsFile = builder.Environment.EnvironmentName == DevelopmentEnvironment
                 ? $"PbxApiControl.appsettings.{builder.Environment.EnvironmentName}.json"
                 : "PbxApiControl.appsettings.json";
-    
+
             return new ConfigurationBuilder()
                 .AddJsonStream(GetEmbeddedResourceStream(appsettingsFile))
                 .Build();
@@ -22,15 +22,25 @@ namespace PbxApiControl.Services
 
         private static Stream GetEmbeddedResourceStream(string resourceName)
         {
-            var assembly = Assembly.GetExecutingAssembly();
-            var resourceStream = assembly.GetManifestResourceStream(resourceName);
-
-            if (resourceStream == null)
+            try
             {
-                throw new FileNotFoundException("Embedded resource not found", resourceName);
-            }
 
-            return resourceStream;
+                var assembly = Assembly.GetExecutingAssembly();
+
+                var resourceStream = assembly.GetManifestResourceStream(resourceName);
+
+                if (resourceStream == null)
+                {
+                    throw new FileNotFoundException("Embedded resource not found", resourceName);
+                }
+
+                return resourceStream;
+            }
+            catch (Exception e)
+            {              
+                throw e;
+            }
+   
         }
     }   
 }

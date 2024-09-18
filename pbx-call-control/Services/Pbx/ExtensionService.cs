@@ -130,7 +130,7 @@ namespace PbxApiControl.Services.Pbx
                     extension.SetProperty("MOBILENUMBER", data.MobileNumber ?? extensionInfo.MobileNumber);
                     SetRecordingTypeProperties(extension, data.RecordingType ?? (RecordType)extensionInfo.RecordingType);
                     extension.OutboundCallerID = data.OutboundCallerId ?? extensionInfo.OutboundCallerID;
-                    extension.Enabled = data.IsExtenionEnabled ?? extensionInfo.IsExtenionEnabled;
+                    extension.Enabled = data.IsExtensionEnabled ?? extensionInfo.IsExtensionEnabled;
                     extension.Internal = data.DisableExternalCalls ?? extensionInfo.DisableExternalCalls;
                     extension.DeliverAudio = data.DeliverAudio ?? extensionInfo.DeliverAudio;
                     extension.SupportReinvite = data.SupportReinvite ?? extensionInfo.SupportReinvite;
@@ -434,7 +434,7 @@ namespace PbxApiControl.Services.Pbx
             extension.BusyDetection = BusyDetectionType.UsePBXStatus;
             extension.DeliverAudio = data.DeliverAudio;
             extension.EmailAddress = data.Email;
-            extension.Enabled = !data.IsExtenionEnabled;
+            extension.Enabled = data.IsExtensionEnabled;
             extension.LastName = data.LastName;
             extension.FirstName = data.FirstName;
             extension.HidePresence = false;

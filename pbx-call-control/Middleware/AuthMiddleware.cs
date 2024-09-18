@@ -1,54 +1,71 @@
 ﻿using PbxApiControl.Interface;
+using Grpc.Core;
 
 namespace PbxApiControl.Middleware
 {
-    public class AuthMiddleware
+    public class AuthMiddleware : IMiddleware
     {
-        private readonly RequestDelegate _next;
         private readonly string[] _whitelistedIPs;
         private readonly ITokenValidationService _tokenValidationService;
+        private readonly ILogger<AuthMiddleware> _logger;
 
-        public AuthMiddleware(RequestDelegate next, ITokenValidationService tokenValidationService)
+        public AuthMiddleware(ILogger<AuthMiddleware> logger,ITokenValidationService tokenValidationService, IConfiguration configuration)
         {
-            _next = next;
-            _whitelistedIPs = new[]{ "::ffff:127.0.0.1", "127.0.0.1" };;
+            _logger = logger;
+            _whitelistedIPs = configuration.GetSection("WhitelistedIPs").Get<string[]>();
             _tokenValidationService = tokenValidationService;
         }
 
-        public async Task InvokeAsync(HttpContext context)
+        public async Task InvokeAsync(HttpContext context, RequestDelegate next)
         {
-            // Проверка IP адреса
-            var remoteIp = context.Connection.RemoteIpAddress?.ToString();
-
-            if (remoteIp != null && !_whitelistedIPs.Contains(remoteIp))
+            try
             {
-                context.Response.StatusCode = StatusCodes.Status403Forbidden;
-                await context.Response.WriteAsync("IP адрес не в белом списке");
-                return;
-            }
+                var remoteIp = context.Connection.RemoteIpAddress;
 
-            // Проверка Bearer токена
-            if (!context.Request.Headers.ContainsKey("Authorization") ||
-                !context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
+                if (remoteIp != null && remoteIp.IsIPv4MappedToIPv6)
+                {
+                    remoteIp = remoteIp.MapToIPv4();
+                }
+
+                var remoteIpString = remoteIp?.ToString();
+
+                if (remoteIpString != null && !_whitelistedIPs.Contains(remoteIpString))
+                {
+
+                    throw new RpcException(new Status(StatusCode.PermissionDenied, "IP адрес не в белом списке"));
+                }
+
+                if (!context.Request.Headers.ContainsKey("Authorization") ||
+                    !context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
+                {
+                    throw new RpcException(new Status(StatusCode.Unauthenticated, "Требуется авторизация"));
+                }
+
+                // Extract and validate token
+                var token = context.Request.Headers["Authorization"].ToString().Split(' ')[1];
+                var isValid = _tokenValidationService.ValidateToken(token);
+                if (!isValid)
+                {
+                    context.Response.StatusCode = (int)StatusCode.Unauthenticated; 
+                    await context.Response.WriteAsync("Неверный токен");
+                    return; 
+                }
+
+                await next(context);
+
+            }    
+            catch (RpcException rpcEx)
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Требуется авторизация Bearer токена");
-                return;
+                _logger.LogError($"RpcException: {rpcEx.Status.Detail}");
+                context.Response.StatusCode = (int)rpcEx.StatusCode;
+                await context.Response.WriteAsync(rpcEx.Status.Detail);
             }
-
-            var token = context.Request.Headers["Authorization"].ToString().Split(' ')[1];
-
-            var isValid = _tokenValidationService.ValidateToken(token);
-
-            if (!isValid)
+            catch (Exception ex)
             {
-                context.Response.StatusCode = StatusCodes.Status401Unauthorized;
-                await context.Response.WriteAsync("Неверный Bearer токен");
-                return;
+                _logger.LogError($"Unexpected error: {ex.Message}");
+                context.Response.StatusCode = StatusCodes.Status500InternalServerError;
+                await context.Response.WriteAsync("Internal server error");
             }
-
-            await _next(context);
         }
     }
 }
-

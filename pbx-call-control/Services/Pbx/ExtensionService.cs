@@ -434,7 +434,7 @@ namespace PbxApiControl.Services.Pbx
             extension.BusyDetection = BusyDetectionType.UsePBXStatus;
             extension.DeliverAudio = data.DeliverAudio;
             extension.EmailAddress = data.Email;
-            extension.Enabled = !data.IsExtenionEnabled;
+            extension.Enabled = !data.IsExtensionEnabled;
             extension.LastName = data.LastName;
             extension.FirstName = data.FirstName;
             extension.HidePresence = false;

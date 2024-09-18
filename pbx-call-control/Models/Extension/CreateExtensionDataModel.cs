@@ -16,7 +16,7 @@ namespace PbxApiControl.Models.Extensions
         public string MobileNumber { get; }
         public string OutboundCallerId { get; }
         public RecordType RecordingType { get;  }
-        public bool IsExtenionEnabled { get; }
+        public bool IsExtensionEnabled { get; }
         public bool DisableExternalCalls { get; }
         public bool DeliverAudio { get;  }
         public bool SupportReinvite { get; }
@@ -33,7 +33,7 @@ namespace PbxApiControl.Models.Extensions
             MobileNumber = request.MobileNumber;
             OutboundCallerId = request.OutboundCallerId;
             RecordingType = (RecordType)request.RecordingType;
-            IsExtenionEnabled = request.IsExtensionEnabled;
+            IsExtensionEnabled = request.IsExtensionEnabled;
             DisableExternalCalls = request.DisableExternalCalls;
             DeliverAudio = request.DeliverAudio;
             SupportReinvite = request.SupportReinvite;

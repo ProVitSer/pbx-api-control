@@ -78,7 +78,7 @@ namespace PbxApiControl.Services.Pbx
             }
         }
 
-        public BaseCallResultModel TransferCallByCallId(uint callId, int partyConnectionId, string destinationNumber)
+        public BaseCallResultModel TransferCallByCallId(uint callId, string dn, string numberTo)
         {
             try
             {
@@ -89,14 +89,7 @@ namespace PbxApiControl.Services.Pbx
                     throw new InvalidOperationException(ServiceConstants.NoActiveConnection);
                 }
 
-                var connection = connections.FirstOrDefault(ac => ac.PartyConnectionID == partyConnectionId);
-                
-                if (connection == null)
-                {
-                    throw new InvalidOperationException(ServiceConstants.NoActiveConnection);
-                }
-
-                PhoneSystem.Root.TransferCall(connection, destinationNumber);
+                PhoneSystem.Root.TransferCall((int)callId, dn, numberTo);
                 
                 return new BaseCallResultModel(true, ServiceConstants.CallTransferSuccess);
             }

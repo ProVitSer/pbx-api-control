@@ -62,7 +62,7 @@ namespace PbxApiControl.Services.Grpc {
         public override Task<BaseCallReply>TransferCall(TrasferCallRequest request, ServerCallContext context) {
             try {
 
-                var transferCallResult = _callService.TransferCallByCallId((uint) request.CallId, request.PartyConnectionId, request.DestinationNumber);
+                var transferCallResult = _callService.TransferCallByCallId((uint) request.CallId, request.Dn, request.NumberTo);
 
                 return Task.FromResult(new BaseCallReply {
                     Result = transferCallResult.Result, Message = transferCallResult.Message

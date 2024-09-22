@@ -74,8 +74,22 @@ message ConnectionsData {
   string internal_party = 10;
 
   string internal_party_number = 11;
+
+  ConnectionCallStatus connection_call_status = 12;
+
+  string  destination_number = 13;
   
 }
+
+enum ConnectionCallStatus {
+    CallUndefined = 0;
+    CallDialing = 1;
+    CallRinging = 2;
+    CallConnected = 3;
+    CallHold = 4;
+    CallHeld = 5;
+}
+
 
 // Ответ на запрос информации об активных вызовах.
 message GetActiveCallsInfoReply {
@@ -148,11 +162,11 @@ message TrasferCallRequest {
   // Идентификатор вызова.
   int32  call_id = 1;
 
-  // Идентификатор внешнего соединения.
-  int32  party_connection_id = 2;
+  // Номер на котором находиться на данный момент зызов.
+  string  dn = 2;
 
   // Номер назначения для переадресации вызова.
-  string destination_number = 3;
+  string number_to = 3;
 }
 
 // Ответ на запрос выполнения операции с вызовом.

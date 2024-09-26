@@ -83,6 +83,7 @@ namespace PbxApiControl
             app.MapGrpcService<CallService>().DisableGrpcWeb();
             app.MapGrpcService<PbxEventListenerService>().DisableGrpcWeb();
             app.MapGrpcService<SqlService>().DisableGrpcWeb();
+            app.MapGrpcService<IvrService>().DisableGrpcWeb();
             app.MapGrpcReflectionService();
             app.Run();
         }

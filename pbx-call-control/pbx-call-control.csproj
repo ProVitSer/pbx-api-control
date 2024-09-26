@@ -26,6 +26,7 @@
         <Protobuf Include="Protos\call.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\pbx-subscribe-event.proto" GrpcServices="Server" />
         <Protobuf Include="Protos\sql.proto" GrpcServices="Server" />
+        <Protobuf Include="Protos\ivr.proto" GrpcServices="Server" />
 
     </ItemGroup>
     <ItemGroup>

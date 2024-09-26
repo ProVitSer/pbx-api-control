@@ -18,6 +18,8 @@ namespace PbxApiControl.Extensions
             services.AddScoped<ICallService, CallService>();
             services.AddScoped<ILogUtilService, LogUtilService>();
             services.AddScoped<ISqlService, SqlService>();
+            services.AddScoped<IIvrService, IvrService>();
+
             services.AddSingleton<IPbxEventListenerService>(provider =>
             {
                 var apiHostSettings = provider.GetRequiredService<IOptions<IApiHostSettings>>().Value;

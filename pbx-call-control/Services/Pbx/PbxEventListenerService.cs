@@ -125,7 +125,6 @@ namespace PbxApiControl.Services.Pbx
 
         private List<FullActiveConnectionInfoModel> ActiveConnectionsInfo()
         {
-            lock (_lock)
             {
                 var activeConnectionsInfo = new List<FullActiveConnectionInfoModel>();
                 foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())

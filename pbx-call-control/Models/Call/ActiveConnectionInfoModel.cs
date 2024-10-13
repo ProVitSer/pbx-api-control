@@ -1,4 +1,6 @@
 ﻿using TCX.Configuration;
+using PbxApiControl.Enums;
+using System.ComponentModel.DataAnnotations;
 
 namespace PbxApiControl.Models.Call
 {
@@ -26,6 +28,11 @@ namespace PbxApiControl.Models.Call
     
         public string InternalPartyNumber  { get; set;}
 
+        [EnumDataType(typeof(ConnectionCallStatus))]
+        public ConnectionCallStatus ConnectionCallStatus  { get; set;}
+
+        public string DestinationNumber  { get; set;}
+
         public ActiveConnectionInfoModel(ActiveConnection activeConnection)
         {
             this.Id = activeConnection.ID;
@@ -39,8 +46,31 @@ namespace PbxApiControl.Models.Call
             this.DialedNumber = activeConnection.DialedNumber ?? string.Empty;
             this.InternalParty = activeConnection.InternalParty.ToString() ?? string.Empty;
             this.InternalPartyNumber = activeConnection.InternalParty.Number;
+            this.ConnectionCallStatus = ConvertActiveConnectionStatus(activeConnection.Status);
+            this.DestinationNumber = activeConnection.DN.Number;
+
         }
     
+        public ConnectionCallStatus ConvertActiveConnectionStatus(ConnectionStatus status)
+        {
+
+            return status switch
+            {
+                ConnectionStatus.Undefined => ConnectionCallStatus.CallUndefined,
+                ConnectionStatus.Dialing => ConnectionCallStatus.CallDialing,
+                ConnectionStatus.Ringing => ConnectionCallStatus.CallRinging,
+                ConnectionStatus.Connected => ConnectionCallStatus.CallConnected,
+                ConnectionStatus.Hold => ConnectionCallStatus.CallHold,
+                ConnectionStatus.Held => ConnectionCallStatus.CallHeld,
+
+                _ => throw new ArgumentOutOfRangeException(nameof(status), $"Неизвестный статус вызова: {status}")
+            };
+        }
     }
+    
+    
+    
+  
+
 }
 

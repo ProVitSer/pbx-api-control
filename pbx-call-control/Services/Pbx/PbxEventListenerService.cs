@@ -3,6 +3,7 @@ using PbxApiControl.Interface;
 using System.Text;
 using Newtonsoft.Json;
 using PbxApiControl.Models.Call;
+using PbxApiControl.Models.CallReply;
 
 namespace PbxApiControl.Services.Pbx
 {
@@ -39,14 +40,10 @@ namespace PbxApiControl.Services.Pbx
         }
         
         public void OnStartListenEvent()
-        {
-            lock (_lock)
-            {
-                PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
-                PhoneSystem.Root.Updated += ActiveConnectionsUpdatedHandler;
-                PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
-
-            }
+        { 
+            PhoneSystem.Root.Inserted += ActiveConnectionsInsertedHandler;
+            PhoneSystem.Root.Updated += ActiveConnectionsUpdatedHandler;
+            PhoneSystem.Root.Deleted += ActiveConnectionsDeletedHandler;
         }
 
         
@@ -128,7 +125,6 @@ namespace PbxApiControl.Services.Pbx
 
         private List<FullActiveConnectionInfoModel> ActiveConnectionsInfo()
         {
-            lock (_lock)
             {
                 var activeConnectionsInfo = new List<FullActiveConnectionInfoModel>();
                 foreach (var keyValuePair in PhoneSystem.Root.GetActiveConnectionsByCallID())
@@ -144,18 +140,25 @@ namespace PbxApiControl.Services.Pbx
             }
         }
 
-        private async Task SendPostRequest(List<FullActiveConnectionInfoModel> activeConnectionInfo, string url)
+        private async Task SendPostRequest(List<FullActiveConnectionInfoModel> activeConnectionsInfo, string url)
         {
             try
             {
-                string jsonData = JsonConvert.SerializeObject(activeConnectionInfo, Formatting.Indented);
+                var formattedInfo = ActiveConnectionsInfoReply.FormatConnectionsInfoInfo(activeConnectionsInfo);
+                
+                string jsonData = JsonConvert.SerializeObject(formattedInfo, Formatting.Indented);
+
                 HttpContent content = new StringContent(jsonData, Encoding.UTF8, "application/json");
+                
                 HttpResponseMessage response = await _httpClient.PostAsync(url, content);
+                
                 response.EnsureSuccessStatusCode();
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "SendPostRequest failed");
+                // _logger.LogError(e, "SendPostRequest failed");
+                _logger.LogError( "SendPostRequest failed");
+
             }
         }
     }

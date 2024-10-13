@@ -1,18 +1,19 @@
 ﻿using PbxApiControl.Interface;
 using Grpc.Core;
+using System.Net;
 
 namespace PbxApiControl.Middleware
 {
     public class AuthMiddleware : IMiddleware
     {
-        private readonly string[] _whitelistedIPs;
+        private readonly string[] _whitelistedIPsOrDomains;
         private readonly ITokenValidationService _tokenValidationService;
         private readonly ILogger<AuthMiddleware> _logger;
 
         public AuthMiddleware(ILogger<AuthMiddleware> logger,ITokenValidationService tokenValidationService, IConfiguration configuration)
         {
             _logger = logger;
-            _whitelistedIPs = configuration.GetSection("WhitelistedIPs").Get<string[]>();
+            _whitelistedIPsOrDomains = configuration.GetSection("WhitelistedIPs").Get<string[]>();
             _tokenValidationService = tokenValidationService;
         }
 
@@ -21,15 +22,45 @@ namespace PbxApiControl.Middleware
             try
             {
                 var remoteIp = context.Connection.RemoteIpAddress;
-
                 if (remoteIp != null && remoteIp.IsIPv4MappedToIPv6)
                 {
                     remoteIp = remoteIp.MapToIPv4();
                 }
 
                 var remoteIpString = remoteIp?.ToString();
+                
+                bool isWhitelisted = false;
+                
+                foreach (var entry in _whitelistedIPsOrDomains)
+                {
+                    if (IPAddress.TryParse(entry, out var whitelistedIp))  
+                    {
+                        if (whitelistedIp.ToString() == remoteIpString)
+                        {
+                            isWhitelisted = true;
+                            break;
+                        }
+                    }
+                    else  
+                    {
+                        try
+                        {
+                            var hostEntry = await Dns.GetHostEntryAsync(entry);  
+                            if (hostEntry.AddressList.Any(ip => ip.MapToIPv4().ToString() == remoteIpString))
+                            {
+                                isWhitelisted = true;
+                                break;
+                            }
+                        }
+                        catch (Exception dnsEx)
+                        {
+                            _logger.LogWarning($"Не удалось разрешить домен {entry}: {dnsEx.Message}");
+                        }
+                    }
+                }
 
-                if (remoteIpString != null && !_whitelistedIPs.Contains(remoteIpString))
+
+                if (!isWhitelisted)
                 {
 
                     throw new RpcException(new Status(StatusCode.PermissionDenied, "IP адрес не в белом списке"));

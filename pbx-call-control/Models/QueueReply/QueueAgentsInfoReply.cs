@@ -22,7 +22,7 @@ namespace PbxApiControl.Models.QueueReply
             {
                 QueuesStatusType.LoggedOut => AgentQueueStatus.LoggedOut,
                 QueuesStatusType.LoggedIn => AgentQueueStatus.LoggedIn,
-                _ => throw new ArgumentOutOfRangeException(nameof(agentQueueStatus), $"Неизвестный статус агента: {agentQueueStatus}")
+                _ => throw new ArgumentOutOfRangeException(nameof(agentQueueStatus), $"Unknown agent status: {agentQueueStatus}")
             };
         }
     }  

@@ -33,15 +33,18 @@ namespace PbxApiControl.Services.Pbx
             var result = new SqlQueryResultModel();
     
             var dataTable = new DataTable();
+            
             dataTable.Load(reader);
 
             foreach (DataRow row in dataTable.Rows)
             {
                 var rowData = new List<string>();
+                
                 foreach (var item in row.ItemArray)
                 {
                     rowData.Add(item.ToString());
                 }
+                
                 result.Result.Add(rowData);
             }
 

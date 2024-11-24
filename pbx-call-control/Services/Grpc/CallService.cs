@@ -9,13 +9,11 @@ namespace PbxApiControl.Services.Grpc {
         private readonly ILogger<ContactService> _logger;
         private readonly ICallService _callService;
         private readonly IExtensionService _extensionService;
-        private readonly IPbxEventListenerService _pbxEventListenerService;
 
-        public CallService(ILogger<ContactService> logger, ICallService callService, IExtensionService extensionService, IPbxEventListenerService pbxEventListenerService) {
+        public CallService(ILogger<ContactService> logger, ICallService callService, IExtensionService extensionService) {
             _logger = logger;
             _callService = callService;
             _extensionService = extensionService;
-            _pbxEventListenerService = pbxEventListenerService;
         }
 
         public override Task<BaseCallReply>MakeCall(MakeCallRequest request, ServerCallContext context) {

@@ -1,23 +1,17 @@
-﻿using PbxApiControl.Interface;
-
-namespace PbxApiControl.Services
+﻿namespace PbxApiControl.Services
 {
     public class StartupService : IHostedService
     {
         private readonly ILogger<StartupService> _logger;
-        private readonly IPbxEventListenerService _pbxEventListenerService;
 
-        public StartupService(ILogger<StartupService> logger, IPbxEventListenerService pbxEventListenerService)
+        public StartupService(ILogger<StartupService> logger)
         {
             _logger = logger;
-            _pbxEventListenerService = pbxEventListenerService;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
             _logger.LogInformation("StartupService is starting.");
-
-            _pbxEventListenerService.OnStartListenEvent();
             
             return Task.CompletedTask;
         }

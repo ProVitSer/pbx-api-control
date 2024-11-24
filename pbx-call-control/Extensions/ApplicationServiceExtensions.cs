@@ -8,9 +8,8 @@ namespace PbxApiControl.Extensions
 {
     public static class ApplicationServiceExtensions
     {
-        public static void AddApplicationServices(this IServiceCollection services, IConfiguration configuration)
+        public static void AddApplicationServices(this IServiceCollection services)
         {
-            services.Configure<IApiHostSettings>(configuration.GetSection("ApiHostSettings"));
             services.AddScoped<IExtensionService, ExtensionService>();
             services.AddScoped<IRingGroupService, RingGroupService>();
             services.AddScoped<IContactService, ContactService>();

@@ -2,10 +2,9 @@
 {
     public interface IPbxEventListenerService
     {
-        void OnStartListenEvent();
-        void StartListenInsertedEvent();
-        void StartListenUpdatedEvent();
-        void StartListenDeletedEvent();
+        void StartListenInsertedEvent(string url);
+        void StartListenUpdatedEvent(string url);
+        void StartListenDeletedEvent(string url);
         void StopListenInsertedEvent();
         void StopListenUpdatedEvent();
         void StopListenDeletedEvent();

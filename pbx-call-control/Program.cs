@@ -3,11 +3,9 @@ using PbxApiControl.Extensions;
 using PbxApiControl.Config;
 using PbxApiControl.Interceptor;
 using PbxApiControl.Services;
-using PbxApiControl.Interface;
 using Serilog;
 using Microsoft.Extensions.Options;
 using Microsoft.AspNetCore.Server.Kestrel.Core;
-using PbxApiControl.Middleware;
 
 
 namespace PbxApiControl
@@ -30,12 +28,6 @@ namespace PbxApiControl
             
             CulturService.SetCulture(builder);
 
-            // Initialize configuration
-            var configuration = ConfigService.GetConfiguration(builder);
-            builder.Services.AddTransient<AuthMiddleware>();
-
-            // Register TokenValidationService with configuration
-            builder.Services.AddSingleton<ITokenValidationService>(sp => new TokenValidationService(configuration));
             builder.Services.AddHttpClient();
             
             // Add services to the container.
@@ -50,8 +42,7 @@ namespace PbxApiControl
             PbxApiConfig.InitConfig();
             
             builder.Services.AddGrpcReflection();
-            builder.Services.AddApplicationServices(configuration);
-            builder.Services.AddSingleton<IConfiguration>(configuration);
+            builder.Services.AddApplicationServices();
             builder.Services.AddHostedService<StartupService>();
             if (OperatingSystem.IsWindows())
             {
@@ -61,7 +52,7 @@ namespace PbxApiControl
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
             {
-                options.ListenAnyIP(new Uri(configuration["Kestrel:EndpointDefaults:Url"]).Port, listenOptions =>
+                options.ListenAnyIP(new Uri("http://127.0.0.1:7878").Port, listenOptions =>
                 {
                     listenOptions.Protocols = HttpProtocols.Http2;
                 });
@@ -69,7 +60,6 @@ namespace PbxApiControl
             });
             
             var app = builder.Build();
-            app.UseMiddleware<AuthMiddleware>();
  
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;

@@ -18,9 +18,9 @@ namespace PbxApiControl.Interceptor
             ServerCallContext context, 
             UnaryServerMethod<TRequest, TResponse> continuation)
         {
-            _logger.LogDebug("Calling Method {method} with argument {argument}", context.Method, request);
+            _logger.LogInformation("Calling Method {method} with argument {argument}", context.Method, request);
             var response = await continuation(request, context);
-            _logger.LogDebug("Called Method {method} with result {response}", context.Method, response);
+            _logger.LogInformation("Called Method {method} with result {response}", context.Method, response);
             return response;
         }
     }

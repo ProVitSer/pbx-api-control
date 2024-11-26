@@ -7,10 +7,10 @@ namespace PbxApiControl.Services.Grpc
 {
     public class SqlService : SqlServicePbxService.SqlServicePbxServiceBase
     {
-        private readonly ILogger<RingGroupService> _logger;
+        private readonly ILogger<SqlService> _logger;
         private readonly ISqlService _sqlService;
 
-        public SqlService(ILogger<RingGroupService> logger, ISqlService SqlService)
+        public SqlService(ILogger<SqlService> logger, ISqlService SqlService)
         {
             _logger = logger;
             _sqlService = SqlService;

@@ -9,11 +9,11 @@ namespace PbxApiControl.Services.Pbx
 {
     public class SqlService: ISqlService
     {
-        private readonly ILogger<CallService> _logger;
+        private readonly ILogger<SqlService> _logger;
         
 
 
-        public SqlService(ILogger<CallService> logger)
+        public SqlService(ILogger<SqlService> logger)
         {
             _logger = logger;
         }

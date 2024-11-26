@@ -1,8 +1,6 @@
-﻿using Microsoft.Extensions.Options;
-using PbxApiControl.Interface;
+﻿using PbxApiControl.Interface;
 using PbxApiControl.Services.Pbx;
 using Microsoft.AspNetCore.Mvc.Razor;
-using PbxApiControl.Services.Utils;
 
 namespace PbxApiControl.Extensions
 {
@@ -10,27 +8,7 @@ namespace PbxApiControl.Extensions
     {
         public static void AddApplicationServices(this IServiceCollection services)
         {
-            services.AddScoped<IExtensionService, ExtensionService>();
-            services.AddScoped<IRingGroupService, RingGroupService>();
-            services.AddScoped<IContactService, ContactService>();
-            services.AddScoped<IQueueService, QueueService>();
-            services.AddScoped<ICallService, CallService>();
-            services.AddScoped<ILogUtilService, LogUtilService>();
             services.AddScoped<ISqlService, SqlService>();
-            services.AddScoped<IIvrService, IvrService>();
-
-            services.AddSingleton<IPbxEventListenerService>(provider =>
-            {
-                var apiHostSettings = provider.GetRequiredService<IOptions<IApiHostSettings>>().Value;
-                
-                var logger = provider.GetRequiredService<ILogger<PbxEventListenerService>>();
-                
-                var httpClient = provider.GetRequiredService<HttpClient>();
-                
-                return PbxEventListenerService.GetInstance(logger, apiHostSettings, httpClient);
-            });
-
-
             services.AddLocalization(options => options.ResourcesPath = "Resources");
             services.AddControllersWithViews()
                 .AddViewLocalization(LanguageViewLocationExpanderFormat.Suffix)

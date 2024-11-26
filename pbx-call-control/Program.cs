@@ -44,11 +44,7 @@ namespace PbxApiControl
             builder.Services.AddGrpcReflection();
             builder.Services.AddApplicationServices();
             builder.Services.AddHostedService<StartupService>();
-            if (OperatingSystem.IsWindows())
-            {
-                builder.Services.AddHostedService<WindowsBackgroundService>();
-            }
-
+    
             // Configure Kestrel server
             builder.WebHost.ConfigureKestrel(options =>
             {
@@ -66,14 +62,7 @@ namespace PbxApiControl
             app.UseRequestLocalization(localizationOptions);
 
             // Map gRPC services
-            app.MapGrpcService<ExtensionService>().DisableGrpcWeb();
-            app.MapGrpcService<RingGroupService>().DisableGrpcWeb();
-            app.MapGrpcService<ContactService>().DisableGrpcWeb();
-            app.MapGrpcService<QueueService>().DisableGrpcWeb();
-            app.MapGrpcService<CallService>().DisableGrpcWeb();
-            app.MapGrpcService<PbxEventListenerService>().DisableGrpcWeb();
             app.MapGrpcService<SqlService>().DisableGrpcWeb();
-            app.MapGrpcService<IvrService>().DisableGrpcWeb();
             app.MapGrpcReflectionService();
             app.Run();
         }

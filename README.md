@@ -1,6 +1,8 @@
-﻿# PBX API Control
+## PBX API Control
 
 PBX API Control is a simple example  gRPC API implementation for the 3CX PBX system written in C#.
+
+
 ---
 
 ## Configuration

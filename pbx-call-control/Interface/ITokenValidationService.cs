@@ -4,5 +4,8 @@
     
     {
         bool ValidateToken(string token);
+        
+        void GenerateToken();
+
     }
 }

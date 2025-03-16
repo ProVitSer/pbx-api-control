@@ -35,7 +35,7 @@ namespace PbxApiControl
             builder.Services.AddTransient<AuthMiddleware>();
 
             // Register TokenValidationService with configuration
-            builder.Services.AddSingleton<ITokenValidationService>(sp => new TokenValidationService(configuration));
+            builder.Services.AddSingleton<ITokenValidationService>(sp => new TokenService(configuration));
             builder.Services.AddHttpClient();
             
             // Add services to the container.
@@ -68,8 +68,8 @@ namespace PbxApiControl
 
             });
             
-            var app = builder.Build();
-            app.UseMiddleware<AuthMiddleware>();
+            var app = builder.Build(); 
+            //app.UseMiddleware<AuthMiddleware>(); // Add authentication middleware
  
             // Localization
             var localizationOptions = app.Services.GetService<IOptions<RequestLocalizationOptions>>().Value;

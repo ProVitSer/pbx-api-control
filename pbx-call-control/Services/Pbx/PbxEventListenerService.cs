@@ -156,7 +156,6 @@ namespace PbxApiControl.Services.Pbx
             }
             catch (Exception e)
             {
-                // _logger.LogError(e, "SendPostRequest failed");
                 _logger.LogError( "SendPostRequest failed");
 
             }

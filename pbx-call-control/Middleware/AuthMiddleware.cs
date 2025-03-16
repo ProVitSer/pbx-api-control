@@ -28,7 +28,7 @@ namespace PbxApiControl.Middleware
                 }
 
                 var remoteIpString = remoteIp?.ToString();
-                
+
                 bool isWhitelisted = false;
                 
                 foreach (var entry in _whitelistedIPsOrDomains)
@@ -54,7 +54,7 @@ namespace PbxApiControl.Middleware
                         }
                         catch (Exception dnsEx)
                         {
-                            _logger.LogWarning($"Не удалось разрешить домен {entry}: {dnsEx.Message}");
+                            _logger.LogWarning($"Failed to resolve domain {entry}: {dnsEx.Message}");
                         }
                     }
                 }
@@ -63,22 +63,26 @@ namespace PbxApiControl.Middleware
                 if (!isWhitelisted)
                 {
 
-                    throw new RpcException(new Status(StatusCode.PermissionDenied, "IP адрес не в белом списке"));
+                    throw new RpcException(new Status(StatusCode.PermissionDenied, "IP address is not in the white list"));
                 }
+                
+                //_tokenValidationService.GenerateToken(); // Generate token for testing purposes in console
 
                 if (!context.Request.Headers.ContainsKey("Authorization") ||
                     !context.Request.Headers["Authorization"].ToString().StartsWith("Bearer "))
                 {
-                    throw new RpcException(new Status(StatusCode.Unauthenticated, "Требуется авторизация"));
+                    throw new RpcException(new Status(StatusCode.Unauthenticated, "Authorization required"));
                 }
 
                 // Extract and validate token
                 var token = context.Request.Headers["Authorization"].ToString().Split(' ')[1];
+                
                 var isValid = _tokenValidationService.ValidateToken(token);
+                
                 if (!isValid)
                 {
                     context.Response.StatusCode = (int)StatusCode.Unauthenticated; 
-                    await context.Response.WriteAsync("Неверный токен");
+                    await context.Response.WriteAsync("Invalid token");
                     return; 
                 }
 

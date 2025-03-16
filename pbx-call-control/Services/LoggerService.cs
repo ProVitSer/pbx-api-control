@@ -15,7 +15,7 @@ namespace PbxApiControl.Services
             
             Directory.CreateDirectory(logDirectory);
             
-            string logFilePath = Path.Combine(logDirectory, "pacg-log-.txt");
+            string logFilePath = Path.Combine(logDirectory, "pac-log-.txt");
 
             // Configuration constants
             const string applicationName = "pbx-call-control app";

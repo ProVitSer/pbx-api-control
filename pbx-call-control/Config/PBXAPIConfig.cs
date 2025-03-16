@@ -38,7 +38,7 @@ namespace PbxApiControl.Config
             }
             catch (Exception ex)
             {
-                throw new Exception("Проблемы с инициализацией: " + ex.Message, ex);
+                throw new Exception("Problems with initialization: " + ex.Message, ex);
             }
         }
 
@@ -61,7 +61,7 @@ namespace PbxApiControl.Config
             }
             catch (Exception ex)
             {
-                throw new Exception("Проблемы с подключение к АТС: " + ex.Message, ex);
+                throw new Exception("Problems connecting to PBX: " + ex.Message, ex);
             }
         }
 
@@ -70,7 +70,7 @@ namespace PbxApiControl.Config
           string filePath)
         {
             if (!File.Exists(filePath))
-                throw new Exception("Не удается найти " + Path.GetFullPath(filePath));
+                throw new Exception("Can't find " + Path.GetFullPath(filePath));
 
             string[] strArray = File.ReadAllLines(filePath);
 

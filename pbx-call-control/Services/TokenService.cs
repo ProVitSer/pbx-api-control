@@ -7,13 +7,13 @@ using Grpc.Core;
 
 namespace PbxApiControl.Services
 {
-    public class TokenValidationService :  ITokenValidationService
+    public class TokenService :  ITokenValidationService
     {
         private readonly string _issuer;
         private readonly string _audience;
         private readonly string _secretKey;
 
-    public TokenValidationService(IConfiguration configuration)
+    public TokenService(IConfiguration configuration)
         {
             _issuer = configuration["Jwt:Issuer"];
             _audience = configuration["Jwt:Audience"];
@@ -22,6 +22,7 @@ namespace PbxApiControl.Services
 
         public bool ValidateToken(string token)
         {
+            
             var tokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_secretKey);
 
@@ -43,23 +44,23 @@ namespace PbxApiControl.Services
             }
             catch (SecurityTokenSignatureKeyNotFoundException)
             {
-                throw new RpcException(new Status(StatusCode.Unauthenticated, "Ключ подписи не найден"));
+                throw new RpcException(new Status(StatusCode.Unauthenticated, "The signature key was not found"));
             }
             catch (SecurityTokenExpiredException)
             {
-                throw new RpcException(new Status(StatusCode.Unauthenticated, "Токен истек"));
+                throw new RpcException(new Status(StatusCode.Unauthenticated, "The token has expired"));
             }
             catch (SecurityTokenInvalidSignatureException)
             {
-                throw new RpcException(new Status(StatusCode.Unauthenticated, "Недействительная подпись токена"));
+                throw new RpcException(new Status(StatusCode.Unauthenticated, "Invalid token signature"));
             }
             catch (Exception ex)
             {
-                throw new RpcException(new Status(StatusCode.Unknown, $"Ошибка валидации токена: {ex.Message}"));
+                throw new RpcException(new Status(StatusCode.Unknown, $"Token validation error: {ex.Message}"));
             }
         }
 
-        private void GenerateToken()
+        public void GenerateToken()
         {
             var gtokenHandler = new JwtSecurityTokenHandler();
             var key = Encoding.UTF8.GetBytes(_secretKey);

@@ -2,26 +2,25 @@
 {
     public static class ServiceConstants
     {
-        public const string ExtensionNotFound = "Добавочный номер не найден";
-        public const string ExtensionExists = "Добавочный уже существует на АТС";
-        public const string DnIsNotExten = "Номер отсутствует в списке внутренних номеров";
-        public const string DnIsNotRingGroup = "Номер отсутствует в списке номеров групп вызова";
-        public const string RingGroupNotFound = "Номер группы вызова не найден";
+        public const string ExtensionNotFound = "Extension number not found";
+        public const string ExtensionExists = "Extension already exists on PBX";
+        public const string DnIsNotExten = "Number is not in the list of internal numbers";
+        public const string DnIsNotRingGroup = "Number is not in the list of ring group numbers";
+        public const string RingGroupNotFound = "Ring group number not found";
         public const string TryParseError =
-            "Входная строка имеет неправильный формат или представляет собой число, которое слишком велико или слишком мало для Int32.";
-        public const string ContactIdNotFound = "Контакт с переданным Id не найден";
-        public const string DnIsNotQueue = "Номер отсутствует в списке номеров очередей";
-        public const string QueueNotFound = "Номер группы вызова не найден";
-        public const string CallInitSuccess = "Успешная инициализация вызова";
-        public const string CallInitError = "Проблемы инициализация вызова";
-        public const string CallDropSuccess = "Вызов успешно завершен";
-        public const string CallDropError = "Проблемы завершения вызова";
-        public const string DestinationNumberNotFound = "Внутренний номера на который нужно выполнить перевод не существует";
-        public const string DestinationNumberUnregister = "Внутренний номера на который нужно выполнить перевод не зарегистрирова";
-        public const string CallTransferSuccess = "Вызов успешно переадресован";
-        public const string CallTransferError = "Проблемы переадресации вызова";
-        public const string NoActiveConnection = "Нет активных вызовов по номеру";
-        public const string DataError = "Переданно некорректно значение";
+            "The input string has an incorrect format or represents a number that is too large or too small for Int32.";
+        public const string ContactIdNotFound = "Contact with the given Id not found";
+        public const string DnIsNotQueue = "Number is not in the list of queue numbers";
+        public const string QueueNotFound = "Queue number not found";
+        public const string CallInitSuccess = "Call successfully initialized";
+        public const string CallInitError = "Call initialization issues";
+        public const string CallDropSuccess = "Call successfully completed";
+        public const string CallDropError = "Call termination issues";
+        public const string DestinationNumberNotFound = "The internal number to which the call needs to be transferred does not exist";
+        public const string DestinationNumberUnregister = "The internal number to which the call needs to be transferred is not registered";
+        public const string CallTransferSuccess = "Call successfully transferred";
+        public const string CallTransferError = "Call transfer issues";
+        public const string NoActiveConnection = "No active calls for the number";
+        public const string DataError = "Invalid value provided";
     }
 }
-

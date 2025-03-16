@@ -9,8 +9,8 @@
         <PublishSingleFile>true</PublishSingleFile>
         <IncludeHttpRuleProtos>true</IncludeHttpRuleProtos>
         <SelfContained>true</SelfContained>
-        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>
-<!--        <RuntimeIdentifier>win-x64</RuntimeIdentifier>-->
+        <!--        <RuntimeIdentifier>linux-x64</RuntimeIdentifier>-->
+                <RuntimeIdentifier>win-x64</RuntimeIdentifier>
         <GenerateRuntimeConfigDevFile>true</GenerateRuntimeConfigDevFile>
         <DebugType>embedded</DebugType>
         <ApplicationIcon />
@@ -65,10 +65,10 @@
     </ItemGroup>
     <ItemGroup>
         <Reference Include="3cxpscomcpp2">
-<!--            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>-->
+            <HintPath>C:\Program Files\3CX Phone System\Bin\3cxpscomcpp2.dll</HintPath>
 
-                        <HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>
-<!--            <Private>false</Private>-->
+                        <!--<HintPath>/usr/lib/3cxpbx/3cxpscomcpp2.dll</HintPath>-->
+            <Private>false</Private>
         </Reference>
     </ItemGroup>
     <ItemGroup>
